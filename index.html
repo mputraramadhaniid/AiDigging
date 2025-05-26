@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI DIGGING - Ready to help you</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <!-- Tambahkan ini di HTML agar font Inter bisa digunakan -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250316_191334.jpg?alt=media&token=afb5c73d-872f-4e27-ad76-13f4c2b4481a" type="image/png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-left">
+        <button class="menu-btn" id="leftMenuBtn">&#9776;</button>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- Sidebar Riwayat Chat -->
+      <div class="sidebar">
+        <p style="margin: 10px; font-size: 26px; font-weight: bold; color: #212121">Riwayat Chat</p>
+        <ul class="chat-list">
+          <li class="chat">Chat 1</li>
+          <li class="chat">Chat 2</li>
+          <li class="chat">Chat 3</li>
+          <!-- Tambahkan lebih banyak jika diperlukan -->
+        </ul>
+      </div>
+
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+      <!-- Area Chat -->
+      <div class="chat-container">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin: 20px">
+          <p style="font-size: 20px; font-weight: bold; color: #212121; margin: 0">
+            AI DIGGING
+            <img style="width: 15px; height: 15px; margin-top: 2px; margin-left: 4px" src="https://img.icons8.com/?size=100&id=15810&format=png&color=000000" alt="icon" />
+          </p>
+
+          <!-- Tombol Hapus Riwayat -->
+          <img src="https://img.icons8.com/ios-glyphs/30/000000/trash--v1.png" alt="Hapus" title="Hapus Riwayat" style="width: 20px; height: 20px; cursor: pointer" onclick="clearChat()" />
+        </div>
+
+        <div class="border-top-end" style="border-bottom: 1px solid #ccc; margin: 0 15px"></div>
+
+        <!-- Kotak Chat -->
+        <div class="chat-box" id="chat-box"></div>
+
+        <!-- Input & Tombol Kirim -->
+        <div class="input-container" style="margin: 0 15px 10px">
+          <input type="text" id="user-input" placeholder="Type your message..." style="padding: 15px; width: 70%" />
+          <button
+            onclick="sendMessage()"
+            style="background-color: #3a88d6; /* biru keren */ border: none; border-radius: 360px; padding: 12px 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.3s ease"
+            onmouseover="this.style.backgroundColor='#004f56'"
+            onmouseout="this.style.backgroundColor='#006575'"
+          >
+            <span class="material-icons" style="font-size: 24px; color: white"> send </span>
+          </button>
+        </div>
+
+        <!-- Footer -->
+        <p style="text-align: center; font-size: 14px">CopyRight @2024 M Putra Ramadhani-Id</p>
+      </div>
+    </div>
+
+    <!-- JS: Pastikan script.js sudah berisi semua fungsi yang dibutuhkan -->
+    <script src="script.js"></script>
+  </body>
+</html>
