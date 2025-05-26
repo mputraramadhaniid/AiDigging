@@ -1,3 +1,4 @@
+// Sidebar Toggle
 const leftMenuBtn = document.getElementById("leftMenuBtn");
 const sidebar = document.getElementById("sidebar");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
@@ -7,12 +8,12 @@ leftMenuBtn.addEventListener("click", () => {
   sidebarOverlay.classList.toggle("active");
 });
 
-// Tutup sidebar jika klik overlay
 sidebarOverlay.addEventListener("click", () => {
   sidebar.classList.remove("active");
   sidebarOverlay.classList.remove("active");
 });
 
+// Chat Functionality
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 
@@ -52,14 +53,14 @@ function sendMessage() {
     .then((data) => {
       const reply = data.choices?.[0]?.message?.content?.trim() || "AI tidak memberikan balasan.";
       removeLoadingMessage();
-      appendMessage("bot", reply, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/usersai.appspot.com/o/20240519_093138.png?alt=media&token=dc442bde-1105-4704-9dc5-a053a112ea9a");
+      appendMessage("bot", reply, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
       messages.push({ role: "assistant", content: reply });
       saveMessagesToStorage();
     })
     .catch((err) => {
       console.error("API error:", err);
       removeLoadingMessage();
-      appendMessage("bot", "Terjadi kesalahan saat menghubungi API.", "GPT Bot", "https://firebasestorage.googleapis.com/v0/b/usersai.appspot.com/o/20240519_093138.png?alt=media&token=dc442bde-1105-4704-9dc5-a053a112ea9a");
+      appendMessage("bot", "Terjadi kesalahan saat menghubungi API.", "GPT Bot", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
     })
     .finally(() => {
       isLoading = false;
@@ -76,7 +77,7 @@ function appendLoadingMessage() {
   messageContainer.style.alignItems = "flex-start";
 
   const profileImg = document.createElement("img");
-  profileImg.src = "https://firebasestorage.googleapis.com/v0/b/usersai.appspot.com/o/20240519_093138.png?alt=media&token=dc442bde-1105-4704-9dc5-a053a112ea9a";
+  profileImg.src = "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f";
   profileImg.style.width = "40px";
   profileImg.style.height = "40px";
   profileImg.style.borderRadius = "50%";
@@ -100,10 +101,8 @@ function appendLoadingMessage() {
 
   contentContainer.appendChild(nameEl);
   contentContainer.appendChild(loadingDots);
-
   messageContainer.appendChild(profileImg);
   messageContainer.appendChild(contentContainer);
-
   chatBox.appendChild(messageContainer);
   chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -120,6 +119,7 @@ function appendMessage(sender, text, username, profileUrl) {
   messageContainer.style.display = "flex";
   messageContainer.style.marginBottom = "15px";
   messageContainer.style.alignItems = "flex-start";
+  messageContainer.style.flexDirection = sender === "user" ? "row-reverse" : "row";
 
   const profileImg = document.createElement("img");
   profileImg.src = profileUrl;
@@ -127,8 +127,7 @@ function appendMessage(sender, text, username, profileUrl) {
   profileImg.style.height = "40px";
   profileImg.style.borderRadius = "50%";
   profileImg.style.objectFit = "cover";
-  profileImg.style.marginRight = sender === "user" ? "0" : "10px";
-  profileImg.style.marginLeft = sender === "user" ? "10px" : "0";
+  profileImg.style.margin = sender === "user" ? "0 0 0 10px" : "0 10px 0 0";
 
   const contentContainer = document.createElement("div");
   contentContainer.style.maxWidth = "75%";
@@ -141,18 +140,16 @@ function appendMessage(sender, text, username, profileUrl) {
 
   const textEl = document.createElement("div");
   textEl.innerHTML = parseMarkdown(text);
-  textEl.style.padding = "8px";
+  textEl.style.padding = "10px";
   textEl.style.borderRadius = "10px";
   textEl.style.backgroundColor = sender === "user" ? "#d1f0ff" : "#e2e2e2";
   textEl.style.color = "#333";
+  textEl.style.fontFamily = "'Inter', 'Helvetica', 'Arial', sans-serif";
+  textEl.style.fontSize = "15px";
+  textEl.style.lineHeight = "1.6";
 
   contentContainer.appendChild(nameEl);
   contentContainer.appendChild(textEl);
-
-  if (sender === "user") {
-    messageContainer.style.flexDirection = "row-reverse";
-  }
-
   messageContainer.appendChild(profileImg);
   messageContainer.appendChild(contentContainer);
   chatBox.appendChild(messageContainer);
@@ -160,19 +157,51 @@ function appendMessage(sender, text, username, profileUrl) {
 }
 
 function parseMarkdown(text) {
-  let html = text
-    .replace(/^### (.*$)/gm, "<h3>$1</h3>")
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.*?)\*/g, "<em>$1</em>")
-    .replace(/`(.*?)`/g, "<code>$1</code>")
-    .replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' target='_blank'>$1</a>")
-    .replace(/\n/g, "<br>");
-  return `<div>${html}</div>`;
+  const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+  let segments = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = codeBlockRegex.exec(text)) !== null) {
+    const [fullMatch, lang, code] = match;
+    const index = match.index;
+    if (index > lastIndex) {
+      segments.push({ type: "text", content: text.slice(lastIndex, index) });
+    }
+    segments.push({ type: "code", content: code, language: lang || "plaintext" });
+    lastIndex = index + fullMatch.length;
+  }
+
+  if (lastIndex < text.length) {
+    segments.push({ type: "text", content: text.slice(lastIndex) });
+  }
+
+  return segments
+    .map((segment) => {
+      if (segment.type === "text") {
+        let html = segment.content;
+        html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+        html = html.replace(/`(.*?)`/g, "<code style='background:#f4f4f4;padding:2px 4px;border-radius:4px;'>$1</code>");
+        html = html.replace(/\[(.*?)\]\((https?:\/\/.*?)\)/g, "<a href='$2' target='_blank'>$1</a>");
+        html = html.replace(/\n/g, "<br>");
+        return `<div style="margin:2px 0;">${html}</div>`;
+      } else {
+        return `<pre style="background:#2d2d2d;color:#ccc;padding:10px;border-radius:6px;overflow-x:auto;font-size:14px;margin:2px 0;"><code>${highlightCode(segment.content)}</code></pre>`;
+      }
+    })
+    .join("");
 }
 
-// ========================
-// Penyimpanan dengan localStorage
-// ========================
+function highlightCode(code) {
+  return code
+    .replace(/(\/\/.*)/g, `<span style="color:#6a9955;">$1</span>`)
+    .replace(/("(.*?)")/g, `<span style="color:#ce9178;">$1</span>`)
+    .replace(/\b(class|public|static|void|return|if|else|new|String|int|float|boolean|const|let|var|function)\b/g, `<span style="color:#569cd6;">$1</span>`)
+    .replace(/\b(true|false|null)\b/g, `<span style="color:#569cd6;">$1</span>`);
+}
+
+// Simpan & Muat Pesan
 function saveMessagesToStorage() {
   localStorage.setItem("chatHistory", JSON.stringify(messages));
 }
@@ -180,26 +209,23 @@ function saveMessagesToStorage() {
 function loadMessagesFromStorage() {
   const stored = localStorage.getItem("chatHistory");
   if (stored) {
-    try {
-      messages = JSON.parse(stored);
-      messages.forEach((msg) => {
-        if (msg.role === "user") {
-          appendMessage("user", msg.content, "You", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_230320.jpg?alt=media&token=1fc7e7e0-ad4f-4363-8fcf-221b6582b6ec");
-        } else if (msg.role === "assistant") {
-          appendMessage("bot", msg.content, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250316_191334.jpg?alt=media&token=afb5c73d-872f-4e27-ad76-13f4c2b4481a");
-        }
-      });
-    } catch (e) {
-      console.error("Gagal memuat chat:", e);
-    }
+    messages = JSON.parse(stored);
+    messages.forEach((msg) => {
+      if (msg.role === "user") {
+        appendMessage("user", msg.content, "You", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_230320.jpg?alt=media&token=1fc7e7e0-ad4f-4363-8fcf-221b6582b6ec");
+      } else {
+        appendMessage("bot", msg.content, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
+      }
+    });
   }
 }
 
+// Hapus semua chat
 function clearChat() {
   localStorage.removeItem("chatHistory");
   messages = [];
   chatBox.innerHTML = "";
 }
 
-// Load chat saat halaman dibuka
+// Muat chat saat halaman dibuka
 loadMessagesFromStorage();
