@@ -654,7 +654,12 @@
           .catch((err) => {
             console.error("API error:", err);
             removeLoadingMessage();
-            appendMessage("bot", "Sorry, there was an error connecting to the API.", "AI Digging", "https://cdn-icons-png.flaticon.com/512/4128/4128606.png");
+            appendMessage(
+              "bot",
+              "Sorry, there was an error connecting to the API.",
+              "AI Digging",
+              "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f"
+            );
           })
           .finally(() => {
             isLoading = false;
@@ -669,7 +674,7 @@
         messageContainer.className = "message-container";
 
         const profileImg = document.createElement("img");
-        profileImg.src = "https://cdn-icons-png.flaticon.com/512/4128/4128606.png";
+        profileImg.src = "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f";
         profileImg.className = "profile-image";
 
         const contentContainer = document.createElement("div");
@@ -852,7 +857,7 @@
             if (msg.role === "user") {
               appendMessage("user", msg.content, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png");
             } else {
-              appendMessage("bot", msg.content, "AI Digging", "https://cdn-icons-png.flaticon.com/512/4128/4128606.png");
+              appendMessage("bot", msg.content, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
             }
           });
         }
