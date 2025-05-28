@@ -1,93 +1,221 @@
-// Sidebar Toggle
-const leftMenuBtn = document.getElementById("leftMenuBtn");
-const sidebar = document.getElementById("sidebar");
-const sidebarOverlay = document.getElementById("sidebarOverlay");
-
-leftMenuBtn.addEventListener("click", () => {
-  sidebar.classList.toggle("active");
-  sidebarOverlay.classList.toggle("active");
-});
-
-sidebarOverlay.addEventListener("click", () => {
-  sidebar.classList.remove("active");
-  sidebarOverlay.classList.remove("active");
-});
-
-// Chat Functionality
 const chatBox = document.getElementById("chatBox");
 const chatForm = document.getElementById("chatForm");
 const chatInput = document.getElementById("chatInput");
 const clearChatBtn = document.getElementById("clearChatBtn");
+const clearChatBtnn = document.getElementById("clearChatBtnn");
 
 let messages = [];
 let isLoading = false;
-let loadingMessageId = null;
+let autoScrollEnabled = true;
 
-chatForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  sendMessage();
+// Auto resize textarea
+chatInput.addEventListener("input", () => {
+  chatInput.style.height = "auto";
+  const maxHeight = 120;
+  chatInput.style.height = Math.min(chatInput.scrollHeight, maxHeight) + "px";
 });
 
-clearChatBtn.addEventListener("click", clearChat);
+// Submit pesan dengan enter tanpa shift
+chatInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    chatForm.requestSubmit();
+  }
+});
 
-function sendMessage() {
+// Load pesan dari localStorage saat halaman dibuka
+window.addEventListener("DOMContentLoaded", () => {
+  loadMessagesFromStorage();
+});
+
+chatBox.addEventListener("scroll", () => {
+  const threshold = 40;
+  const distanceFromBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight;
+  autoScrollEnabled = distanceFromBottom < threshold;
+});
+
+// Submit form chat
+chatForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
   const text = chatInput.value.trim();
   if (!text || isLoading) return;
 
+  // Tambahkan pesan user ke chatBox dan array messages
   appendMessage("user", text, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png");
-  chatInput.value = "";
-  chatInput.disabled = true;
-  isLoading = true;
-
   messages.push({ role: "user", content: text });
   saveMessagesToStorage();
 
-  loadingMessageId = appendLoadingMessage();
+  chatInput.value = "";
+  chatInput.style.height = "auto";
+  chatInput.disabled = true;
+  isLoading = true;
 
-  fetch("https://api.paxsenix.biz.id/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer YOUR_API_KEY_HERE", // Add your API key if required
-    },
-    body: JSON.stringify({
-      messages: messages,
-      model: "gpt-4",
-      temperature: 0.7,
-    }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then((data) => {
-      const reply = data.choices?.[0]?.message?.content?.trim() || "AI didn't provide a response.";
-      removeLoadingMessage();
-      appendMessage("bot", reply, "AI Digging", "https://cdn-icons-png.flaticon.com/512/4128/4128606.png");
-      messages.push({ role: "assistant", content: reply });
-      saveMessagesToStorage();
-    })
-    .catch((err) => {
-      console.error("API error:", err);
-      removeLoadingMessage();
-      appendMessage("bot", "Sorry, there was an error connecting to the API.", "AI Digging", "https://cdn-icons-png.flaticon.com/512/4128/4128606.png");
-    })
-    .finally(() => {
-      isLoading = false;
-      chatInput.disabled = false;
-      chatInput.focus();
+  appendLoadingMessage();
+
+  try {
+    const response = await fetch("https://api.paxsenix.biz.id/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer YOUR_API_KEY_HERE",
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        temperature: 0.7,
+        messages: messages,
+      }),
     });
+
+    const data = await response.json();
+    const botReply = data.choices?.[0]?.message?.content?.trim() || "No response";
+
+    removeLoadingMessage();
+
+    appendMessage("bot", botReply, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
+    messages.push({ role: "assistant", content: botReply });
+    saveMessagesToStorage();
+  } catch (err) {
+    removeLoadingMessage();
+    appendMessage("bot", "Terjadi kesalahan saat menghubungi server.", "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
+  } finally {
+    isLoading = false;
+    chatInput.disabled = false;
+    chatInput.focus();
+  }
+});
+
+// Simpan ke localStorage
+function saveMessagesToStorage() {
+  try {
+    localStorage.setItem("chatHistory", JSON.stringify(messages));
+  } catch (e) {
+    console.error("Gagal menyimpan ke localStorage", e);
+  }
+}
+
+// Load pesan dari localStorage dan tampilkan
+function loadMessagesFromStorage() {
+  try {
+    const stored = localStorage.getItem("chatHistory");
+    if (!stored) return;
+
+    messages = JSON.parse(stored);
+
+    messages.forEach((msg) => {
+      const role = msg.role === "user" ? "user" : "bot";
+      const username = role === "user" ? "You" : "AI Digging";
+      const profileUrl =
+        role === "user" ? "https://cdn-icons-png.flaticon.com/512/1077/1077114.png" : "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f";
+
+      appendMessage(role, msg.content, username, profileUrl, true);
+    });
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+  } catch (e) {
+    console.error("Gagal load pesan dari localStorage", e);
+  }
+}
+
+// Clear chat dan localStorage
+clearChatBtn.addEventListener("click", clearChat);
+clearChatBtnn.addEventListener("click", clearChat);
+
+function clearChat() {
+  if (confirm("Hapus semua chat?")) {
+    messages = [];
+    localStorage.removeItem("chatHistory");
+    chatBox.innerHTML = "";
+  }
+}
+
+// Fungsi tambah pesan ke UI
+function appendMessage(sender, text, username, profileUrl, isHistory = false) {
+  const container = document.createElement("div");
+  container.className = `message-container ${sender} message-fade-in`;
+
+  const img = document.createElement("img");
+  img.className = "profile-image";
+  img.src = profileUrl;
+  img.alt = username;
+
+  const content = document.createElement("div");
+  content.className = "message-content";
+
+  const nameEl = document.createElement("div");
+  nameEl.className = "username";
+  nameEl.textContent = username;
+
+  const messageEl = document.createElement("div");
+  messageEl.className = "message";
+
+  content.appendChild(nameEl);
+  content.appendChild(messageEl);
+
+  // Tambahkan tombol salin untuk pesan bot/assistant
+  if (sender === "bot" || sender === "assistant") {
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "copy-btn left";
+    copyBtn.title = "Copy message";
+    copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+    copyBtn.onclick = function () {
+      copyTextFromButton(this);
+    };
+    content.appendChild(copyBtn);
+  }
+
+  container.appendChild(img);
+  container.appendChild(content);
+  chatBox.appendChild(container);
+
+  if (sender === "bot" && !isHistory) {
+    // Efek ketik untuk pesan bot
+    typeText(messageEl, text).then(() => {
+      addCopyButtonsToCodeBlocks(messageEl, username);
+      if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  } else {
+    messageEl.innerHTML = parseMarkdown(text);
+    if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+  }
+}
+
+// Efek ketik pesan bot
+async function typeText(element, text, delay = 50) {
+  element.innerHTML = "";
+  const html = parseMarkdown(text);
+  const temp = document.createElement("div");
+  temp.innerHTML = html;
+
+  const characters = [];
+  temp.childNodes.forEach((node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      node.textContent.split("").forEach((char) => {
+        const span = document.createElement("span");
+        span.textContent = char;
+        characters.push(span);
+      });
+    } else {
+      characters.push(node);
+    }
+  });
+
+  for (const char of characters) {
+    element.appendChild(char.cloneNode(true));
+    if (autoScrollEnabled) {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+    await new Promise((r) => setTimeout(r, delay));
+  }
+  addCopyButtonsToCodeBlocks(element);
 }
 
 function appendLoadingMessage() {
   const messageContainer = document.createElement("div");
   messageContainer.id = "loading-message";
-  messageContainer.className = "message-container";
+  messageContainer.className = "message-container bot";
 
   const profileImg = document.createElement("img");
-  profileImg.src = "https://cdn-icons-png.flaticon.com/512/4128/4128606.png";
+  profileImg.src = "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f";
   profileImg.className = "profile-image";
 
   const contentContainer = document.createElement("div");
@@ -107,198 +235,122 @@ function appendLoadingMessage() {
   messageContainer.appendChild(contentContainer);
   chatBox.appendChild(messageContainer);
   chatBox.scrollTop = chatBox.scrollHeight;
-
-  return "loading-message";
 }
 
 function removeLoadingMessage() {
   const el = document.getElementById("loading-message");
   if (el) el.remove();
 }
-
-function appendMessage(sender, text, username, profileUrl) {
-  const messageContainer = document.createElement("div");
-  messageContainer.className = `message-container ${sender}`;
-
-  const profileImg = document.createElement("img");
-  profileImg.src = profileUrl;
-  profileImg.className = "profile-image";
-
-  const contentContainer = document.createElement("div");
-  contentContainer.className = "message-content";
-
-  const nameEl = document.createElement("div");
-  nameEl.className = "username";
-  nameEl.textContent = username;
-
-  const textEl = document.createElement("div");
-  textEl.className = "message";
-  textEl.innerHTML = parseMarkdown(text);
-
-  contentContainer.appendChild(nameEl);
-  contentContainer.appendChild(textEl);
-  messageContainer.appendChild(profileImg);
-  messageContainer.appendChild(contentContainer);
-  chatBox.appendChild(messageContainer);
-  chatBox.scrollTop = chatBox.scrollHeight;
+// Parser markdown sederhana
+function escapeHtml(text) {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 function parseMarkdown(text) {
-  const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-  const segments = [];
-  let lastIndex = 0;
-  let match;
-
-  while ((match = codeBlockRegex.exec(text)) !== null) {
-    const [fullMatch, lang, code] = match;
-    const index = match.index;
-
-    if (index > lastIndex) {
-      segments.push({
-        type: "text",
-        content: text.slice(lastIndex, index),
-      });
-    }
-
-    segments.push({
-      type: "code",
-      content: code,
-      language: lang || "plaintext",
-    });
-
-    lastIndex = index + fullMatch.length;
-  }
-
-  if (lastIndex < text.length) {
-    segments.push({
-      type: "text",
-      content: text.slice(lastIndex),
-    });
-  }
-
-  return segments
-    .map((segment) => {
-      if (segment.type === "text") {
-        let html = segment.content
-          .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-          .replace(/\*(.*?)\*/g, "<em>$1</em>")
-          .replace(/`(.*?)`/g, '<code class="inline-code">$1</code>')
-          .replace(/\n/g, "<br>");
-
-        return `<div class="text-segment">${html}</div>`;
-      } else {
-        const highlightedCode = highlightSyntax(segment.content, segment.language);
-        const withLineNumbers = addLineNumbers(highlightedCode);
-
-        return `
-        <div class="code-block">
-          <div class="code-header">
-            <span class="language">${segment.language || "code"}</span>
-            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-          </div>
-          <pre class="language-${segment.language || "plaintext"}"><code>${withLineNumbers}</code></pre>
-        </div>
-      `;
-      }
+  return text
+    .replace(/```filename:(.+?)\n([\s\S]*?)```/g, (match, filename, code) => {
+      const escapedCode = escapeHtml(code);
+      // Bungkus dengan div.code-wrapper (untuk styling dan toolbar nanti)
+      return `<div class="code-wrapper" data-filename="${filename.trim()}"><pre><code>${escapedCode}</code></pre></div>`;
     })
-    .join("");
-}
-
-function addLineNumbers(code) {
-  const lines = code.split("\n");
-  if (lines.length <= 1) return code;
-
-  return lines
-    .map((line, i) => {
-      return `<span class="line-number">${i + 1}</span>${line}`;
+    .replace(/```([\s\S]*?)```/g, (match, code) => {
+      const escapedCode = escapeHtml(code);
+      return `<div class="code-wrapper"><pre><code>${escapedCode}</code></pre></div>`;
     })
-    .join("\n");
+    .replace(/### (.*?)(\n|$)/g, '<strong style="font-size:18px;display:block;">$1</strong>\n')
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/_(.*?)_/g, "<em>$1</em>")
+    .replace(/`([^`]+)`/g, (m, inlineCode) => `<code class="inline-code">${escapeHtml(inlineCode)}</code>`)
+    .replace(/\n/g, "<br>");
 }
 
-function highlightSyntax(code, language = "plaintext") {
-  // Enhanced highlighting patterns
-  const patterns = {
-    javascript: [
-      { regex: /(\/\/.*|\/\*[\s\S]*?\*\/)/g, class: "comment" },
-      {
-        regex:
-          /(\b(?:function|const|let|var|if|else|for|while|return|class|import|export|new|this|true|false|null|undefined|typeof|instanceof|await|async|yield|break|case|catch|continue|default|delete|do|finally|in|of|switch|throw|try|with)\b)/g,
-        class: "keyword",
-      },
-      { regex: /(=>|\|\||&&|[+\-*/%&|^~=!<>?])=?|\+\+|--|\.{3}/g, class: "operator" },
-      { regex: /(".*?"|'.*?'|`[\s\S]*?`)/g, class: "string" },
-      { regex: /(\b\d+(\.\d+)?\b)/g, class: "number" },
-      { regex: /(\bfunction\b)\s+([a-zA-Z_$][0-9a-zA-Z_$]*)/g, replace: '<span class="keyword">$1</span> <span class="function">$2</span>' },
-      { regex: /(\bclass\b)\s+([a-zA-Z_$][0-9a-zA-Z_$]*)/g, replace: '<span class="keyword">$1</span> <span class="class-name">$2</span>' },
-      { regex: /(\.)([a-zA-Z_$][0-9a-zA-Z_$]*)/g, replace: '<span class="punctuation">$1</span><span class="property">$2</span>' },
-    ],
-    html: [
-      { regex: /(&lt;\/?[a-zA-Z][a-zA-Z0-9-]*)/g, class: "tag" },
-      { regex: /([a-zA-Z-]+)=/g, class: "attr" },
-      { regex: /(".*?"|'.*?')/g, class: "string" },
-      { regex: /(&[a-zA-Z]+;)/g, class: "entity" },
-    ],
-    css: [
-      { regex: /([a-zA-Z-]+)\s*:/g, class: "property" },
-      { regex: /(#([a-fA-F0-9]{3}){1,2}\b)/g, class: "value hex" },
-      { regex: /(\b\d+(\.\d+)?(px|em|rem|%|s|ms|deg|rad|turn)\b)/g, class: "value number" },
-      { regex: /(\b(?:@media|@keyframes|@import|@font-face|@supports|@charset)\b)/g, class: "keyword" },
-      { regex: /(\b(?:url|var|rgb|rgba|hsl|hsla|calc|clamp|min|max)\b)(\()/g, replace: '<span class="function">$1</span><span class="punctuation">$2</span>' },
-    ],
-  };
-
-  let highlighted = code;
-  const langPatterns = patterns[language] || [];
-
-  langPatterns.forEach((pattern) => {
-    if (pattern.replace) {
-      highlighted = highlighted.replace(pattern.regex, pattern.replace);
-    } else {
-      highlighted = highlighted.replace(pattern.regex, `<span class="${pattern.class}">$&</span>`);
-    }
-  });
-
-  return highlighted;
-}
-
-// Add this to your existing JavaScript
-function copyCode(button) {
-  const codeBlock = button.closest(".code-block");
-  const code = codeBlock.querySelector("code").textContent;
-
-  navigator.clipboard.writeText(code).then(() => {
-    button.textContent = "Copied!";
+// Fungsi copy teks pesan saat klik tombol copy
+function copyTextFromButton(button) {
+  // Cari elemen pesan (div.message) yang ada sebelum tombol copy
+  const messageEl = button.previousElementSibling;
+  if (!messageEl) return;
+  const text = messageEl.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    button.innerHTML = `<img src="images/tick.png" alt="Copied" width="16" height="16" />`;
     setTimeout(() => {
-      button.textContent = "Copy";
-    }, 2000);
+      button.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+    }, 1500);
   });
 }
 
-function saveMessagesToStorage() {
-  localStorage.setItem("chatHistory", JSON.stringify(messages));
-}
+// Fungsi tambahkan tombol copy + label di atas tiap blok kode (hanya untuk bot)
+function addCopyButtonsToCodeBlocks(container, username = "AI Digging") {
+  if (username === "You") return; // Jangan toolbar di pesan user
 
-function loadMessagesFromStorage() {
-  const stored = localStorage.getItem("chatHistory");
-  if (stored) {
-    messages = JSON.parse(stored);
-    messages.forEach((msg) => {
-      if (msg.role === "user") {
-        appendMessage("user", msg.content, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png");
-      } else {
-        appendMessage("bot", msg.content, "AI Digging", "https://cdn-icons-png.flaticon.com/512/4128/4128606.png");
-      }
-    });
-  }
-}
+  const wrappers = container.querySelectorAll(".code-wrapper");
 
-function clearChat() {
-  if (confirm("Are you sure you want to clear all chat history?")) {
-    localStorage.removeItem("chatHistory");
-    messages = [];
-    chatBox.innerHTML = "";
-  }
-}
+  wrappers.forEach((wrapper) => {
+    // Cegah duplikasi toolbar
+    if (wrapper.querySelector(".code-toolbar")) return;
 
-// Load chat when page opens
-document.addEventListener("DOMContentLoaded", loadMessagesFromStorage);
+    const pre = wrapper.querySelector("pre");
+    const code = pre.querySelector("code");
+
+    // Toolbar/header
+    const toolbar = document.createElement("div");
+    toolbar.className = "code-toolbar";
+    toolbar.style.display = "flex";
+    toolbar.style.justifyContent = "space-between";
+    toolbar.style.alignItems = "center";
+    toolbar.style.padding = "6px 12px";
+    toolbar.style.backgroundColor = "#f3f4f6";
+    toolbar.style.fontSize = "13px";
+    toolbar.style.fontWeight = "500";
+    toolbar.style.fontFamily = "sans-serif";
+    toolbar.style.borderBottom = "1px solid #ddd";
+
+    // Label nama file (ambil dari data-filename)
+    const filename = wrapper.getAttribute("data-filename") || "code";
+    const label = document.createElement("span");
+    label.textContent = filename;
+    label.style.color = "#374151";
+
+    // Tombol copy kode
+    const copyBtn = document.createElement("button");
+    copyBtn.title = "Salin kode";
+    copyBtn.style.background = "none";
+    copyBtn.style.border = "none";
+    copyBtn.style.cursor = "pointer";
+    copyBtn.style.padding = "2px";
+    copyBtn.style.display = "flex";
+    copyBtn.style.alignItems = "center";
+    copyBtn.style.gap = "4px";
+
+    copyBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#4B5563" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+        <path d="M16 4H8a2 2 0 0 0-2 2v12m2-2h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+      </svg>
+      Copy
+    `;
+
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        copyBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+            <path d="M5 13l4 4L19 7"/>
+          </svg>
+          Copied
+        `;
+        setTimeout(() => {
+          copyBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#4B5563" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+              <path d="M16 4H8a2 2 0 0 0-2 2v12m2-2h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+            </svg>
+            Copy
+          `;
+        }, 1500);
+      });
+    };
+
+    toolbar.appendChild(label);
+    toolbar.appendChild(copyBtn);
+
+    // Masukkan toolbar di atas pre
+    wrapper.insertBefore(toolbar, pre);
+  });
+}
