@@ -3,10 +3,23 @@ const chatForm = document.getElementById("chatForm");
 const chatInput = document.getElementById("chatInput");
 const clearChatBtn = document.getElementById("clearChatBtn");
 const clearChatBtnn = document.getElementById("clearChatBtnn");
+const leftMenuBtn = document.getElementById("leftMenuBtn");
+const sidebar = document.getElementById("sidebar");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
 
 let messages = [];
 let isLoading = false;
 let autoScrollEnabled = true;
+
+leftMenuBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  sidebarOverlay.classList.toggle("active");
+});
+
+sidebarOverlay.addEventListener("click", () => {
+  sidebar.classList.remove("active");
+  sidebarOverlay.classList.remove("active");
+});
 
 // Auto resize textarea
 chatInput.addEventListener("input", () => {
