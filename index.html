@@ -574,8 +574,9 @@
       /* ========== RESPONSIVE ========== */
       @media (max-width: 768px) {
         .container {
-          flex-direction: column; /* Mengatur arah kolom untuk mobile */
-          height: calc(100vh - 50px); /* Mengurangi tinggi untuk navbar */
+          display: flex; /* atau use display: grid; */
+          flex-direction: column; /* atur arah elemen */
+          align-items: center; /* pusatkan elemen */
         }
         .chat-container {
           height: calc(100vh - 50px); /* Mengatur tinggi chat-container */
