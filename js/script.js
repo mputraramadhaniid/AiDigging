@@ -6,10 +6,70 @@ const clearChatBtnn = document.getElementById("clearChatBtnn");
 const leftMenuBtn = document.getElementById("leftMenuBtn");
 const sidebar = document.getElementById("sidebar");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
+const emptyMessage = document.getElementById("emptyMessage");
 
 let messages = [];
 let isLoading = false;
 let autoScrollEnabled = true;
+
+// Pastikan elemen sudah dideklarasikan
+const menufitur1 = document.getElementById("menufitur1");
+const menufiturawal = document.getElementById("menufiturawal");
+const menufiturkedua = document.getElementById("menufiturkedua");
+
+menufiturawal.style.display = "none";
+menufiturkedua.style.display = "none";
+
+const text = "Apakah ada yang bisa saya bantu?";
+let index = 0;
+
+function typeWriter() {
+  if (index < text.length) {
+    emptyMessage.textContent += text.charAt(index);
+    index++;
+    setTimeout(typeWriter, 100); // 100ms per karakter
+    menufitur1.style.cssText = `
+    flex: 1;
+  display: flex;
+  flex-direction: column; /* Ubah jadi vertikal */
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 100%;
+  `;
+  } else {
+    menufiturawal.style.display = "block";
+    menufiturkedua.style.display = "block";
+    menufiturawal.style.cssText = `
+     margin-top: 20px;
+  bottom: 1rem;
+  display: flex;
+  flex-direction: row; /* horizontal */
+  flex-wrap: wrap; /* pindah baris jika sempit */
+  gap: 1rem; /* jarak antar tombol */
+  align-items: center; /* vertikal tengah */
+  justify-content: center; /* bisa diganti center atau start */
+  padding: 0 1rem;
+  max-width: 100%;
+  box-sizing: border-box; /* agar padding tidak melebar */
+  `;
+    menufiturkedua.style.cssText = `
+     margin-top: 20px;
+  bottom: 1rem;
+  display: flex;
+  flex-direction: row; /* horizontal */
+  flex-wrap: wrap; /* pindah baris jika sempit */
+  gap: 1rem; /* jarak antar tombol */
+  align-items: center; /* vertikal tengah */
+  justify-content: center; /* bisa diganti center atau start */
+  padding: 0 1rem;
+  max-width: 100%;
+  box-sizing: border-box; /* agar padding tidak melebar */
+  `;
+  }
+}
+
+typeWriter();
 
 leftMenuBtn.addEventListener("click", () => {
   sidebar.classList.toggle("active");
@@ -39,6 +99,7 @@ chatInput.addEventListener("keydown", (e) => {
 // Load pesan dari localStorage saat halaman dibuka
 window.addEventListener("DOMContentLoaded", () => {
   loadMessagesFromStorage();
+  checkChatEmpty();
 });
 
 chatBox.addEventListener("scroll", () => {
@@ -124,6 +185,7 @@ function loadMessagesFromStorage() {
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
+    checkChatEmpty(); // ⬅ Tambahkan ini
   } catch (e) {
     console.error("Gagal load pesan dari localStorage", e);
   }
@@ -138,7 +200,15 @@ function clearChat() {
     messages = [];
     localStorage.removeItem("chatHistory");
     chatBox.innerHTML = "";
+    chatInput.value = "";
+    chatInput.style.height = "auto";
+    checkChatEmpty(); // Tambahkan pengecekan chat kosong
   }
+}
+
+function checkChatEmpty() {
+  const messageEls = chatBox.querySelectorAll(".message-container");
+  menufitur1.style.display = messageEls.length === 0 ? "block" : "none";
 }
 
 // Fungsi tambah pesan ke UI
@@ -181,14 +251,15 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
   chatBox.appendChild(container);
 
   if (sender === "bot" && !isHistory) {
-    // Efek ketik untuk pesan bot
     typeText(messageEl, text).then(() => {
       addCopyButtonsToCodeBlocks(messageEl, username);
       if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+      checkChatEmpty(); // ⬅ Tambahkan ini setelah typing selesai
     });
   } else {
     messageEl.innerHTML = parseMarkdown(text);
     if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+    checkChatEmpty(); // ⬅ Tambahkan ini di sini
   }
 }
 
