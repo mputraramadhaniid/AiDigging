@@ -1,0 +1,211 @@
+body {
+  font-family: "Roboto", sans-serif; /* Menggunakan font Roboto */
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+.sidebar {
+  flex: 0 0 300px;
+  background-color: #ededed;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.chat-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.chat {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.chat:hover {
+  background-color: #f0f0f0;
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ccc;
+  border-left: 2px solid #ccc;
+}
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  margin-left: 4px;
+  margin-right: 4px;
+  background-color: #fff;
+  border-top: 2px;
+}
+
+.message-container {
+  display: flex;
+  align-items: flex-start; /* Membuat kontainer pesan dan gambar profil berada di atas */
+  margin-bottom: 10px; /* Jarak antara pesan */
+}
+
+.profile-image {
+  width: 40px; /* Sesuaikan dengan lebar yang diinginkan */
+  height: 40px; /* Sesuaikan dengan tinggi yang diinginkan */
+  border-radius: 50%; /* Untuk membuat gambar profil menjadi bulat */
+  margin-right: 10px; /* Jarak antara gambar profil dan pesan */
+}
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between; /* Menempatkan nama pengguna dan pesan di pinggir */
+}
+
+.username {
+  margin-left: 2px;
+  font-size: 14px;
+  font-weight: bold; /* Membuat nama pengguna lebih tebal */
+}
+
+.message {
+  border-radius: 10px; /* Sudut bulat untuk pesan */
+  padding: 3px; /* Padding di dalam pesan */
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  padding: 10px 0px 10px 10px;
+}
+
+.input-container input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  outline: none;
+  background-color: transparent; /* Transparent background */
+}
+
+.input-container button {
+  padding: 15px 15px 15px 15px;
+  margin-left: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.input-container button:hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.copyright {
+  display: flex;
+  flex-direction: column; /* Mengatur konten dalam kolom */
+}
+
+.navbar {
+  display: none;
+}
+
+.loading-animation .dot {
+  animation: blink 1.5s infinite;
+  display: inline-block;
+  margin: 0 1px;
+  font-weight: bold;
+}
+.loading-animation .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.loading-animation .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+/* Show navbar on mobile */
+@media only screen and (max-width: 768px) {
+  /*=============== HEADER Y NAV ===============*/
+  .navbar {
+    display: flex;
+    background-color: #333;
+    color: #fff;
+    justify-content: space-between;
+    padding: 2px;
+  }
+
+  .navbar-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .menu-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 5px 10px;
+  }
+  .sidebar {
+    display: none;
+  }
+  .loading-animation .dot {
+    animation: blink 1.5s infinite;
+    display: inline-block;
+    margin: 0 1px;
+    font-weight: bold;
+  }
+  .loading-animation .dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .loading-animation .dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes blink {
+    0% {
+      opacity: 0.2;
+    }
+    20% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.2;
+    }
+  }
+}
