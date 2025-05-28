@@ -573,6 +573,13 @@
 
       /* ========== RESPONSIVE ========== */
       @media (max-width: 768px) {
+        .container {
+          flex-direction: column; /* Mengatur arah kolom untuk mobile */
+          height: calc(100vh - 50px); /* Mengurangi tinggi untuk navbar */
+        }
+        .chat-container {
+          height: calc(100vh - 50px); /* Mengatur tinggi chat-container */
+        }
         .chat-header {
           display: none; /* sembunyikan header chat di mobile */
         }
