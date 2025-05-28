@@ -1,3 +1,29 @@
+/* CSS untuk custom scrollbar di seluruh halaman */
+::-webkit-scrollbar {
+  width: 10px; /* Lebar scrollbar vertikal */
+  height: 10px; /* Tinggi scrollbar horizontal */
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e; /* Warna track scrollbar */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555; /* Warna handle scrollbar */
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #888; /* Warna handle saat hover */
+}
+
+/* Scroll smooth di seluruh halaman */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Reset & base */
 *,
 *::before,
@@ -154,6 +180,82 @@ body {
   scroll-behavior: smooth;
 }
 
+.chat-box {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #121212;
+  scroll-behavior: smooth;
+}
+
+.containermenu {
+  flex: 1;
+  display: flex;
+  flex-direction: column; /* Ubah jadi vertikal */
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 100%;
+}
+
+.empty-message {
+  color: #ffffff;
+  font-size: 28px;
+  padding: 0px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.info-awal-message {
+  color: #ffffff;
+  font-size: 2rem;
+  padding: 0px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.suggestion-options {
+  margin-top: 20px;
+  bottom: 1rem;
+  display: flex;
+  flex-direction: row; /* horizontal */
+  flex-wrap: wrap; /* pindah baris jika sempit */
+  gap: 1rem; /* jarak antar tombol */
+  align-items: center; /* vertikal tengah */
+  justify-content: center; /* bisa diganti center atau start */
+  padding: 0 1rem;
+  max-width: 100%;
+  box-sizing: border-box; /* agar padding tidak melebar */
+}
+
+.suggestion-options button {
+  display: flex; /* Tambahkan ini */
+  align-items: center; /* Vertikal tengah */
+  justify-content: center; /* Horizontal tengah */
+  gap: 0.5rem; /* Jarak antara ikon dan teks */
+  white-space: nowrap;
+  background-color: transparent;
+  color: #dfdfdf;
+  border: none;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border: 1px solid #6f6d6d;
+  box-shadow: 1px 2px 6px rgba(199, 194, 194, 0.1);
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.suggestion-options button:hover {
+  background-color: #474646;
+  transform: scale(1.05); /* sedikit membesar saat hover */
+}
+
+.suggestion-options .icon {
+  width: 25px;
+  height: 25px;
+}
+
 .message-container {
   display: flex;
   align-items: flex-start;
@@ -279,16 +381,6 @@ code {
   white-space: pre;
 }
 
-.inline-code {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  padding: 2px 6px;
-  font-family: "Roboto Mono", monospace;
-  font-size: 0.9em;
-  color: #80cbc4;
-  border: 1px solid #444;
-}
-
 .text-segment {
   margin: 8px 0;
   line-height: 1.7;
@@ -328,7 +420,7 @@ code {
 }
 
 .input-container textarea::placeholder {
-  color: #eee;
+  color: #888888;
 }
 
 .input-container textarea:focus {
@@ -521,7 +613,7 @@ code {
   border: none;
   width: 100%;
   padding: 10px 8px;
-  border-radius: 0px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
@@ -548,10 +640,10 @@ code {
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* Rata kiri */
-  padding: 16px;
+  padding: 8px 0px;
   gap: 12px;
   margin-top: auto;
-  border-top: 1px solid #444;
+  border-top: 1px solid #2a2929;
   width: 100%; /* Pastikan isi melebar */
 }
 
