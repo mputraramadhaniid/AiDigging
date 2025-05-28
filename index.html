@@ -15,16 +15,16 @@
     <!-- Navbar Mobile -->
     <div class="navbar">
       <button class="menu-btn" id="leftMenuBtn" aria-label="Toggle sidebar">&#9776;</button>
-      <div>AiDigging</div>
-      <img src="images/new.png" alt="trash" class="trash" title="Delete chat" id="clearChatBtn" />
+      <div>Ai Digging</div>
+      <img src="images/icons_write.png" alt="trash" class="trash" title="Delete chat" id="clearChatBtn" style="height: 25px; width: 25px" />
     </div>
 
     <div class="container">
       <aside class="sidebar" id="sidebar">
-        <h2>Choose the conversation</h2>
-        <p>Please select a conversation to start chatting.</p>
+        <h2>Riwayat Chat</h2>
+        <p>Segera Hadir seiring waktu.</p>
 
-        <ul class="chat-list">
+        <ul class="chat-list" style="display: none">
           <li class="chat">Chat 1</li>
           <li class="chat">Chat 2</li>
           <li class="chat">Chat 3</li>
@@ -33,18 +33,20 @@
 
         <!-- Login/Register -->
         <div class="auth-buttons" style="display: none">
-          <button class="login-btn" type="button">Login</button>
-          <button class="register-btn" type="button">Register</button>
+          <button class="login-btn" type="button">Masuk</button>
+          <button class="register-btn" type="button">Daftar</button>
         </div>
 
         <!-- Pusat Bantuan -->
-        <button class="help-center-btn" type="button" onclick="alert('Pusat bantuan akan segera hadir!')">
-          <img class="icon" src="images/help.png" alt="Help" />
-          <span>Pusat Bantuan</span>
-        </button>
+        <div class="sidebar-footer">
+          <button class="help-center-btn" type="button" onclick="alert('Pusat bantuan akan segera hadir!')">
+            <img class="icon" src="images/help.png" alt="Help" />
+            <span>Pusat Bantuan</span>
+          </button>
+        </div>
 
         <!-- Profil di paling bawah -->
-        <div class="sidebar-footer">
+        <div class="sidebar-footer" style="display: none">
           <div class="profile">
             <img src="https://i.pravatar.cc/40" alt="Profile Image" class="profile-image-sidebar" />
             <span class="profile-name">Profile</span>
@@ -58,16 +60,44 @@
       <!-- Chat Container -->
       <section class="chat-container">
         <header class="chat-header">
-          <p>AiDigging</p>
-          <img src="images/new.png" alt="trash" class="trash" title="Delete chat" id="clearChatBtnn" />
+          <p>Ai Digging</p>
+          <img src="images/icons_write.png" alt="trash" class="trash" title="Delete chat" id="clearChatBtnn" style="height: 25px; width: 25px" />
         </header>
 
         <div class="chat-box" id="chatBox">
           <!-- Messages will appear here -->
+          <div class="containermenu" id="menufitur1">
+            <div id="emptyMessage" class="empty-message"></div>
+            <div class="info-awal-message"></div>
+            <div class="suggestion-options" id="menufiturawal">
+              <button id="menu1">
+                <img src="images/icons_analyze.png" alt="Reset" class="icon" style="filter: brightness(0) invert(1)" />
+                Riset
+              </button>
+              <button id="menu2">
+                <img src="images/icons_graph.png" alt="Analiysiz" class="icon" style="filter: brightness(0) invert(1)" />
+                Analisis
+              </button>
+              <button id="menu3">
+                <img src="images/icons_jurn.png" alt="Jurnal" class="icon" style="filter: brightness(0) invert(1)" />
+                Buat Jurnal
+              </button>
+            </div>
+            <div class="suggestion-options" id="menufiturkedua">
+              <button id="menu4">
+                <img src="images/help.png" alt="Help" class="icon" />
+                Minta Bantuan
+              </button>
+              <button id="menu5">
+                <img src="images/icons_coding.png" alt="Code" class="icon" style="filter: brightness(0) invert(1)" />
+                Code
+              </button>
+            </div>
+          </div>
         </div>
 
         <form class="input-container" id="chatForm">
-          <textarea id="chatInput" placeholder="Type your message here..." rows="1" autocomplete="off" required></textarea>
+          <textarea id="chatInput" placeholder="Tanyakan apa saja" rows="1" autocomplete="off" required></textarea>
           <button type="submit" aria-label="Send message">
             <span class="material-icons">send</span>
           </button>
