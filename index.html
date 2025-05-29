@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
     <link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250316_191334.jpg?alt=media&token=afb5c73d-872f-4e27-ad76-13f4c2b4481a" type="image/png" />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
@@ -79,28 +80,41 @@
                 Analisis
               </button>
               <button id="menu3">
-                <img src="images/icons_jurn.png" alt="Jurnal" class="icon" style="filter: brightness(0) invert(1)" />
-                Buat Jurnal
+                <img src="images/icons_coding.png" alt="Code" class="icon" style="filter: brightness(0) invert(1)" />
+                Code
               </button>
             </div>
             <div class="suggestion-options" id="menufiturkedua">
               <button id="menu4">
                 <img src="images/help.png" alt="Help" class="icon" />
-                Minta Bantuan
+                Bantuan
               </button>
               <button id="menu5">
-                <img src="images/icons_coding.png" alt="Code" class="icon" style="filter: brightness(0) invert(1)" />
-                Code
+                <img src="images/icons_jurn.png" alt="Jurnal" class="icon" style="filter: brightness(0) invert(1)" />
+                Buat Jurnal
               </button>
             </div>
           </div>
         </div>
 
         <form class="input-container" id="chatForm">
+          <!-- PREVIEW FILE DI ATAS INPUT -->
+          <div id="preview" style="margin-bottom: 10px"></div>
+
           <textarea id="chatInput" placeholder="Tanyakan apa saja" rows="1" autocomplete="off" required></textarea>
-          <button type="submit" aria-label="Send message">
-            <span class="material-icons">send</span>
-          </button>
+
+          <div class="input-bawah-send">
+            <!-- Tombol Upload -->
+            <img src="images/upload.png" class="upload-file" alt="Send" id="uploadbtn" style="width: 35px; height: 35px; cursor: pointer" />
+
+            <!-- Input File Tersembunyi -->
+            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.doc,.docx,.ppt,.pptx,.pdf" style="display: none" />
+
+            <!-- Tombol Kirim -->
+            <button type="submit" aria-label="Send message">
+              <img src="images/up.png" alt="Send" style="width: 20px; height: 20px" />
+            </button>
+          </div>
         </form>
       </section>
     </div>
