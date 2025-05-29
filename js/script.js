@@ -356,7 +356,7 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
 }
 
 // Efek ketik pesan bot
-async function typeText(element, text, delay = 50) {
+async function typeText(element, text, delay = 20) {
   element.innerHTML = "";
   const html = parseMarkdown(text);
   const temp = document.createElement("div");
