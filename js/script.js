@@ -20,52 +20,137 @@ const menufiturkedua = document.getElementById("menufiturkedua");
 menufiturawal.style.display = "none";
 menufiturkedua.style.display = "none";
 
+const fileInput = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+
+// Klik gambar untuk buka dialog file
+document.getElementById("uploadbtn").addEventListener("click", () => {
+  fileInput.click();
+});
+
+// Saat file dipilih
+fileInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  preview.innerHTML = ""; // Hapus preview sebelumnya
+
+  const fileType = file.type;
+  const fileName = file.name;
+
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "relative";
+  wrapper.style.display = "inline-block";
+  wrapper.style.marginBottom = "5px";
+
+  // Tombol hapus (❌)
+  const closeBtn = document.createElement("span");
+  closeBtn.textContent = "❌";
+  closeBtn.style.position = "absolute";
+  closeBtn.style.top = "-5px";
+  closeBtn.style.right = "-5px";
+  closeBtn.style.cursor = "pointer";
+  closeBtn.style.backgroundColor = "#fff";
+  closeBtn.style.border = "1px solid #ccc";
+  closeBtn.style.borderRadius = "50%";
+  closeBtn.style.fontSize = "14px";
+  closeBtn.style.padding = "2px";
+
+  closeBtn.addEventListener("click", () => {
+    preview.innerHTML = "";
+    fileInput.value = ""; // Reset file input
+  });
+
+  // Tampilkan pratinjau
+  if (fileType.startsWith("image/")) {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.style.maxWidth = "150px";
+    img.style.borderRadius = "10px";
+    img.style.display = "block";
+    img.style.marginBottom = "5px";
+    wrapper.appendChild(img);
+  } else {
+    const fileText = document.createElement("div");
+    fileText.textContent = "📄 " + fileName;
+    fileText.style.padding = "8px";
+    fileText.style.backgroundColor = "#f0f0f0";
+    fileText.style.borderRadius = "5px";
+    fileText.style.display = "inline-block";
+    wrapper.appendChild(fileText);
+  }
+
+  wrapper.appendChild(closeBtn);
+  preview.appendChild(wrapper);
+});
+
+if (window.visualViewport) {
+  const inputContainer = document.querySelector(".input-container");
+
+  function adjustInputContainer() {
+    // visualViewport.height = tinggi viewport visible (tidak termasuk keyboard)
+    // window.innerHeight = tinggi viewport total (termasuk area keyboard)
+    // Kita set jarak bottom sesuai tinggi keyboard
+    const keyboardHeight = window.innerHeight - window.visualViewport.height;
+
+    if (keyboardHeight > 100) {
+      // Keyboard muncul
+      inputContainer.style.bottom = keyboardHeight + "px";
+    } else {
+      // Keyboard hilang
+      inputContainer.style.bottom = "0px";
+    }
+  }
+
+  window.visualViewport.addEventListener("resize", adjustInputContainer);
+  window.visualViewport.addEventListener("scroll", adjustInputContainer);
+
+  // Panggil sekali saat load
+  adjustInputContainer();
+} else {
+  // Fallback jika visualViewport tidak ada (lama atau desktop)
+  // Cukup set fixed di bawah viewport saja
+  // Bisa ditambahkan event resize untuk lebih canggih
+}
+
 const text = "Apakah ada yang bisa saya bantu?";
 let index = 0;
 
 function typeWriter() {
+  if (index === 0) {
+    // Tampilkan menufitur1 sekali saat mulai ketik
+    menufitur1.style.cssText = `
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      height: 100%;
+    `;
+  }
+
   if (index < text.length) {
     emptyMessage.textContent += text.charAt(index);
     index++;
-    setTimeout(typeWriter, 100); // 100ms per karakter
-    menufitur1.style.cssText = `
-    flex: 1;
-  display: flex;
-  flex-direction: column; /* Ubah jadi vertikal */
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  height: 100%;
-  `;
+    setTimeout(typeWriter, 100);
   } else {
     menufiturawal.style.display = "block";
     menufiturkedua.style.display = "block";
     menufiturawal.style.cssText = `
-     margin-top: 20px;
-  bottom: 1rem;
-  display: flex;
-  flex-direction: row; /* horizontal */
-  flex-wrap: wrap; /* pindah baris jika sempit */
-  gap: 1rem; /* jarak antar tombol */
-  align-items: center; /* vertikal tengah */
-  justify-content: center; /* bisa diganti center atau start */
-  padding: 0 1rem;
-  max-width: 100%;
-  box-sizing: border-box; /* agar padding tidak melebar */
-  `;
-    menufiturkedua.style.cssText = `
-     margin-top: 20px;
-  bottom: 1rem;
-  display: flex;
-  flex-direction: row; /* horizontal */
-  flex-wrap: wrap; /* pindah baris jika sempit */
-  gap: 1rem; /* jarak antar tombol */
-  align-items: center; /* vertikal tengah */
-  justify-content: center; /* bisa diganti center atau start */
-  padding: 0 1rem;
-  max-width: 100%;
-  box-sizing: border-box; /* agar padding tidak melebar */
-  `;
+      margin-top: 20px;
+      bottom: 1rem;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      padding: 0 1rem;
+      max-width: 100%;
+      box-sizing: border-box;
+    `;
+    menufiturkedua.style.cssText = menufiturawal.style.cssText;
   }
 }
 
@@ -99,7 +184,6 @@ chatInput.addEventListener("keydown", (e) => {
 // Load pesan dari localStorage saat halaman dibuka
 window.addEventListener("DOMContentLoaded", () => {
   loadMessagesFromStorage();
-  checkChatEmpty();
 });
 
 chatBox.addEventListener("scroll", () => {
@@ -208,7 +292,15 @@ function clearChat() {
 
 function checkChatEmpty() {
   const messageEls = chatBox.querySelectorAll(".message-container");
-  menufitur1.style.display = messageEls.length === 0 ? "block" : "none";
+
+  // Cek apakah ada pesan user/bot yang tampil
+  const hasMessages = messageEls.length > 0;
+
+  if (hasMessages) {
+    menufitur1.style.display = "none";
+  } else {
+    menufitur1.style.display = "flex"; // Atau "block" sesuai kebutuhan
+  }
 }
 
 // Fungsi tambah pesan ke UI
