@@ -11,6 +11,8 @@ const emptyMessage = document.getElementById("emptyMessage");
 let messages = [];
 let isLoading = false;
 let autoScrollEnabled = true;
+let teksgambar1 = ""; // Menyimpan hasil teks dari OCR
+let previewImageURL = "";
 
 // Pastikan elemen sudah dideklarasikan
 const menufitur1 = document.getElementById("menufitur1");
@@ -22,18 +24,11 @@ menufiturkedua.style.display = "none";
 
 const fileInput = document.getElementById("fileInput");
 const preview = document.getElementById("preview");
+const chatContainer = document.querySelector("section.chat-container");
+const uploadBtn = document.getElementById("uploadbtn");
 
-// Klik gambar untuk buka dialog file
-document.getElementById("uploadbtn").addEventListener("click", () => {
-  fileInput.click();
-});
-
-// Saat file dipilih
-fileInput.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  preview.innerHTML = ""; // Hapus preview sebelumnya
+function showPreview(file) {
+  preview.innerHTML = ""; // Reset preview
 
   const fileType = file.type;
   const fileName = file.name;
@@ -43,9 +38,10 @@ fileInput.addEventListener("change", (event) => {
   wrapper.style.display = "inline-block";
   wrapper.style.marginBottom = "5px";
 
-  // Tombol hapus (❌)
-  const closeBtn = document.createElement("span");
-  closeBtn.textContent = "❌";
+  // Tombol hapus (ikon silang)
+  const closeBtn = document.createElement("img");
+  closeBtn.src = "images/close.png"; // Ganti path sesuai asetmu
+  closeBtn.alt = "Hapus";
   closeBtn.style.position = "absolute";
   closeBtn.style.top = "-5px";
   closeBtn.style.right = "-5px";
@@ -53,24 +49,48 @@ fileInput.addEventListener("change", (event) => {
   closeBtn.style.backgroundColor = "#fff";
   closeBtn.style.border = "1px solid #ccc";
   closeBtn.style.borderRadius = "50%";
-  closeBtn.style.fontSize = "14px";
+  closeBtn.style.width = "16px";
+  closeBtn.style.height = "16px";
   closeBtn.style.padding = "2px";
 
   closeBtn.addEventListener("click", () => {
     preview.innerHTML = "";
-    fileInput.value = ""; // Reset file input
+    fileInput.value = "";
+    teksgambar1 = ""; // Reset hasil OCR
   });
 
-  // Tampilkan pratinjau
   if (fileType.startsWith("image/")) {
+    const objectURL = URL.createObjectURL(file);
     const img = document.createElement("img");
-    img.src = URL.createObjectURL(file);
+    img.src = objectURL;
     img.style.maxWidth = "150px";
     img.style.borderRadius = "10px";
     img.style.display = "block";
     img.style.marginBottom = "5px";
     wrapper.appendChild(img);
+
+    // Tambahkan placeholder teks hasil OCR
+    const resultText = document.createElement("p");
+    resultText.textContent = "🔍 Sedang mengenali teks...";
+    resultText.style.fontSize = "14px";
+    resultText.style.fontStyle = "italic";
+    resultText.style.marginTop = "5px";
+    wrapper.appendChild(resultText);
+
+    // Proses OCR
+    Tesseract.recognize(objectURL, "eng", {
+      logger: (m) => console.log(m), // opsional: log progress
+    })
+      .then(({ data: { text } }) => {
+        teksgambar1 = text.trim(); // Simpan ke variabel global
+        resultText.textContent = teksgambar1 || "[Tidak ada teks terdeteksi]";
+      })
+      .catch((err) => {
+        console.error("OCR gagal:", err);
+        resultText.textContent = "[Gagal mengenali teks]";
+      });
   } else {
+    // Untuk file non-gambar
     const fileText = document.createElement("div");
     fileText.textContent = "📄 " + fileName;
     fileText.style.padding = "8px";
@@ -82,6 +102,43 @@ fileInput.addEventListener("change", (event) => {
 
   wrapper.appendChild(closeBtn);
   preview.appendChild(wrapper);
+}
+
+// Klik ikon upload untuk buka dialog file
+uploadBtn.addEventListener("click", () => {
+  fileInput.click();
+});
+
+// Saat file dipilih dari dialog
+fileInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  showPreview(file);
+});
+
+// Drag & Drop di seluruh section.chat-container
+chatContainer.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  chatContainer.style.border = "2px dashed #007bff";
+  chatContainer.style.backgroundColor = "#e9f5ff";
+});
+
+chatContainer.addEventListener("dragleave", (e) => {
+  e.preventDefault();
+  chatContainer.style.border = "";
+  chatContainer.style.backgroundColor = "";
+});
+
+chatContainer.addEventListener("drop", (e) => {
+  e.preventDefault();
+  chatContainer.style.border = "";
+  chatContainer.style.backgroundColor = "";
+
+  if (e.dataTransfer.files.length > 0) {
+    const file = e.dataTransfer.files[0];
+    fileInput.files = e.dataTransfer.files;
+    showPreview(file);
+  }
 });
 
 if (window.visualViewport) {
@@ -195,16 +252,29 @@ chatBox.addEventListener("scroll", () => {
 // Submit form chat
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const text = chatInput.value.trim();
-  if (!text || isLoading) return;
+  const userText = chatInput.value.trim();
+  if ((!userText && !teksgambar1) || isLoading) return;
 
-  // Tambahkan pesan user ke chatBox dan array messages
-  appendMessage("user", text, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png");
-  messages.push({ role: "user", content: text });
+  let combinedText = userText;
+
+  if (teksgambar1.trim() !== "") {
+    combinedText += `\n\n[📷 Teks dari gambar]:\n${teksgambar1.trim()}`;
+    
+  }
+
+  appendMessage("user", combinedText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png");
+  messages.push({ role: "user", content: combinedText });
   saveMessagesToStorage();
 
+  // Reset input dan status
   chatInput.value = "";
   chatInput.style.height = "auto";
+
+  // **Reset teks hasil OCR dan hilangkan preview gambar**
+  teksgambar1 = "";
+  preview.innerHTML = ""; // Hilangkan preview gambar
+  fileInput.value = ""; // Reset file input supaya bisa upload ulang file yang sama
+
   chatInput.disabled = true;
   isLoading = true;
 
