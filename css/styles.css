@@ -32,7 +32,7 @@ html {
 }
 
 body {
-  font-family: "Roboto", Arial, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   margin: 0;
   padding: 0;
   background-color: #121212; /* Dark background */
@@ -389,12 +389,16 @@ code {
 
 .input-container {
   display: flex;
-  align-items: flex-start; /* Changed to flex-start for textarea alignment */
-  justify-content: center;
+  flex-direction: column; /* membuat layout vertikal */
+  align-items: flex-start; /* posisikan item ke kiri */
+  justify-content: center; /* vertikal center jika di dalam container tinggi */
   width: 100%;
-  max-width: 500px;
+  max-width: 700px;
   margin: 0 auto;
-  padding: 12px 16px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   border-top: 1px solid #333;
   background: #1f1f1f;
   border-radius: 25px;
@@ -403,7 +407,10 @@ code {
 
 .input-container textarea {
   flex: 5;
-  padding: 12px 16px;
+  padding-bottom: 4px;
+  padding-top: 6px;
+  padding-right: 14px;
+  padding-left: 14px;
   font-size: 16px;
   border: 1px solid #1f1f1f;
   border-radius: 20px;
@@ -417,6 +424,7 @@ code {
   line-height: 24px;
   overflow-y: auto;
   font-family: "Roboto", Arial, sans-serif;
+  width: 100%;
 }
 
 .input-container textarea::placeholder {
@@ -428,17 +436,40 @@ code {
   background-color: #1f1f1f;
 }
 
-.input-container button {
-  margin-left: 12px;
-  background-color: #474748;
+.input-bawah-send {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 6px;
+}
+
+.input-bawah-send button {
+  margin-right: 8px; /* Ganti dari margin-left ke margin-right */
+  margin-bottom: 6px;
+  background-color: #b5b5b5;
   border: none;
   border-radius: 50%;
-  padding: 10px;
+  padding: 5px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; /* Tengah dalam tombol */
   transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.upload-file {
+  margin-left: 4px;
+  margin-bottom: 6px;
+  border: none;
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Tengah dalam tombol */
   flex-shrink: 0;
 }
 
