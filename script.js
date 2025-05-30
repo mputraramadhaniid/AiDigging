@@ -338,7 +338,7 @@ function loadMessagesFromStorage() {
 clearChatBtn.addEventListener("click", clearChat);
 clearChatBtnn.addEventListener("click", clearChat);
 
-function clearChat() {
+function clearChat() { 
   if (confirm("Hapus semua chat?")) {
     messages = [];
     localStorage.removeItem("chatHistory");
@@ -347,10 +347,11 @@ function clearChat() {
     chatInput.style.height = "auto";
     checkChatEmpty(); // Tambahkan pengecekan chat kosong
 
-    // Refresh halaman setelah menghapus
-    location.reload();
+    // Redirect ke URL utama
+    window.location.href = "https://ai-digging.vercel.app/";
   }
 }
+
 
 function checkChatEmpty() {
   const messageEls = chatBox.querySelectorAll(".message-container");
