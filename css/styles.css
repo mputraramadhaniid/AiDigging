@@ -187,6 +187,7 @@ body {
   padding: 20px;
   background-color: #121212;
   scroll-behavior: smooth;
+  height: 100%;
 }
 
 .containermenu {
