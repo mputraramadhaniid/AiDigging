@@ -297,7 +297,7 @@ chatForm.addEventListener("submit", async (e) => {
   } finally {
     isLoading = false;
     chatInput.disabled = false;
-    chatInput.focus();
+    
   }
 });
 
