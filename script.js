@@ -338,19 +338,22 @@ function loadMessagesFromStorage() {
 clearChatBtn.addEventListener("click", clearChat);
 clearChatBtnn.addEventListener("click", clearChat);
 
-function clearChat() { 
-  if (confirm("Hapus semua chat?")) {
-    messages = [];
-    localStorage.removeItem("chatHistory");
-    chatBox.innerHTML = "";
-    chatInput.value = "";
-    chatInput.style.height = "auto";
-    checkChatEmpty(); // Tambahkan pengecekan chat kosong
+function clearChat() {
+      if (confirm("Hapus semua chat?")) {
+        console.log("Menghapus chat...");
+        messages = [];
+        localStorage.removeItem("chatHistory");
+        chatBox.innerHTML = "";
+        chatInput.value = "";
+        chatInput.style.height = "auto";
+        checkChatEmpty();
 
-    // Redirect ke URL utama
-    window.location.href = "https://ai-digging.vercel.app/";
-  }
-}
+        // Tambahkan delay sedikit sebelum refresh
+        setTimeout(() => {
+          window.location.href = "https://ai-digging.vercel.app/";
+        }, 500); // 500 ms delay
+      }
+    }
 
 
 function checkChatEmpty() {
