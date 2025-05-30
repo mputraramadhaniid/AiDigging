@@ -31,16 +31,11 @@ html {
   box-sizing: border-box;
 }
 
-body {
-  font-family: "Inter", system-ui, sans-serif;
+html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
-  background-color: #121212; /* Dark background */
-  color: #e0e0e0; /* Light text */
-  height: 10vh;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 
