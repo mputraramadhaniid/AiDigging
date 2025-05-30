@@ -37,11 +37,11 @@ body {
   padding: 0;
   background-color: #121212; /* Dark background */
   color: #e0e0e0; /* Light text */
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100dvh; /* Lebih stabil di Android/iOS modern */
   display: flex;
   flex-direction: column;
 }
+
 
 .copy-btn img {
   vertical-align: middle;
