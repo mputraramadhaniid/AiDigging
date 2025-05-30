@@ -37,7 +37,7 @@ body {
   padding: 0;
   background-color: #121212; /* Dark background */
   color: #e0e0e0; /* Light text */
-  height: 100%;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
