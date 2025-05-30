@@ -264,8 +264,10 @@ chatForm.addEventListener("submit", async (e) => {
   preview.innerHTML = ""; // Hilangkan preview gambar
   fileInput.value = ""; // Reset file input supaya bisa upload ulang file yang sama
 
-  chatInput.disabled = true;
-  isLoading = true;
+  // Reset input dan status
+  chatInput.value = "";
+  chatInput.style.height = "auto";
+  chatInput.blur(); // 👉 Mencegah keyboard muncul saat AI merespons
 
   appendLoadingMessage();
 
@@ -297,7 +299,6 @@ chatForm.addEventListener("submit", async (e) => {
   } finally {
     isLoading = false;
     chatInput.disabled = false;
-    
   }
 });
 
@@ -339,22 +340,18 @@ clearChatBtn.addEventListener("click", clearChat);
 clearChatBtnn.addEventListener("click", clearChat);
 
 function clearChat() {
-      if (confirm("Hapus semua chat?")) {
-        console.log("Menghapus chat...");
-        messages = [];
-        localStorage.removeItem("chatHistory");
-        chatBox.innerHTML = "";
-        chatInput.value = "";
-        chatInput.style.height = "auto";
-        checkChatEmpty();
+  if (confirm("Hapus semua chat?")) {
+    messages = [];
+    localStorage.removeItem("chatHistory");
+    chatBox.innerHTML = "";
+    chatInput.value = "";
+    chatInput.style.height = "auto";
+    checkChatEmpty(); // Tambahkan pengecekan chat kosong
 
-        // Tambahkan delay sedikit sebelum refresh
-        setTimeout(() => {
-          window.location.href = "https://ai-digging.vercel.app/";
-        }, 500); // 500 ms delay
-      }
-    }
-
+    // Refresh halaman setelah menghapus
+    location.reload();
+  }
+}
 
 function checkChatEmpty() {
   const messageEls = chatBox.querySelectorAll(".message-container");
