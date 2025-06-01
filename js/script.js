@@ -38,9 +38,8 @@ function showPreview(file) {
   wrapper.style.display = "inline-block";
   wrapper.style.marginBottom = "5px";
 
-  // Tombol hapus (ikon silang)
   const closeBtn = document.createElement("img");
-  closeBtn.src = "images/close.png"; // Ganti path sesuai asetmu
+  closeBtn.src = "images/close.png";
   closeBtn.alt = "Hapus";
   closeBtn.style.position = "absolute";
   closeBtn.style.top = "-5px";
@@ -56,31 +55,49 @@ function showPreview(file) {
   closeBtn.addEventListener("click", () => {
     preview.innerHTML = "";
     fileInput.value = "";
-    teksgambar1 = ""; // Reset hasil OCR
+    teksgambar1 = "";
+    previewImageURL = "";
+    localStorage.removeItem("previewImage");
+    localStorage.removeItem("ocrText");
   });
 
   if (fileType.startsWith("image/")) {
-    const objectURL = URL.createObjectURL(file);
-    const img = document.createElement("img");
-    img.src = objectURL;
-    img.style.maxWidth = "150px";
-    img.style.borderRadius = "10px";
-    img.style.display = "block";
-    img.style.marginBottom = "5px";
-    wrapper.appendChild(img);
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const dataURL = e.target.result;
 
-    // Proses OCR tapi hasilnya tidak ditampilkan di UI
-    Tesseract.recognize(objectURL, "eng", {
-      logger: (m) => console.log(m), // opsional: log progress
-    })
-      .then(({ data: { text } }) => {
-        teksgambar1 = text.trim(); // Simpan ke variabel global tanpa tampilkan
+      const img = document.createElement("img");
+      img.src = dataURL;
+      img.style.maxWidth = "150px";
+      img.style.borderRadius = "10px";
+      img.style.display = "block";
+      img.style.marginBottom = "5px";
+      wrapper.appendChild(img);
+
+      preview.appendChild(wrapper);
+      wrapper.appendChild(closeBtn);
+
+      previewImageURL = dataURL; // Simpan untuk penggunaan selanjutnya
+
+      // Simpan gambar di localStorage
+      localStorage.setItem("previewImage", dataURL);
+
+      // Proses OCR dengan Tesseract menggunakan dataURL
+      Tesseract.recognize(dataURL, "eng", {
+        logger: (m) => console.log(m),
       })
-      .catch((err) => {
-        console.error("OCR gagal:", err);
-      });
+        .then(({ data: { text } }) => {
+          teksgambar1 = text.trim();
+          localStorage.setItem("ocrText", teksgambar1); // Simpan OCR ke localStorage
+        })
+        .catch((err) => {
+          console.error("OCR gagal:", err);
+          teksgambar1 = "";
+          localStorage.removeItem("ocrText");
+        });
+    };
+    reader.readAsDataURL(file);
   } else {
-    // Untuk file non-gambar
     const fileText = document.createElement("div");
     fileText.textContent = "📄 " + fileName;
     fileText.style.padding = "8px";
@@ -88,10 +105,9 @@ function showPreview(file) {
     fileText.style.borderRadius = "5px";
     fileText.style.display = "inline-block";
     wrapper.appendChild(fileText);
+    wrapper.appendChild(closeBtn);
+    preview.appendChild(wrapper);
   }
-
-  wrapper.appendChild(closeBtn);
-  preview.appendChild(wrapper);
 }
 
 // Klik ikon upload untuk buka dialog file
@@ -245,25 +261,37 @@ chatForm.addEventListener("submit", async (e) => {
   const userText = chatInput.value.trim();
   if ((!userText && !teksgambar1) || isLoading) return;
 
-  let combinedText = userText;
-
+  // Gabungkan teks untuk dikirim ke server
+  let combinedTextForServer = userText;
   if (teksgambar1.trim() !== "") {
-    combinedText += `\n\n[📷 Teks dari gambar]:\n${teksgambar1.trim()}`;
+    combinedTextForServer += `\n\n[📷 Teks dari gambar]:\n${teksgambar1.trim()}`;
   }
 
-  appendMessage("user", combinedText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png");
-  messages.push({ role: "user", content: combinedText });
+  let imageURL = "";
+  const imgElem = preview.querySelector("img");
+  if (imgElem) {
+    imageURL = imgElem.src;
+  }
+
+  // Tampilkan di UI hanya userText + gambar, tanpa teksgambar1
+  appendMessage("user", userText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", imageURL);
+
+  // Simpan ke messages dengan properti ocrText, nanti dikirim gabungan
+  messages.push({
+    role: "user",
+    content: combinedTextForServer, // gabungan userText + teksgambar1, ini yang dikirim ke server
+    ocrText: teksgambar1.trim(), // simpan terpisah jika perlu
+    imageURL: imageURL,
+  });
   saveMessagesToStorage();
 
-  // Reset input dan status
+  // Reset UI input dan preview
   chatInput.value = "";
   chatInput.style.height = "auto";
-  chatInput.blur(); // 👉 Mencegah keyboard muncul saat AI merespons
-
-  // **Reset teks hasil OCR dan hilangkan preview gambar**
+  chatInput.blur();
   teksgambar1 = "";
-  preview.innerHTML = ""; // Hilangkan preview gambar
-  fileInput.value = ""; // Reset file input supaya bisa upload ulang file yang sama
+  preview.innerHTML = "";
+  fileInput.value = "";
 
   appendLoadingMessage();
 
@@ -277,7 +305,10 @@ chatForm.addEventListener("submit", async (e) => {
       body: JSON.stringify({
         model: "gpt-4",
         temperature: 0.7,
-        messages: messages,
+        messages: messages.map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        })),
       }),
     });
 
@@ -289,6 +320,7 @@ chatForm.addEventListener("submit", async (e) => {
     removeLoadingMessage();
 
     appendMessage("bot", botReply, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
+
     messages.push({ role: "assistant", content: botReply });
     saveMessagesToStorage();
   } catch (err) {
@@ -309,7 +341,6 @@ function saveMessagesToStorage() {
   }
 }
 
-// Load pesan dari localStorage dan tampilkan
 function loadMessagesFromStorage() {
   try {
     const stored = localStorage.getItem("chatHistory");
@@ -323,11 +354,22 @@ function loadMessagesFromStorage() {
       const profileUrl =
         role === "user" ? "https://cdn-icons-png.flaticon.com/512/1077/1077114.png" : "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f";
 
-      appendMessage(role, msg.content, username, profileUrl, true);
+      // ✂️ Hapus bagian teks OCR saat menampilkan ulang pesan user
+      let displayContent = msg.content;
+
+      if (role === "user") {
+        // Jika ada teks OCR, hapus dari tampilan (hanya hapus untuk tampilan, bukan data aslinya)
+        const ocrMarker = "\n\n[📷 Teks dari gambar]:";
+        if (displayContent.includes(ocrMarker)) {
+          displayContent = displayContent.split(ocrMarker)[0];
+        }
+      }
+
+      appendMessage(role, displayContent, username, profileUrl, true, msg.imageURL || "");
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
-    checkChatEmpty(); // ⬅ Tambahkan ini
+    checkChatEmpty();
   } catch (e) {
     console.error("Gagal load pesan dari localStorage", e);
   }
@@ -411,7 +453,19 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
       checkChatEmpty();
     });
   } else {
-    messageEl.innerHTML = parseMarkdown(text);
+    if (sender === "user" && previewImageURL) {
+      const img = document.createElement("img");
+      img.src = previewImageURL;
+      img.style.maxWidth = "200px";
+      img.style.borderRadius = "10px";
+      img.style.marginBottom = "10px";
+      messageEl.appendChild(img);
+    }
+
+    const textDiv = document.createElement("div");
+    textDiv.innerHTML = parseMarkdown(text);
+    messageEl.appendChild(textDiv);
+
     addCopyButtonsToCodeBlocks(messageEl, username); // Tetap beri tombol salin
     if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
     checkChatEmpty();
@@ -587,6 +641,20 @@ function addCopyButtonsToCodeBlocks(container, username = "AI Digging") {
         }, 1500);
       });
     };
+
+    // ✅ Tambahkan gambar jika ada (dan belum masuk ke content)
+    if (imageURL && !content.includes(imageURL)) {
+      html += `<img src="${imageURL}" style="max-width: 200px; border-radius: 10px; margin-top: 10px;" />`;
+    }
+
+    // ✅ Render ulang hanya untuk message baru
+    renderMathInElement(messageElement, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "\\[", right: "\\]", display: true },
+        { left: "\\(", right: "\\)", display: false },
+      ],
+    });
 
     toolbar.appendChild(label);
     toolbar.appendChild(copyBtn);
