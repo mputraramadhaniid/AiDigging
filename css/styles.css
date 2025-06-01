@@ -43,7 +43,6 @@ body {
   flex-direction: column;
 }
 
-
 .copy-btn img {
   vertical-align: middle;
 }
@@ -750,16 +749,16 @@ code.inline-code {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   body {
-  font-family: "Inter", system-ui, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #121212; /* Dark background */
-  color: #e0e0e0; /* Light text */
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
+    font-family: "Inter", system-ui, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text */
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
   .chat-container {
     height: calc(100vh - 50px); /* Mengatur tinggi chat-container */
   }

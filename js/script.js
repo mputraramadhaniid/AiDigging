@@ -110,6 +110,11 @@ function showPreview(file) {
   }
 }
 
+document.getElementById("menu4").addEventListener("click", function () {
+  // Ganti URL berikut dengan halaman tujuanmu
+  window.location.href = "voice.html";
+});
+
 // Klik ikon upload untuk buka dialog file
 uploadBtn.addEventListener("click", () => {
   fileInput.click();
