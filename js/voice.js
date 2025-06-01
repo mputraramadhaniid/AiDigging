@@ -2,68 +2,131 @@ const startBtn = document.getElementById("startBtn");
 const exitBtn = document.getElementById("exitBtn");
 const visualizer = document.getElementById("voiceVisualizer");
 
-// Aura lingkaran
-const auraDiv = document.createElement("div");
-auraDiv.style.position = "absolute";
-auraDiv.style.top = "-25px";
-auraDiv.style.left = "-25px";
-auraDiv.style.width = "200px";
-auraDiv.style.height = "200px";
-auraDiv.style.borderRadius = "50%";
-auraDiv.style.background = `
-        conic-gradient(
-          from 0deg,
-          rgba(255,0,0,0.3),
-          rgba(255,154,0,0.3),
-          rgba(208,222,33,0.3),
-          rgba(79,220,74,0.3),
-          rgba(63,218,216,0.3),
-          rgba(47,201,226,0.3),
-          rgba(28,127,238,0.3),
-          rgba(95,21,242,0.3),
-          rgba(186,12,248,0.3),
-          rgba(251,7,217,0.3),
-          rgba(255,0,0,0.3)
-        )
-      `;
-auraDiv.style.filter = "blur(25px)";
-auraDiv.style.pointerEvents = "none";
-auraDiv.style.zIndex = "-1";
-auraDiv.style.animation = "spin 8s linear infinite";
-auraDiv.style.animationPlayState = "paused";
-visualizer.appendChild(auraDiv);
+// Bersihkan isi visualizer dulu supaya aura tidak numpuk
+visualizer.innerHTML = "";
+
+// Aura putih lembut (background lingkaran)
+const auraWhite = document.createElement("div");
+auraWhite.style.position = "absolute";
+auraWhite.style.top = "-6px"; // makin dekat ke tengah
+auraWhite.style.left = "-6px";
+auraWhite.style.width = "140px"; // ukuran lebih kecil
+auraWhite.style.height = "140px";
+auraWhite.style.borderRadius = "50%";
+auraWhite.style.background = "rgba(224, 229, 234, 0.6)"; // putih soft, transparansi lebih tinggi
+auraWhite.style.filter = "blur(8px)"; // blur tipis banget
+auraWhite.style.pointerEvents = "none";
+auraWhite.style.zIndex = "-1";
+auraWhite.style.animation = "moveCloudWhite 8s ease-in-out infinite";
+visualizer.appendChild(auraWhite);
+
+// Aura biru lembut (awan) yang akan kita kontrol ukurannya juga
+const auraBlue = document.createElement("div");
+auraBlue.style.position = "absolute";
+auraBlue.style.top = "-4px"; // posisi rapat ke lingkaran
+auraBlue.style.left = "25px";
+auraBlue.style.width = "100px"; // ukuran default
+auraBlue.style.height = "100px";
+auraBlue.style.borderRadius = "50%";
+auraBlue.style.background = "rgba(0, 170, 255, 0.5)"; // biru lebih transparan
+auraBlue.style.filter = "blur(6px)"; // blur tipis
+auraBlue.style.pointerEvents = "none";
+auraBlue.style.zIndex = "-1";
+auraBlue.style.animation = "moveCloudBlue 6s ease-in-out infinite";
+visualizer.appendChild(auraBlue);
+
+// Tambahkan CSS dinamis untuk animasi awan
+const style = document.createElement("style");
+style.textContent = `
+@keyframes moveCloudWhite {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(12px, 6px); }
+}
+@keyframes moveCloudBlue {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-10px, -8px); }
+}
+`;
+document.head.appendChild(style);
+
+// Fungsi loading start button
+function setStartButtonLoading(isLoading) {
+  if (isLoading) {
+    startBtn.classList.add("loading");
+    startBtn.disabled = true;
+    startBtn.style.opacity = 0.6;
+    startBtn.style.cursor = "not-allowed";
+  } else {
+    startBtn.classList.remove("loading");
+    startBtn.disabled = false;
+    startBtn.style.opacity = 1;
+    startBtn.style.cursor = "pointer";
+  }
+}
 
 const synth = window.speechSynthesis;
-
 function speak(text) {
-  if (synth.speaking) {
-    console.warn("SpeechSynthesis sedang berbicara");
-    return;
-  }
+  if (synth.speaking) return;
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = "id-ID";
   const voices = synth.getVoices();
-  const indoVoice = voices.find((v) => v.lang === "id-ID");
-  if (indoVoice) utter.voice = indoVoice;
+  const maleVoice = voices.find((v) => v.lang === "id-ID" && v.name.toLowerCase().includes("dimas")) || voices.find((v) => v.lang === "id-ID");
+  if (maleVoice) utter.voice = maleVoice;
 
+  // Setup AudioContext dan Analyser untuk memantau volume/nada
+  let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  let analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 256;
+
+  // Source dummy, karena kita tidak bisa langsung menghubungkan TTS ke AudioContext,
+  // kita pakai interval untuk simulasi perubahan volume secara acak sebagai contoh
+  // (Kalau punya source audio real, bisa sambungkan langsung)
+
+  // Mulai animasi aura saat speak
   utter.onstart = () => {
-    auraDiv.style.animationPlayState = "running";
+    auraWhite.style.animationPlayState = "running";
+    auraBlue.style.animationPlayState = "running";
     visualizer.style.transform = "scale(1)";
+
+    let angle = 0; // sudut dalam radian
+    window.volumeAnim = setInterval(() => {
+      // Simulasi volume random 50-200 (bisa disesuaikan)
+      const volume = 50 + Math.random() * 150;
+
+      // Skala berdasarkan volume, maksimal 1.3
+      let scale = volume > 100 ? 1 + (volume - 100) / 300 : 1;
+      if (scale > 1.3) scale = 1.3;
+
+      // Gerakan lingkaran radius 8px horizontal, 5px vertical
+      const radiusX = 8;
+      const radiusY = 5;
+      const x = Math.cos(angle) * radiusX;
+      const y = Math.sin(angle) * radiusY;
+
+      auraBlue.style.transform = `translate(${x}px, ${y}px) scale(${scale.toFixed(3)})`;
+
+      // Tambah sudut (kecepatan gerak)
+      angle += 0.15; // bisa diubah (semakin besar, semakin cepat)
+
+      // Jangan biarkan angle makin besar terus (agar stabil)
+      if (angle > Math.PI * 2) angle -= Math.PI * 2;
+    }, 50); // update tiap 50ms
   };
 
   utter.onend = () => {
-    auraDiv.style.animationPlayState = "paused";
+    auraWhite.style.animationPlayState = "paused";
+    auraBlue.style.animationPlayState = "paused";
     visualizer.style.transform = "scale(1)";
+    auraBlue.style.transform = "translate(0, 0) scale(1)";
+
+    clearInterval(window.volumeAnim);
+    setStartButtonLoading(false);
   };
 
+  // optional onboundary to reset scale, kalau mau
   utter.onboundary = (event) => {
     if (event.name === "word") {
-      // Simulasi suara keras (acak), bisa diganti dengan deteksi amplitudo
-      const scaleLevel = Math.random() < 0.3 ? 1.2 : 1.05;
-      visualizer.style.transform = `scale(${scaleLevel})`;
-      setTimeout(() => {
-        visualizer.style.transform = "scale(1)";
-      }, 200);
+      // Bisa dikosongkan atau isi untuk efek tambahan
     }
   };
 
@@ -72,7 +135,7 @@ function speak(text) {
 
 async function sendToAI(userInput) {
   function cleanText(text) {
-    return text.replace(/[^a-zA-Z0-9 ,.\n]/g, "");
+    return text.replace(/[^a-zA-Z0-9 ,\.\n]/g, "");
   }
   try {
     const messages = [{ role: "user", content: userInput }];
@@ -85,33 +148,21 @@ async function sendToAI(userInput) {
       body: JSON.stringify({
         model: "gpt-4",
         temperature: 0.7,
-        messages: messages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
+        messages,
       }),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`API response error ${response.status}: ${errorData.error.message || "Unknown error"}`);
-    }
-
     const data = await response.json();
-    const aiReplyRaw = data.choices[0].message.content.trim();
-    const aiReply = cleanText(aiReplyRaw);
-
+    const aiReply = cleanText(data.choices[0].message.content.trim());
     speak(aiReply);
-  } catch (error) {
-    console.error("Gagal panggil API:", error);
-    speak("Maaf, terjadi kesalahan saat memproses permintaan.");
+  } catch (err) {
+    console.error(err);
+    speak("Maaf, terjadi kesalahan.");
   }
 }
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-if (!SpeechRecognition) {
-  alert("Browser Anda tidak mendukung Speech Recognition API");
-} else {
+if (SpeechRecognition) {
   const recognition = new SpeechRecognition();
   recognition.lang = "id-ID";
   recognition.interimResults = false;
@@ -119,25 +170,24 @@ if (!SpeechRecognition) {
 
   startBtn.onclick = () => {
     recognition.start();
-    startBtn.disabled = true;
-    startBtn.style.background = "rgba(128, 128, 128, 0.7)";
+    setStartButtonLoading(true);
   };
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript.trim();
-    console.log("Hasil rekaman suara:", transcript);
     sendToAI(transcript);
   };
 
-  recognition.onerror = (event) => {
-    console.error("Speech recognition error:", event.error);
-    speak("Maaf, tidak dapat mengenali suara Anda.");
+  recognition.onerror = () => {
+    speak("Maaf, tidak bisa mengenali suara Anda.");
+    setStartButtonLoading(false);
   };
 
   recognition.onend = () => {
-    startBtn.disabled = false;
-    startBtn.style.background = "rgba(128, 128, 128, 0.4)";
+    // tombol tetap loading sampai TTS selesai
   };
+} else {
+  alert("Browser Anda tidak mendukung Speech Recognition API");
 }
 
 exitBtn.onclick = () => {

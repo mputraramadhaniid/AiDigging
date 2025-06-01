@@ -8,6 +8,7 @@ body {
   height: 100vh;
   position: relative;
 }
+
 #title {
   position: fixed;
   top: 20px;
@@ -19,6 +20,7 @@ body {
   user-select: none;
   z-index: 20;
 }
+
 #centerContainer {
   height: 100vh;
   display: flex;
@@ -32,14 +34,63 @@ body {
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: #00aaff;
+  background: #e0e5ea; /* dasar putih abu */
   overflow: visible;
-  transform-origin: center;
-  transition: transform 0.2s ease-out;
   box-shadow: 0 0 20px 5px rgba(0, 170, 255, 0.6);
-  z-index: 2;
   margin-bottom: 100px;
 }
+
+/* Buat awan putih dan biru sebagai elemen terpisah */
+#voiceVisualizer::before,
+#voiceVisualizer::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.6;
+  filter: blur(15px);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#voiceVisualizer::before {
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.8);
+  top: 20px;
+  left: 10px;
+  animation-name: moveCloudWhite;
+  animation-duration: 6s;
+}
+
+#voiceVisualizer::after {
+  width: 90px;
+  height: 90px;
+  background: rgba(0, 170, 255, 0.7);
+  bottom: 25px;
+  right: 20px;
+  animation-name: moveCloudBlue;
+  animation-duration: 5s;
+}
+
+@keyframes moveCloudWhite {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(10px, 5px);
+  }
+}
+
+@keyframes moveCloudBlue {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-8px, -6px);
+  }
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -48,6 +99,7 @@ body {
     transform: rotate(360deg);
   }
 }
+
 .button-container {
   position: fixed;
   bottom: 20px;
@@ -60,6 +112,7 @@ body {
   pointer-events: auto;
   z-index: 10;
 }
+
 button {
   width: 60px;
   height: 60px;
@@ -73,15 +126,34 @@ button {
   transition: background-color 0.3s ease;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
 }
+
 button:hover {
   background: rgba(128, 128, 128, 0.7);
 }
+
 svg {
   width: 28px;
   height: 28px;
   fill: white;
 }
 
+/* Spinner saat loading */
+#startBtn.loading svg {
+  display: none;
+}
+
+#startBtn.loading::after {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid white;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Responsif untuk mobile */
 @media (max-width: 768px) {
   body {
     font-size: 1.8rem;
