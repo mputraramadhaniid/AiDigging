@@ -13,7 +13,7 @@ body {
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 24px;
+  font-size: 2rem;
   font-weight: 700;
   color: #ffffff;
   user-select: none;
@@ -80,4 +80,90 @@ svg {
   width: 28px;
   height: 28px;
   fill: white;
+}
+
+@media (max-width: 768px) {
+  body {
+    margin: 0;
+    padding: 0;
+    background: #121212;
+    font-family: "Inter", system-ui, sans-serif;
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+    position: relative;
+  }
+  #title {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    user-select: none;
+    z-index: 20;
+  }
+  #centerContainer {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 70px;
+    box-sizing: border-box;
+  }
+  #voiceVisualizer {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: #00aaff;
+    overflow: visible;
+    transform-origin: center;
+    transition: transform 0.2s ease-out;
+    box-shadow: 0 0 20px 5px rgba(0, 170, 255, 0.6);
+    z-index: 2;
+    margin-bottom: 100px;
+  }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .button-container {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    pointer-events: auto;
+    z-index: 10;
+  }
+  button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(128, 128, 128, 0.4);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+  }
+  button:hover {
+    background: rgba(128, 128, 128, 0.7);
+  }
+  svg {
+    width: 28px;
+    height: 28px;
+    fill: white;
+  }
 }
