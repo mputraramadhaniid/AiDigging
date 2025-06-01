@@ -1,3 +1,4 @@
+/* Global reset & layout */
 body {
   margin: 0;
   padding: 0;
@@ -5,9 +6,11 @@ body {
   font-family: "Inter", system-ui, sans-serif;
   color: white;
   overflow: hidden;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
 }
+
+/* Title */
 #title {
   position: fixed;
   top: 20px;
@@ -18,36 +21,35 @@ body {
   color: #ffffff;
   user-select: none;
   z-index: 20;
+  text-align: center;
+  padding: 0 10px;
 }
+
+/* Container center */
 #centerContainer {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 70px;
+  padding-top: 100px;
   box-sizing: border-box;
+  flex-direction: column;
 }
+
+/* Visualizer bulat */
 #voiceVisualizer {
-  position: relative;
   width: 150px;
   height: 150px;
   border-radius: 50%;
   background: #00aaff;
-  overflow: visible;
   transform-origin: center;
   transition: transform 0.2s ease-out;
   box-shadow: 0 0 20px 5px rgba(0, 170, 255, 0.6);
   z-index: 2;
   margin-bottom: 100px;
 }
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+
+/* Tombol bawah */
 .button-container {
   position: fixed;
   bottom: 20px;
@@ -56,10 +58,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 100px;
+  gap: 40px;
   pointer-events: auto;
   z-index: 10;
+  padding: 0 20px;
+  flex-wrap: wrap;
 }
+
+/* Tombol */
 button {
   width: 60px;
   height: 60px;
@@ -73,11 +79,42 @@ button {
   transition: background-color 0.3s ease;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
 }
+
+/* Hover efek */
 button:hover {
   background: rgba(128, 128, 128, 0.7);
 }
+
+/* Ikon SVG */
 svg {
   width: 28px;
   height: 28px;
   fill: white;
+}
+
+/* Responsive - Mobile Optimization */
+@media (max-width: 600px) {
+  #title {
+    font-size: 1.5rem;
+  }
+
+  #voiceVisualizer {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 80px;
+  }
+
+  .button-container {
+    gap: 20px;
+  }
+
+  button {
+    width: 50px;
+    height: 50px;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 }
