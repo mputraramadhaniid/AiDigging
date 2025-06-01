@@ -69,25 +69,15 @@ function showPreview(file) {
     img.style.marginBottom = "5px";
     wrapper.appendChild(img);
 
-    // Tambahkan placeholder teks hasil OCR
-    const resultText = document.createElement("p");
-    resultText.textContent = "🔍 Sedang mengenali teks...";
-    resultText.style.fontSize = "14px";
-    resultText.style.fontStyle = "italic";
-    resultText.style.marginTop = "5px";
-    wrapper.appendChild(resultText);
-
-    // Proses OCR
+    // Proses OCR tapi hasilnya tidak ditampilkan di UI
     Tesseract.recognize(objectURL, "eng", {
       logger: (m) => console.log(m), // opsional: log progress
     })
       .then(({ data: { text } }) => {
-        teksgambar1 = text.trim(); // Simpan ke variabel global
-        resultText.textContent = teksgambar1 || "[Tidak ada teks terdeteksi]";
+        teksgambar1 = text.trim(); // Simpan ke variabel global tanpa tampilkan
       })
       .catch((err) => {
         console.error("OCR gagal:", err);
-        resultText.textContent = "[Gagal mengenali teks]";
       });
   } else {
     // Untuk file non-gambar
@@ -259,7 +249,6 @@ chatForm.addEventListener("submit", async (e) => {
 
   if (teksgambar1.trim() !== "") {
     combinedText += `\n\n[📷 Teks dari gambar]:\n${teksgambar1.trim()}`;
-    
   }
 
   appendMessage("user", combinedText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png");
@@ -269,14 +258,12 @@ chatForm.addEventListener("submit", async (e) => {
   // Reset input dan status
   chatInput.value = "";
   chatInput.style.height = "auto";
+  chatInput.blur(); // 👉 Mencegah keyboard muncul saat AI merespons
 
   // **Reset teks hasil OCR dan hilangkan preview gambar**
   teksgambar1 = "";
   preview.innerHTML = ""; // Hilangkan preview gambar
   fileInput.value = ""; // Reset file input supaya bisa upload ulang file yang sama
-
-  chatInput.disabled = true;
-  isLoading = true;
 
   appendLoadingMessage();
 
@@ -294,6 +281,8 @@ chatForm.addEventListener("submit", async (e) => {
       }),
     });
 
+    chatInput.disabled = false;
+
     const data = await response.json();
     const botReply = data.choices?.[0]?.message?.content?.trim() || "No response";
 
@@ -308,7 +297,6 @@ chatForm.addEventListener("submit", async (e) => {
   } finally {
     isLoading = false;
     chatInput.disabled = false;
-    chatInput.focus();
   }
 });
 
@@ -357,6 +345,9 @@ function clearChat() {
     chatInput.value = "";
     chatInput.style.height = "auto";
     checkChatEmpty(); // Tambahkan pengecekan chat kosong
+
+    // Refresh halaman setelah menghapus
+    location.reload();
   }
 }
 
@@ -416,12 +407,14 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
     typeText(messageEl, text).then(() => {
       addCopyButtonsToCodeBlocks(messageEl, username);
       if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
-      checkChatEmpty(); // ⬅ Tambahkan ini setelah typing selesai
+      chatInput.disabled = false;
+      checkChatEmpty();
     });
   } else {
     messageEl.innerHTML = parseMarkdown(text);
+    addCopyButtonsToCodeBlocks(messageEl, username); // Tetap beri tombol salin
     if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
-    checkChatEmpty(); // ⬅ Tambahkan ini di sini
+    checkChatEmpty();
   }
 }
 
@@ -442,6 +435,8 @@ async function typeText(element, text, delay = 20) {
       });
     } else {
       characters.push(node);
+      chatInput.disabled = false; // Aktifkan kembali input setelah selesai
+      chatInput.focus(); // Fokuskan ke input
     }
   });
 
