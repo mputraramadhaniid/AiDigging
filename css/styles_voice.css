@@ -90,7 +90,7 @@ svg {
     font-family: "Inter", system-ui, sans-serif;
     color: white;
     overflow: hidden;
-    height: 100vh;
+    height: 100%;
     position: relative;
   }
   #title {
