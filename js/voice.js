@@ -191,5 +191,5 @@ if (SpeechRecognition) {
 }
 
 exitBtn.onclick = () => {
-  window.close();
+  window.location.href = "index.html";
 };
