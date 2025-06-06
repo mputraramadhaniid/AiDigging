@@ -69,35 +69,45 @@ function speak(text) {
   if (synth.speaking) return;
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = "id-ID";
-  const voices = synth.getVoices();
-  const maleVoice = voices.find((v) => v.lang === "id-ID" && v.name.toLowerCase().includes("dimas")) || voices.find((v) => v.lang === "id-ID");
-  if (maleVoice) utter.voice = maleVoice;
 
-  // Setup AudioContext dan Analyser untuk memantau volume/nada
+  // Mengatur kecepatan dan nada
+  utter.rate = 1; // Kecepatan normal
+  utter.pitch = 1; // Nada normal
+
+  const voices = synth.getVoices();
+
+  // Cari voice perempuan indonesia berdasarkan nama yang mengandung kata-kata umum untuk suara perempuan
+  const femaleVoice =
+    voices.find(
+      (v) =>
+        v.lang === "id-ID" &&
+        (v.name.toLowerCase().includes("female") ||
+          v.name.toLowerCase().includes("woman") ||
+          v.name.toLowerCase().includes("siti") ||
+          v.name.toLowerCase().includes("ina") ||
+          v.name.toLowerCase().includes("anya") ||
+          v.name.toLowerCase().includes("rani"))
+    ) || voices.find((v) => v.lang === "id-ID");
+
+  if (femaleVoice) utter.voice = femaleVoice;
+
+  // Setup AudioContext dan Analyser tetap sama
   let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   let analyser = audioCtx.createAnalyser();
   analyser.fftSize = 256;
 
-  // Source dummy, karena kita tidak bisa langsung menghubungkan TTS ke AudioContext,
-  // kita pakai interval untuk simulasi perubahan volume secara acak sebagai contoh
-  // (Kalau punya source audio real, bisa sambungkan langsung)
-
-  // Mulai animasi aura saat speak
+  // Animasi aura tetap sama
   utter.onstart = () => {
     auraWhite.style.animationPlayState = "running";
     auraBlue.style.animationPlayState = "running";
     visualizer.style.transform = "scale(1)";
 
-    let angle = 0; // sudut dalam radian
+    let angle = 0;
     window.volumeAnim = setInterval(() => {
-      // Simulasi volume random 50-200 (bisa disesuaikan)
       const volume = 50 + Math.random() * 150;
-
-      // Skala berdasarkan volume, maksimal 1.3
       let scale = volume > 100 ? 1 + (volume - 100) / 300 : 1;
       if (scale > 1.3) scale = 1.3;
 
-      // Gerakan lingkaran radius 8px horizontal, 5px vertical
       const radiusX = 8;
       const radiusY = 5;
       const x = Math.cos(angle) * radiusX;
@@ -105,12 +115,19 @@ function speak(text) {
 
       auraBlue.style.transform = `translate(${x}px, ${y}px) scale(${scale.toFixed(3)})`;
 
-      // Tambah sudut (kecepatan gerak)
-      angle += 0.15; // bisa diubah (semakin besar, semakin cepat)
-
-      // Jangan biarkan angle makin besar terus (agar stabil)
+      angle += 0.15;
       if (angle > Math.PI * 2) angle -= Math.PI * 2;
-    }, 50); // update tiap 50ms
+    }, 50);
+  };
+
+  utter.onend = () => {
+    auraWhite.style.animationPlayState = "paused";
+    auraBlue.style.animationPlayState = "paused";
+    visualizer.style.transform = "scale(1)";
+    auraBlue.style.transform = "translate(0, 0) scale(1)";
+
+    clearInterval(window.volumeAnim);
+    setStartButtonLoading(false);
   };
 
   utter.onend = () => {

@@ -41,6 +41,7 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: background-color 0.3s ease; /* Transisi halus untuk background */
 }
 
 .copy-btn img {
@@ -76,9 +77,11 @@ body {
   flex-direction: column;
   height: 100%;
   padding: 20px;
-  background-color: #121212; /* Gelap, sama seperti body */
+  background-color: #1e1e1e; /* Gelap, sama seperti body */
   border-right: 1px solid #333; /* Border gelap */
+  transition: transform 0.3s ease;
 }
+
 .sidebar h2,
 .sidebar p {
   margin: 0 0 20px;
@@ -97,12 +100,13 @@ body {
   border-bottom: 1px solid #333;
   cursor: pointer;
   border-radius: 8px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease; /* Tambahkan transisi */
   color: #ddd;
 }
 
 .chat:hover {
   background-color: #333;
+  transform: scale(1.02); /* Sedikit membesar saat hover */
 }
 
 .sidebar-overlay {
@@ -180,16 +184,6 @@ body {
   scroll-behavior: smooth;
 }
 
-.chat-box {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding-right: 50px;
-  padding-left: 50px;
-  background-color: #121212;
-  scroll-behavior: smooth;
-  height: 100%;
-}
-
 .containermenu {
   flex: 1;
   display: flex;
@@ -236,7 +230,7 @@ body {
   justify-content: center; /* Horizontal tengah */
   gap: 0.5rem; /* Jarak antara ikon dan teks */
   white-space: nowrap;
-  background-color: transparent;
+  background-color: #2a2a2a; /* Warna tombol */
   color: #dfdfdf;
   border: none;
   padding: 0.3rem 0.8rem;
@@ -262,6 +256,7 @@ body {
   display: flex;
   align-items: flex-start;
   margin-bottom: 15px;
+  width: 100%; /* Pastikan kontainer pesan mengambil lebar penuh */
 }
 
 .copy-btn {
@@ -290,7 +285,7 @@ body {
 }
 
 .message-content {
-  max-width: 75%;
+  max-width: 80%;
   display: flex;
   flex-direction: column;
 }
@@ -311,6 +306,7 @@ body {
   color: #e0e0e0;
   white-space: pre-wrap;
   word-wrap: break-word;
+  transition: background-color 0.3s ease; /* Transisi halus untuk background */
 }
 
 .message-container.user {
@@ -325,6 +321,48 @@ body {
 .message-container.user .message {
   background-color: #2a2a2a;
   color: #fff;
+}
+
+.code-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  background-color: #f9fafb; /* mirip ChatGPT */
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Inter", sans-serif;
+  user-select: none;
+  border-radius: 6px 6px 0 0;
+}
+
+.code-label {
+  color: #6b7280; /* abu-abu */
+}
+
+.code-copy-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.code-copy-btn:hover {
+  background-color: #e0e7ff;
+  color: #4338ca;
+}
+
+.code-copy-btn:focus {
+  outline: 2px solid #4338ca;
+  outline-offset: 2px;
 }
 
 .code-block {
@@ -390,29 +428,26 @@ code {
 }
 
 .input-container {
+  position: sticky;
+  bottom: 0;
   display: flex;
-  flex-direction: column; /* membuat layout vertikal */
-  align-items: flex-start; /* posisikan item ke kiri */
-  justify-content: center; /* vertikal center jika di dalam container tinggi */
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
   max-width: 700px;
   margin: 0 auto;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding: 8px 12px;
   border-top: 1px solid #333;
   background: #1f1f1f;
-  border-radius: 25px;
-  margin-bottom: 10px;
+  border-radius: 20px 20px 0 0;
+  box-sizing: border-box;
+  z-index: 10;
 }
 
 .input-container textarea {
   flex: 5;
-  padding-bottom: 4px;
-  padding-top: 6px;
-  padding-right: 14px;
-  padding-left: 14px;
+  padding: 6px 14px;
   font-size: 16px;
   border: 1px solid #1f1f1f;
   border-radius: 20px;
@@ -458,7 +493,7 @@ code {
   display: flex;
   align-items: center;
   justify-content: center; /* Tengah dalam tombol */
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Tambahkan transisi */
   flex-shrink: 0;
 }
 
@@ -478,6 +513,7 @@ code {
 .input-container button:hover {
   background-color: #2d2d2e;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transform: scale(1.05); /* Sedikit membesar saat hover */
 }
 
 .input-container button .material-icons {
@@ -746,6 +782,69 @@ code.inline-code {
   overflow: hidden;
 }
 
+/* Extra large desktop (lebih dari 1200px) */
+@media (min-width: 1201px) {
+  .chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 250px;
+    padding-right: 250px;
+    background-color: #121212;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Desktop biasa (769px - 1200px) */
+@media (min-width: 769px) and (max-width: 1200px) {
+  .chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: #121212;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Tablet (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #121212;
+    scroll-behavior: smooth;
+  }
+}
+/* Mobile besar (361px - 480px) */
+@media (min-width: 361px) and (max-width: 480px) {
+  .chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #121212;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Mobile kecil (360px dan kurang) */
+@media (max-width: 360px) {
+  .chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 280px;
+    padding-right: 280px;
+    background-color: #121212;
+    scroll-behavior: smooth;
+  }
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   body {
@@ -754,13 +853,13 @@ code.inline-code {
     padding: 0;
     background-color: #121212; /* Dark background */
     color: #e0e0e0; /* Light text */
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
   }
   .chat-container {
-    height: calc(100vh - 50px); /* Mengatur tinggi chat-container */
+    height: calc(100vh - 50px); /* Pastikan tinggi sesuai */
   }
   .chat-header {
     display: none; /* sembunyikan header chat di mobile */
@@ -784,6 +883,14 @@ code.inline-code {
 
   .navbar .trash:hover {
     filter: invert(1) brightness(0.8);
+  }
+
+  .chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #121212;
+    scroll-behavior: smooth;
   }
 
   .copy-btn {
@@ -867,11 +974,11 @@ code.inline-code {
   }
 
   .chat-box {
-    padding: 15px 10px;
-    /* buat scroll penuh tinggi */
     flex-grow: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    padding: 15px 10px;
+    box-sizing: border-box;
   }
 
   .profile-image {

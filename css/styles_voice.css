@@ -153,6 +153,18 @@ svg {
   animation: spin 1s linear infinite;
 }
 
+button#shareScreenBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 28px;
+  color: white;
+  margin-left: 12px;
+}
+button#shareScreenBtn:hover {
+  color: #00aaff;
+}
+
 /* Responsif untuk mobile */
 @media (max-width: 768px) {
   body {

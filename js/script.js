@@ -27,6 +27,10 @@ const preview = document.getElementById("preview");
 const chatContainer = document.querySelector("section.chat-container");
 const uploadBtn = document.getElementById("uploadbtn");
 
+window.addEventListener("resize", () => {
+  document.querySelector(".chat-box")?.scrollTo(0, document.querySelector(".chat-box").scrollHeight);
+});
+
 function showPreview(file) {
   preview.innerHTML = ""; // Reset preview
 
@@ -260,7 +264,7 @@ chatBox.addEventListener("scroll", () => {
   autoScrollEnabled = distanceFromBottom < threshold;
 });
 
-// Submit form chat
+// Modifikasi pada event listener submit form chat
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const userText = chatInput.value.trim();
@@ -284,8 +288,8 @@ chatForm.addEventListener("submit", async (e) => {
   // Simpan ke messages dengan properti ocrText, nanti dikirim gabungan
   messages.push({
     role: "user",
-    content: combinedTextForServer, // gabungan userText + teksgambar1, ini yang dikirim ke server
-    ocrText: teksgambar1.trim(), // simpan terpisah jika perlu
+    content: combinedTextForServer,
+    ocrText: teksgambar1.trim(),
     imageURL: imageURL,
   });
   saveMessagesToStorage();
@@ -298,7 +302,10 @@ chatForm.addEventListener("submit", async (e) => {
   preview.innerHTML = "";
   fileInput.value = "";
 
-  appendLoadingMessage();
+  // Hentikan animasi loading sebelumnya jika ada
+  removeLoadingMessage(); // Hapus pesan loading sebelumnya
+  isLoading = true; // Set isLoading ke true
+  appendLoadingMessage(); // Tampilkan pesan loading
 
   try {
     const response = await fetch("https://api.paxsenix.biz.id/v1/chat/completions", {
@@ -317,22 +324,20 @@ chatForm.addEventListener("submit", async (e) => {
       }),
     });
 
-    chatInput.disabled = false;
-
     const data = await response.json();
     const botReply = data.choices?.[0]?.message?.content?.trim() || "No response";
 
-    removeLoadingMessage();
+    removeLoadingMessage(); // Hapus pesan loading setelah mendapatkan respons
 
     appendMessage("bot", botReply, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
 
     messages.push({ role: "assistant", content: botReply });
     saveMessagesToStorage();
   } catch (err) {
-    removeLoadingMessage();
+    removeLoadingMessage(); // Hapus pesan loading jika terjadi kesalahan
     appendMessage("bot", "Terjadi kesalahan saat menghubungi server.", "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
   } finally {
-    isLoading = false;
+    isLoading = false; // Set isLoading ke false
     chatInput.disabled = false;
   }
 });
@@ -509,7 +514,10 @@ async function typeText(element, text, delay = 20) {
   addCopyButtonsToCodeBlocks(element);
 }
 
+// Fungsi untuk menambahkan pesan loading
 function appendLoadingMessage() {
+  removeLoadingMessage(); // Hapus pesan loading sebelumnya jika ada
+
   const messageContainer = document.createElement("div");
   messageContainer.id = "loading-message";
   messageContainer.className = "message-container bot";
@@ -561,7 +569,8 @@ function parseMarkdown(text) {
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/_(.*?)_/g, "<em>$1</em>")
     .replace(/`([^`]+)`/g, (m, inlineCode) => `<code class="inline-code">${escapeHtml(inlineCode)}</code>`)
-    .replace(/\n/g, "<br>");
+    .replace(/\n/g, "<br>")
+    .replace(/---/g, '<hr style="border: 1px solid #ccc;"/>');
 }
 
 // Fungsi copy teks pesan saat klik tombol copy
@@ -578,70 +587,57 @@ function copyTextFromButton(button) {
   });
 }
 
-// Fungsi tambahkan tombol copy + label di atas tiap blok kode (hanya untuk bot)
 function addCopyButtonsToCodeBlocks(container, username = "AI Digging") {
   if (username === "You") return; // Jangan toolbar di pesan user
 
   const wrappers = container.querySelectorAll(".code-wrapper");
 
   wrappers.forEach((wrapper) => {
-    // Cegah duplikasi toolbar
-    if (wrapper.querySelector(".code-toolbar")) return;
+    if (wrapper.querySelector(".code-toolbar")) return; // Cegah duplikat
 
     const pre = wrapper.querySelector("pre");
+    if (!pre) return;
     const code = pre.querySelector("code");
+    if (!code) return;
 
-    // Toolbar/header
+    // Buat elemen toolbar
     const toolbar = document.createElement("div");
     toolbar.className = "code-toolbar";
-    toolbar.style.display = "flex";
-    toolbar.style.justifyContent = "space-between";
-    toolbar.style.alignItems = "center";
-    toolbar.style.padding = "6px 12px";
-    toolbar.style.backgroundColor = "#f3f4f6";
-    toolbar.style.fontSize = "13px";
-    toolbar.style.fontWeight = "500";
-    toolbar.style.fontFamily = "sans-serif";
-    toolbar.style.borderBottom = "1px solid #ddd";
 
-    // Label nama file (ambil dari data-filename)
+    // Label nama file
     const filename = wrapper.getAttribute("data-filename") || "code";
     const label = document.createElement("span");
+    label.className = "code-label";
     label.textContent = filename;
-    label.style.color = "#374151";
 
-    // Tombol copy kode
+    // Tombol copy
     const copyBtn = document.createElement("button");
+    copyBtn.className = "code-copy-btn";
+    copyBtn.type = "button";
     copyBtn.title = "Salin kode";
-    copyBtn.style.background = "none";
-    copyBtn.style.border = "none";
-    copyBtn.style.cursor = "pointer";
-    copyBtn.style.padding = "2px";
-    copyBtn.style.display = "flex";
-    copyBtn.style.alignItems = "center";
-    copyBtn.style.gap = "4px";
+    copyBtn.setAttribute("aria-label", `Salin kode di ${filename}`);
 
     copyBtn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#4B5563" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
         <path d="M16 4H8a2 2 0 0 0-2 2v12m2-2h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
       </svg>
-      Copy
+      <span>Copy</span>
     `;
 
     copyBtn.onclick = () => {
       navigator.clipboard.writeText(code.textContent).then(() => {
         copyBtn.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
             <path d="M5 13l4 4L19 7"/>
           </svg>
-          Copied
+          <span>Copied</span>
         `;
         setTimeout(() => {
           copyBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#4B5563" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
               <path d="M16 4H8a2 2 0 0 0-2 2v12m2-2h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
             </svg>
-            Copy
+            <span>Copy</span>
           `;
         }, 1500);
       });
