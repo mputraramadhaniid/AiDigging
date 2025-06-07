@@ -1,7 +1,8 @@
 body {
   margin: 0;
   padding: 0;
-  background: #121212;
+  background: linear-gradient(-45deg, #000000, #000000, #001f3f, #000000, #000000, #00162d, #000000);
+  background-size: 500% 500%;
   font-family: "Inter", system-ui, sans-serif;
   color: white;
   overflow: hidden;

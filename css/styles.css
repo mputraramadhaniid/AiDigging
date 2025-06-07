@@ -31,17 +31,43 @@ html {
   box-sizing: border-box;
 }
 
+/* Background animasi gradasi hitam biru */
+@keyframes animatedGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 body {
   font-family: "Inter", system-ui, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #121212; /* Dark background */
-  color: #e0e0e0; /* Light text */
+  background: linear-gradient(-45deg, #000000, #000000, #001f3f, #000000, #000000, #00162d, #000000);
+  background-size: 500% 500%;
+  animation: animatedGradient 30s ease infinite;
+  color: #e0e0e0;
   height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: background-color 0.3s ease; /* Transisi halus untuk background */
+  transition: background-color 0.3s ease;
+}
+
+.fade-in {
+  animation: fadeInMain 1.5s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInMain {
+  to {
+    opacity: 1;
+  }
 }
 
 .copy-btn img {
@@ -50,7 +76,6 @@ body {
 
 .navbar {
   display: none;
-  background-color: #1f1f1f; /* Slightly lighter dark */
   color: #fff;
   justify-content: space-between;
   align-items: center;
@@ -72,16 +97,6 @@ body {
   overflow: hidden;
 }
 
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 20px;
-  background-color: #1e1e1e; /* Gelap, sama seperti body */
-  border-right: 1px solid #333; /* Border gelap */
-  transition: transform 0.3s ease;
-}
-
 .sidebar h2,
 .sidebar p {
   margin: 0 0 20px;
@@ -97,7 +112,7 @@ body {
 
 .chat {
   padding: 15px 12px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #ffffff;
   cursor: pointer;
   border-radius: 8px;
   transition: background-color 0.2s ease, transform 0.2s ease; /* Tambahkan transisi */
@@ -116,7 +131,6 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.75); /* Darker overlay */
   z-index: 1500;
   opacity: 0;
   pointer-events: none;
@@ -133,7 +147,6 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #121212; /* Match body dark */
   overflow: hidden;
   height: 100%;
   color: #e0e0e0;
@@ -144,8 +157,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 15px 20px;
-  border-bottom: 1px solid #333;
-  background: #1f1f1f;
+  border-bottom: 1px solid #535353;
 }
 
 .chat-header p {
@@ -180,7 +192,6 @@ body {
   flex-grow: 1;
   overflow-y: auto;
   padding: 20px;
-  background-color: #121212;
   scroll-behavior: smooth;
 }
 
@@ -230,20 +241,20 @@ body {
   justify-content: center; /* Horizontal tengah */
   gap: 0.5rem; /* Jarak antara ikon dan teks */
   white-space: nowrap;
-  background-color: #2a2a2a; /* Warna tombol */
-  color: #dfdfdf;
+  background-color: #ffffff; /* Warna tombol */
+  color: #000000;
   border: none;
   padding: 0.3rem 0.8rem;
   border-radius: 999px;
   cursor: pointer;
   font-size: 0.9rem;
-  border: 1px solid #6f6d6d;
+  border: 1px solid #d4d4d4;
   box-shadow: 1px 2px 6px rgba(199, 194, 194, 0.1);
   transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
 .suggestion-options button:hover {
-  background-color: #474646;
+  background-color: #a1a1a1;
   transform: scale(1.05); /* sedikit membesar saat hover */
 }
 
@@ -281,7 +292,7 @@ body {
   border-radius: 50%;
   object-fit: cover;
   margin-right: 12px;
-  border: 1px solid #444;
+  border: 1px solid #ffffff;
 }
 
 .message-content {
@@ -319,8 +330,8 @@ body {
 }
 
 .message-container.user .message {
-  background-color: #2a2a2a;
-  color: #fff;
+  background-color: #cfcfcf;
+  color: #000000;
 }
 
 .code-toolbar {
@@ -328,7 +339,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 6px 12px;
-  background-color: #f9fafb; /* mirip ChatGPT */
+  background-color: #000000; /* mirip ChatGPT */
   border-bottom: 1px solid #e5e7eb;
   font-size: 14px;
   font-weight: 500;
@@ -434,43 +445,46 @@ code {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  width: 100%;
+  width: 94%;
   max-width: 700px;
-  margin: 0 auto;
-  padding: 8px 12px;
-  border-top: 1px solid #333;
-  background: #1f1f1f;
-  border-radius: 20px 20px 0 0;
-  box-sizing: border-box;
-  z-index: 10;
+  margin: 12px auto; /* Sedikit jarak dari bawah */
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(18, 18, 18, 0.65); /* Transparan gelap */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Safari */
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35); /* Efek mengambang */
+  z-index: 20;
+  transition: all 0.3s ease;
 }
 
 .input-container textarea {
-  flex: 5;
-  padding: 6px 14px;
-  font-size: 16px;
-  border: 1px solid #1f1f1f;
-  border-radius: 20px;
-  outline: none;
-  background-color: #1f1f1f;
-  color: #eee;
-  transition: border-color 0.3s ease;
-  resize: none;
-  min-height: 48px;
-  max-height: 120px; /* 5 lines * 24px line height */
-  line-height: 24px;
-  overflow-y: auto;
-  font-family: "Roboto", Arial, sans-serif;
+  flex: 1;
   width: 100%;
+  padding: 10px 16px;
+  font-size: 16px;
+  font-family: "Roboto", Arial, sans-serif;
+  color: #eee;
+  background-color: transparent;
+  border: none;
+  border-radius: 14px;
+  outline: none;
+  resize: none;
+  overflow-y: auto;
+  min-height: 48px;
+  max-height: 120px;
+  line-height: 24px;
+  transition: all 0.3s ease;
+  box-shadow: none;
+}
+
+.input-container textarea:focus {
+  border-color: #666;
 }
 
 .input-container textarea::placeholder {
   color: #888888;
-}
-
-.input-container textarea:focus {
-  border-color: #1f1f1f;
-  background-color: #1f1f1f;
 }
 
 .input-bawah-send {
@@ -526,9 +540,11 @@ code {
   font-size: 14px;
   color: #888;
   padding: 8px 0;
-  background: #000000;
-  border-top: 1px solid #333;
-  margin-top: 2px;
+  background-color: rgba(18, 18, 18, 0.6); /* Hitam transparan */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); /* Untuk Safari */
+  margin-top: 0px;
+  border-top: 1px solid #535353;
 }
 
 .loading-animation .dot {
@@ -632,8 +648,11 @@ code {
   flex-direction: column;
   height: 100%;
   padding: 20px;
-  background-color: #000000;
-  border-right: 1px solid #393838;
+  /* Glassmorphism dark tipis */
+  background-color: rgba(18, 18, 18, 0.6); /* Hitam transparan */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); /* Untuk Safari */
+  border-right: 1px solid #535353;
 }
 
 /* Chat list tetap di atas dan dapat scroll jika banyak */
@@ -672,27 +691,31 @@ code {
   transform: translateY(-2px);
 }
 
-/* Tombol pusat bantuan - dengan icon dan layout horizontal */
 .help-center-btn {
   display: flex;
-  justify-content: flex-start; /* rata kiri */
+  justify-content: flex-start;
   align-items: center;
-  background-color: #101010;
-  color: #fff;
-  border: none;
   width: 100%;
-  padding: 10px 8px;
+  padding: 10px 12px;
   border-radius: 12px;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
   margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+
+  /* Warna & efek glassmorphism */
+  background-color: rgba(18, 18, 18, 0.4); /* transparan hitam tipis */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+  color: #ffffff;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .help-center-btn:hover {
-  background-color: #5f5f5f;
+  background-color: rgba(30, 30, 30, 0.6);
   transform: scale(1.02);
 }
 
@@ -704,16 +727,14 @@ code {
   margin-left: 4px;
 }
 
-/* Sidebar footer agar selalu di paling bawah */
 .sidebar-footer {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Rata kiri */
-  padding: 8px 0px;
+  align-items: flex-start;
+  padding: 4px;
   gap: 12px;
   margin-top: auto;
-  border-top: 1px solid #2a2929;
-  width: 100%; /* Pastikan isi melebar */
+  width: 100%;
 }
 
 .profile {
@@ -791,7 +812,6 @@ code.inline-code {
     padding-bottom: 10px;
     padding-left: 250px;
     padding-right: 250px;
-    background-color: #121212;
     scroll-behavior: smooth;
   }
 }
@@ -805,7 +825,6 @@ code.inline-code {
     padding-bottom: 10px;
     padding-left: 30px;
     padding-right: 30px;
-    background-color: #121212;
     scroll-behavior: smooth;
   }
 }
@@ -816,7 +835,6 @@ code.inline-code {
     flex-grow: 1;
     overflow-y: auto;
     padding: 20px;
-    background-color: #121212;
     scroll-behavior: smooth;
   }
 }
@@ -826,7 +844,6 @@ code.inline-code {
     flex-grow: 1;
     overflow-y: auto;
     padding: 20px;
-    background-color: #121212;
     scroll-behavior: smooth;
   }
 }
@@ -840,7 +857,6 @@ code.inline-code {
     padding-bottom: 10px;
     padding-left: 280px;
     padding-right: 280px;
-    background-color: #121212;
     scroll-behavior: smooth;
   }
 }
@@ -851,13 +867,15 @@ code.inline-code {
     font-family: "Inter", system-ui, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #121212; /* Dark background */
     color: #e0e0e0; /* Light text */
     height: 100dvh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
   }
+
+  /* Supaya sidebar fleksibel dan footer tetap paling bawah */
+
   .chat-container {
     height: calc(100vh - 50px); /* Pastikan tinggi sesuai */
   }
@@ -889,7 +907,6 @@ code.inline-code {
     flex-grow: 1;
     overflow-y: auto;
     padding: 20px;
-    background-color: #121212;
     scroll-behavior: smooth;
   }
 
@@ -922,11 +939,13 @@ code.inline-code {
     width: 250px;
     height: calc(100vh - 50px);
     transform: translateX(-100%);
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.8);
     transition: transform 0.3s ease;
     z-index: 2000;
-    background-color: #1e1e1e;
     padding: 8px;
+    /* Glassmorphism dark tipis */
+    background-color: rgba(18, 18, 18, 0.6); /* Hitam transparan */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); /* Untuk Safari */
   }
 
   .sidebar.active {

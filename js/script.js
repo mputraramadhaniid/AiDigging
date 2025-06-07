@@ -245,11 +245,24 @@ chatInput.addEventListener("input", () => {
   chatInput.style.height = Math.min(chatInput.scrollHeight, maxHeight) + "px";
 });
 
-// Submit pesan dengan enter tanpa shift
+// Fungsi untuk mendeteksi apakah perangkat adalah mobile
+function isMobileDevice() {
+  return window.innerWidth <= 768; // Anda dapat menyesuaikan lebar ini sesuai kebutuhan
+}
+
+// Submit pesan dengan enter tanpa shift di laptop, dan tambah baris di mobile
 chatInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    chatForm.requestSubmit();
+  if (e.key === "Enter") {
+    if (isMobileDevice()) {
+      // Di perangkat mobile, tekan Enter untuk menambah baris baru
+      // Tidak ada tindakan lain, biarkan textarea menambah baris baru
+    } else {
+      // Di laptop, jika tidak ada shift, kirim pesan
+      if (!e.shiftKey) {
+        e.preventDefault(); // Mencegah penambahan baris baru
+        chatForm.requestSubmit(); // Kirim form
+      }
+    }
   }
 });
 
@@ -416,7 +429,6 @@ function checkChatEmpty() {
   }
 }
 
-// Fungsi tambah pesan ke UI
 function appendMessage(sender, text, username, profileUrl, isHistory = false) {
   const container = document.createElement("div");
   container.className = `message-container ${sender} message-fade-in`;
@@ -439,16 +451,45 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
   content.appendChild(nameEl);
   content.appendChild(messageEl);
 
-  // Tambahkan tombol salin untuk pesan bot/assistant
-  if (sender === "bot" || sender === "assistant") {
+  // Cek apakah ada kode dalam teks
+  const codeRegex = /```(.*?)\n([\s\S]*?)```/g;
+  let match;
+  while ((match = codeRegex.exec(text)) !== null) {
+    const filename = match[1].trim();
+    const code = match[2];
+
+    // Buat elemen untuk menampilkan nama file
+    const codeWrapper = document.createElement("div");
+    codeWrapper.className = "code-wrapper";
+
+    const codeLabel = document.createElement("span");
+    codeLabel.className = "code-label";
+    codeLabel.textContent = filename;
+
+    const pre = document.createElement("pre");
+    const codeElement = document.createElement("code");
+    codeElement.textContent = code;
+
+    pre.appendChild(codeElement);
+    codeWrapper.appendChild(codeLabel);
+    codeWrapper.appendChild(pre);
+    messageEl.appendChild(codeWrapper);
+
+    // Tambahkan tombol salin
     const copyBtn = document.createElement("button");
-    copyBtn.className = "copy-btn left";
-    copyBtn.title = "Copy message";
+    copyBtn.className = "code-copy-btn";
+    copyBtn.title = "Salin kode";
     copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
-    copyBtn.onclick = function () {
-      copyTextFromButton(this);
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(code).then(() => {
+        copyBtn.innerHTML = `<img src="images/tick.png" alt="Copied" width="16" height="16" />`;
+        setTimeout(() => {
+          copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+        }, 1500);
+      });
     };
-    content.appendChild(copyBtn);
+
+    codeWrapper.appendChild(copyBtn); // Tambahkan tombol salin ke dalam wrapper
   }
 
   container.appendChild(img);
@@ -457,26 +498,15 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
 
   if (sender === "bot" && !isHistory) {
     typeText(messageEl, text).then(() => {
-      addCopyButtonsToCodeBlocks(messageEl, username);
       if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
       chatInput.disabled = false;
       checkChatEmpty();
     });
   } else {
-    if (sender === "user" && previewImageURL) {
-      const img = document.createElement("img");
-      img.src = previewImageURL;
-      img.style.maxWidth = "200px";
-      img.style.borderRadius = "10px";
-      img.style.marginBottom = "10px";
-      messageEl.appendChild(img);
-    }
-
     const textDiv = document.createElement("div");
     textDiv.innerHTML = parseMarkdown(text);
     messageEl.appendChild(textDiv);
 
-    addCopyButtonsToCodeBlocks(messageEl, username); // Tetap beri tombol salin
     if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
     checkChatEmpty();
   }
