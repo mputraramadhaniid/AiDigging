@@ -197,12 +197,41 @@ function logChat(sender, text) {
   chatbox.scrollTop = chatbox.scrollHeight;
 }
 
+function isAndroid() {
+  return /Android/i.test(navigator.userAgent);
+}
+
 async function speakText(text) {
+  if (!text) return;
+
+  if (speechSynthesis.speaking) {
+    speechSynthesis.cancel();
+    await new Promise(r => setTimeout(r, 100));
+  }
+
   return new Promise((resolve) => {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "id-ID";
-    u.onend = resolve;
-    speechSynthesis.speak(u);
+    const utterance = new SpeechSynthesisUtterance(text);
+    if (isAndroid()) {
+      // Android: pakai default voice tanpa assign voice khusus
+      utterance.lang = "id-ID";
+    } else {
+      // Desktop atau lain: bisa assign voice khusus jika perlu
+      const voices = speechSynthesis.getVoices();
+      const idVoice = voices.find(v => v.lang.startsWith("id")) || voices[0];
+      if (idVoice) {
+        utterance.voice = idVoice;
+        utterance.lang = idVoice.lang;
+      } else {
+        utterance.lang = "id-ID";
+      }
+    }
+
+    utterance.onend = () => resolve();
+    utterance.onerror = (e) => {
+      console.error("TTS error:", e);
+      resolve();
+    };
+    speechSynthesis.speak(utterance);
   });
 }
 
