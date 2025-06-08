@@ -48,7 +48,7 @@ body {
   font-family: "Inter", system-ui, sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(-45deg, #000000, #000000, #001f3f, #000000, #000000, #00162d, #000000);
+  background: linear-gradient(-45deg, #000000, #000000, #001f3f, #000000, #000000, #002852, #000000);
   background-size: 500% 500%;
   animation: animatedGradient 30s ease infinite;
   color: #e0e0e0;
