@@ -1,4 +1,5 @@
 const startBtn = document.getElementById("startBtn");
+const exitBtn = document.getElementById("exitBtn");
 const chatbox = document.getElementById("chatbox");
 const visualizer = document.getElementById("voiceVisualizer");
 
@@ -44,7 +45,7 @@ Object.assign(auraBlue.style, {
 });
 visualizer.appendChild(auraBlue);
 
-// Tambah animasi
+// Animasi style
 const style = document.createElement("style");
 style.textContent = `
 @keyframes moveCloudWhite {
@@ -57,7 +58,10 @@ style.textContent = `
 }`;
 document.head.appendChild(style);
 
-// Setup recognition
+// Deteksi apakah Android mobile
+const isAndroidMobile = /Android/i.test(navigator.userAgent) && /Mobile/i.test(navigator.userAgent);
+
+// Setup recognition, sesuaikan continuous berdasarkan device
 function setupRecognition() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
@@ -68,7 +72,7 @@ function setupRecognition() {
   recognition = new SpeechRecognition();
   recognition.lang = "id-ID";
   recognition.interimResults = false;
-  recognition.continuous = true;
+  recognition.continuous = isAndroidMobile ? false : true;  // perbedaan di sini
 
   recognition.onresult = (e) => {
     const text = e.results[e.results.length - 1][0].transcript.trim();
@@ -84,11 +88,15 @@ function setupRecognition() {
 
   recognition.onend = () => {
     if (!isResponding && !micMuted) {
-      try {
-        recognition.start();
-      } catch (e) {
-        console.warn("Restart recognition failed:", e);
+      // Di desktop, restart recognition otomatis
+      if (!isAndroidMobile) {
+        try {
+          recognition.start();
+        } catch (e) {
+          console.warn("Restart recognition failed:", e);
+        }
       }
+      // Di Android mobile, mic akan hidup lagi setelah respon selesai (handleMicInput)
     }
   };
 }
@@ -143,7 +151,17 @@ async function handleMicInput(text) {
   micStream.getAudioTracks().forEach((track) => (track.enabled = true));
   isResponding = false;
 
-  if (!micMuted) recognition.start();
+  // Perbedaan device: 
+  // Android: start mic lagi setelah respon (karena continuous=false)
+  // Desktop: recognition sudah continuous, tapi tetap jaga restart
+  if (!micMuted) {
+    try {
+      recognition.start();
+    } catch (e) {
+      setupRecognition();
+      recognition.start();
+    }
+  }
   resetSilenceTimer();
 }
 
@@ -197,9 +215,13 @@ function resetSilenceTimer() {
   }
 }
 
+exitBtn.onclick = () => {
+  window.location.href = "index.html";
+};
+
 window.onload = () => {
   speechSynthesis.cancel();
   setTimeout(() => {
     initMic();
-  }, 300); // beri waktu agar Android sempat memuat permission
+  }, 300); // beri jeda kecil agar izin mic siap
 };
