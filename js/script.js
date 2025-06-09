@@ -433,87 +433,195 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
   const container = document.createElement("div");
   container.className = `message-container ${sender} message-fade-in`;
 
-  const img = document.createElement("img");
-  img.className = "profile-image";
-  img.src = profileUrl;
-  img.alt = username;
-
   const content = document.createElement("div");
   content.className = "message-content";
 
-  const nameEl = document.createElement("div");
-  nameEl.className = "username";
-  nameEl.textContent = username;
-
   const messageEl = document.createElement("div");
   messageEl.className = "message";
+  messageEl.style.position = "relative";
 
-  content.appendChild(nameEl);
+  // Beda padding dan class tergantung sender
+  if (sender === "bot") {
+    messageEl.style.paddingBottom = "28px";
+    messageEl.classList.add("bot-message");
+  } else {
+    messageEl.style.paddingBottom = "8px";
+    messageEl.classList.add("user-message");
+  }
+
   content.appendChild(messageEl);
 
-  // Cek apakah ada kode dalam teks
-  const codeRegex = /```(.*?)\n([\s\S]*?)```/g;
-  let match;
-  while ((match = codeRegex.exec(text)) !== null) {
-    const filename = match[1].trim();
-    const code = match[2];
+  if (sender === "bot") {
+    const codeRegex = /```(.*?)\n([\s\S]*?)```/g;
+    let lastIndex = 0;
+    let match;
 
-    // Buat elemen untuk menampilkan nama file
-    const codeWrapper = document.createElement("div");
-    codeWrapper.className = "code-wrapper";
+    while ((match = codeRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        const textBefore = text.substring(lastIndex, match.index);
+        const textDivBefore = document.createElement("div");
+        textDivBefore.innerHTML = parseMarkdown(textBefore);
+        messageEl.appendChild(textDivBefore);
+      }
 
-    const codeLabel = document.createElement("span");
-    codeLabel.className = "code-label";
-    codeLabel.textContent = filename;
+      const filename = match[1].trim();
+      const code = match[2];
+      lastIndex = codeRegex.lastIndex;
 
-    const pre = document.createElement("pre");
-    const codeElement = document.createElement("code");
-    codeElement.textContent = code;
+      const codeWrapper = document.createElement("div");
+      codeWrapper.className = "code-wrapper";
+      Object.assign(codeWrapper.style, {
+        backgroundColor: "#1e1e1e",
+        fontFamily: "'Source Code Pro', monospace",
+        fontSize: "0.9em",
+        color: "#d4d4d4",
+        position: "relative",
+      });
 
-    pre.appendChild(codeElement);
-    codeWrapper.appendChild(codeLabel);
-    codeWrapper.appendChild(pre);
-    messageEl.appendChild(codeWrapper);
+      const codeHeader = document.createElement("div");
+      Object.assign(codeHeader.style, {
+        display: "flex",
+        alignItems: "center",
+        padding: "8px",
+        gap: "2px",
+        paddingBottom: "8px",
+        borderBottom: "1px solid #333",
+        backgroundColor: "#1e1e1e",
+      });
 
-    // Tambahkan tombol salin
-    const copyBtn = document.createElement("button");
-    copyBtn.className = "code-copy-btn";
-    copyBtn.title = "Salin kode";
-    copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
-    copyBtn.onclick = () => {
-      navigator.clipboard.writeText(code).then(() => {
-        copyBtn.innerHTML = `<img src="images/tick.png" alt="Copied" width="16" height="16" />`;
+      const codeLabel = document.createElement("span");
+      codeLabel.textContent = filename;
+      Object.assign(codeLabel.style, {
+        color: "#ccc",
+        fontWeight: "600",
+        userSelect: "none",
+      });
+
+      const copyBtn = document.createElement("button");
+      copyBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+          <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+        </svg>`;
+      Object.assign(copyBtn.style, {
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        color: "#ccc",
+        padding: "0",
+        userSelect: "none",
+        height: "24px",
+        width: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginLeft: "auto",
+        transition: "color 0.3s",
+      });
+      copyBtn.onmouseenter = () => (copyBtn.style.color = "#fff");
+      copyBtn.onmouseleave = () => (copyBtn.style.color = "#ccc");
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(code).then(() => {
+          copyBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>`;
+          setTimeout(() => {
+            copyBtn.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+                <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+              </svg>`;
+          }, 1500);
+        });
+      };
+
+      codeHeader.appendChild(codeLabel);
+      codeHeader.appendChild(copyBtn);
+
+      const pre = document.createElement("pre");
+      Object.assign(pre.style, {
+        backgroundColor: "transparent",
+        margin: "0",
+        paddingTop: "8px",
+        overflowX: "auto",
+        color: "#d4d4d4",
+        fontFamily: "'Source Code Pro', monospace",
+        fontSize: "0.9em",
+        whiteSpace: "pre-wrap",
+        wordWrap: "break-word",
+      });
+
+      const codeElement = document.createElement("code");
+      codeElement.textContent = code;
+
+      pre.appendChild(codeElement);
+      codeWrapper.appendChild(codeHeader);
+      codeWrapper.appendChild(pre);
+      messageEl.appendChild(codeWrapper);
+    }
+
+    if (lastIndex < text.length) {
+      const remainingText = text.substring(lastIndex);
+      const textDiv = document.createElement("div");
+      textDiv.innerHTML = parseMarkdown(remainingText);
+      messageEl.appendChild(textDiv);
+    }
+
+    const copyAllBtn = document.createElement("button");
+    copyAllBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+        <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+      </svg>`;
+    Object.assign(copyAllBtn.style, {
+      position: "absolute",
+      bottom: "4px",
+      left: "-12px",
+      background: "transparent",
+      border: "none",
+      cursor: "pointer",
+      color: "#fff",
+      padding: "0",
+      margin: "0",
+      userSelect: "none",
+    });
+    copyAllBtn.onclick = () => {
+      // Beda padding dan class tergantung sender
+      navigator.clipboard.writeText(text).then(() => {
+        copyAllBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+            <path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/>
+          </svg>`;
         setTimeout(() => {
-          copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+          copyAllBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+            </svg>`;
         }, 1500);
       });
     };
-
-    codeWrapper.appendChild(copyBtn); // Tambahkan tombol salin ke dalam wrapper
+    messageEl.appendChild(copyAllBtn);
+  } else {
+    const textDiv = document.createElement("div");
+    textDiv.innerHTML = parseMarkdown(text);
+    messageEl.appendChild(textDiv);
   }
 
-  container.appendChild(img);
   container.appendChild(content);
   chatBox.appendChild(container);
 
   if (sender === "bot" && !isHistory) {
+    messageEl.innerHTML = "";
     typeText(messageEl, text).then(() => {
       if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
       chatInput.disabled = false;
       checkChatEmpty();
     });
   } else {
-    const textDiv = document.createElement("div");
-    textDiv.innerHTML = parseMarkdown(text);
-    messageEl.appendChild(textDiv);
-
     if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
     checkChatEmpty();
   }
 }
 
-// Efek ketik pesan bot
-async function typeText(element, text, delay = 20) {
+async function typeText(element, text, delay = 20, onFinish = () => {}) {
   element.innerHTML = "";
   const html = parseMarkdown(text);
   const temp = document.createElement("div");
@@ -529,19 +637,21 @@ async function typeText(element, text, delay = 20) {
       });
     } else {
       characters.push(node);
-      chatInput.disabled = false; // Aktifkan kembali input setelah selesai
-      chatInput.focus(); // Fokuskan ke input
     }
   });
 
   for (const char of characters) {
     element.appendChild(char.cloneNode(true));
-    if (autoScrollEnabled) {
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
+    if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
     await new Promise((r) => setTimeout(r, delay));
   }
+
   addCopyButtonsToCodeBlocks(element);
+
+  chatInput.disabled = false;
+  chatInput.focus();
+
+  onFinish();
 }
 
 // Fungsi untuk menambahkan pesan loading

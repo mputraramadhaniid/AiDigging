@@ -72,7 +72,7 @@ function setupRecognition() {
   recognition = new SpeechRecognition();
   recognition.lang = "id-ID";
   recognition.interimResults = false;
-  recognition.continuous = isAndroidMobile ? false : true;  // perbedaan di sini
+  recognition.continuous = isAndroidMobile ? false : true; // perbedaan di sini
 
   recognition.onresult = (e) => {
     const text = e.results[e.results.length - 1][0].transcript.trim();
@@ -151,7 +151,7 @@ async function handleMicInput(text) {
   micStream.getAudioTracks().forEach((track) => (track.enabled = true));
   isResponding = false;
 
-  // Perbedaan device: 
+  // Perbedaan device:
   // Android: start mic lagi setelah respon (karena continuous=false)
   // Desktop: recognition sudah continuous, tapi tetap jaga restart
   if (!micMuted) {
@@ -206,7 +206,7 @@ async function speakText(text) {
 
   if (speechSynthesis.speaking) {
     speechSynthesis.cancel();
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise((r) => setTimeout(r, 100));
   }
 
   return new Promise((resolve) => {
@@ -217,7 +217,7 @@ async function speakText(text) {
     } else {
       // Desktop atau lain: bisa assign voice khusus jika perlu
       const voices = speechSynthesis.getVoices();
-      const idVoice = voices.find(v => v.lang.startsWith("id")) || voices[0];
+      const idVoice = voices.find((v) => v.lang.startsWith("id")) || voices[0];
       if (idVoice) {
         utterance.voice = idVoice;
         utterance.lang = idVoice.lang;
