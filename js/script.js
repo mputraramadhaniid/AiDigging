@@ -621,36 +621,159 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
   }
 }
 
-async function typeText(element, text, delay = 20, onFinish = () => {}) {
+async function typeText(element, rawText, delay = 20, onFinish = () => {}) {
   element.innerHTML = "";
-  const html = parseMarkdown(text);
-  const temp = document.createElement("div");
-  temp.innerHTML = html;
 
-  const characters = [];
-  temp.childNodes.forEach((node) => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      node.textContent.split("").forEach((char) => {
-        const span = document.createElement("span");
-        span.textContent = char;
-        characters.push(span);
-      });
-    } else {
-      characters.push(node);
+  const escapeHtml = (str) => str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+  const codeRegex = /```(.*?)\n([\s\S]*?)```/g;
+  let lastIndex = 0;
+  const parts = [];
+
+  let match;
+  while ((match = codeRegex.exec(rawText)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push({ type: "text", content: rawText.slice(lastIndex, match.index) });
     }
-  });
 
-  for (const char of characters) {
-    element.appendChild(char.cloneNode(true));
-    if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
-    await new Promise((r) => setTimeout(r, delay));
+    parts.push({
+      type: "code",
+      filename: match[1].trim() || "code",
+      code: match[2],
+    });
+
+    lastIndex = codeRegex.lastIndex;
   }
 
-  addCopyButtonsToCodeBlocks(element);
+  if (lastIndex < rawText.length) {
+    parts.push({ type: "text", content: rawText.slice(lastIndex) });
+  }
+
+  for (const part of parts) {
+    if (part.type === "text") {
+      const temp = document.createElement("div");
+      temp.innerHTML = part.content
+        .replace(/### (.*?)(\n|$)/g, `<span class="md-heading">$1</span>\n`)
+        .replace(/\*\*(.*?)\*\*/g, '<span class="md-bold">$1</span>')
+        .replace(/_(.*?)_/g, '<span class="md-italic">$1</span>')
+        .replace(/`([^`]+)`/g, (m, inlineCode) => `<code class="md-inline-code">${escapeHtml(inlineCode)}</code>`)
+        .replace(/---/g, '<hr class="md-hr" />')
+        .replace(/\n/g, "<br>");
+
+      for (const node of temp.childNodes) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          for (const char of node.textContent) {
+            const span = document.createElement("span");
+            span.textContent = char;
+            element.appendChild(span);
+            if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+            await new Promise((r) => setTimeout(r, delay));
+          }
+        } else {
+          element.appendChild(node.cloneNode(true));
+        }
+      }
+    } else if (part.type === "code") {
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-wrapper";
+      wrapper.style.backgroundColor = "#1e1e1e";
+      wrapper.style.color = "#d4d4d4";
+      wrapper.style.fontFamily = "'Source Code Pro', monospace";
+      wrapper.style.marginTop = "12px";
+      wrapper.style.position = "relative";
+
+      const header = document.createElement("div");
+      header.style.display = "flex";
+      header.style.alignItems = "center";
+      header.style.justifyContent = "space-between";
+      header.style.padding = "8px";
+      header.style.borderBottom = "1px solid #333";
+
+      const label = document.createElement("span");
+      label.textContent = part.filename;
+      label.style.color = "#ccc";
+      label.style.fontWeight = "600";
+
+      const copyBtn = document.createElement("button");
+      copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+        <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
+      copyBtn.style.background = "transparent";
+      copyBtn.style.border = "none";
+      copyBtn.style.cursor = "pointer";
+      copyBtn.style.color = "#ccc";
+
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(part.code).then(() => {
+          copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#10B981" viewBox="0 0 24 24">
+            <path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+          setTimeout(() => {
+            copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+              <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
+          }, 1500);
+        });
+      };
+
+      header.appendChild(label);
+      header.appendChild(copyBtn);
+
+      const pre = document.createElement("pre");
+      pre.style.margin = "0";
+      pre.style.padding = "8px";
+      pre.style.overflowX = "auto";
+      pre.style.whiteSpace = "pre-wrap";
+
+      const codeEl = document.createElement("code");
+      pre.appendChild(codeEl);
+      wrapper.appendChild(header);
+      wrapper.appendChild(pre);
+      element.appendChild(wrapper);
+
+      for (const char of part.code) {
+        const span = document.createElement("span");
+        span.textContent = char;
+        codeEl.appendChild(span);
+        if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+        await new Promise((r) => setTimeout(r, delay));
+      }
+    }
+  }
+
+  // ✅ Copy all
+  const copyAllBtn = document.createElement("button");
+  copyAllBtn.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+      <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+    </svg>`;
+  Object.assign(copyAllBtn.style, {
+    position: "absolute",
+    bottom: "4px",
+    left: "-12px",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    color: "#fff",
+    padding: "0",
+    margin: "0",
+    userSelect: "none",
+  });
+
+  copyAllBtn.onclick = () => {
+    navigator.clipboard.writeText(rawText).then(() => {
+      copyAllBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#10B981" viewBox="0 0 24 24">
+        <path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+      setTimeout(() => {
+        copyAllBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
+            <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+          </svg>`;
+      }, 1500);
+    });
+  };
+
+  element.appendChild(copyAllBtn);
 
   chatInput.disabled = false;
   chatInput.focus();
-
   onFinish();
 }
 
@@ -708,7 +831,7 @@ function parseMarkdown(text) {
     .replace(/### (.*?)(\n|$)/g, '<strong style="font-size:18px;display:block;">$1</strong>\n')
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     .replace(/_(.*?)_/g, "<em>$1</em>")
-    .replace(/`([^`]+)`/g, (m, inlineCode) => `<code class="inline-code">${escapeHtml(inlineCode)}</code>`)
+    .replace(/`([^`]+)`/g, (m, inlineCode) => `<code class="md-inline-code">${escapeHtml(inlineCode)}</code>`)
     .replace(/\n/g, "<br>")
     .replace(/---/g, '<hr style="border: 1px solid #ccc;"/>');
 }

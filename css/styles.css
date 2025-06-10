@@ -191,8 +191,22 @@ body {
 .chat-box {
   flex-grow: 1;
   overflow-y: auto;
-  padding: 20px;
+  overflow-x: hidden;
   scroll-behavior: smooth;
+  width: 94%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0; /* 🔑 penting agar scroll aktif dalam flex container */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.chat-box::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
 
 .containermenu {
@@ -332,6 +346,64 @@ body {
 .message-container.user .message {
   background-color: #cfcfcf;
   color: #000000;
+}
+
+.message-container.bot {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  padding: 4px 0;
+  box-sizing: border-box;
+}
+
+.message-container.bot .message-content {
+  width: 100%; /* ✅ Biar isi melebar penuh */
+  max-width: 100%;
+}
+
+.message-container.bot .message {
+  width: 100%; /* ✅ Ini yang membuat isi merentang penuh */
+  max-width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+.md-heading {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #14b8a6;
+}
+
+.md-bold {
+  font-weight: 700;
+  color: #eab308;
+}
+
+.md-italic {
+  font-style: italic;
+  color: #93c5fd;
+}
+
+.md-inline-code {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  font-family: "Source Code Pro", monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  display: inline-block; /* ✅ Supaya ukurannya pas */
+  width: fit-content; /* ✅ Agar panjang menyesuaikan isi */
+  max-width: 100%; /* ✅ Hindari melampaui batas */
+  white-space: nowrap; /* ✅ Jangan patah baris */
+  vertical-align: middle;
+}
+
+.md-hr {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 12px 0;
 }
 
 .code-toolbar {
@@ -803,64 +875,6 @@ code.inline-code {
   overflow: hidden;
 }
 
-/* Extra large desktop (lebih dari 1200px) */
-@media (min-width: 1201px) {
-  .chat-box {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 250px;
-    padding-right: 250px;
-    scroll-behavior: smooth;
-  }
-}
-
-/* Desktop biasa (769px - 1200px) */
-@media (min-width: 769px) and (max-width: 1200px) {
-  .chat-box {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 30px;
-    padding-right: 30px;
-    scroll-behavior: smooth;
-  }
-}
-
-/* Tablet (481px - 768px) */
-@media (min-width: 481px) and (max-width: 768px) {
-  .chat-box {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 20px;
-    scroll-behavior: smooth;
-  }
-}
-/* Mobile besar (361px - 480px) */
-@media (min-width: 361px) and (max-width: 480px) {
-  .chat-box {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 20px;
-    scroll-behavior: smooth;
-  }
-}
-
-/* Mobile kecil (360px dan kurang) */
-@media (max-width: 360px) {
-  .chat-box {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 280px;
-    padding-right: 280px;
-    scroll-behavior: smooth;
-  }
-}
-
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   body {
@@ -906,8 +920,13 @@ code.inline-code {
   .chat-box {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 10px 30px;
     scroll-behavior: smooth;
+
+    /* Ikuti gaya input */
+    width: 94%;
+    max-width: 700px;
+    margin: 0 auto; /* Tengah */
   }
 
   .copy-btn {
