@@ -370,20 +370,53 @@ body {
   box-sizing: border-box;
 }
 
+.code-wrapper {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 12px;
+  font-family: "Source Code Pro", monospace;
+  box-sizing: border-box;
+}
+
+.code-wrapper pre {
+  margin: 0;
+  padding: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap; /* wrap jika sempit, bisa pakai 'pre' untuk horizontal scroll */
+  color: #d4d4d4;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.code-wrapper code .keyword {
+  color: #569cd6;
+}
+.code-wrapper code .string {
+  color: #ce9178;
+}
+.code-wrapper code .comment {
+  color: #6a9955;
+  font-style: italic;
+}
+.code-wrapper code .number {
+  color: #b5cea8;
+}
+.code-wrapper code .function {
+  color: #dcdcaa;
+}
+
 .md-heading {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #14b8a6;
 }
 
 .md-bold {
   font-weight: 700;
-  color: #eab308;
 }
 
 .md-italic {
   font-style: italic;
-  color: #93c5fd;
 }
 
 .md-inline-code {
