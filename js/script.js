@@ -621,7 +621,7 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
   }
 }
 
-async function typeText(element, rawText, delay = 20, onFinish = () => {}) {
+async function typeText(element, rawText, delay = 10, onFinish = () => {}) {
   element.innerHTML = "";
 
   const escapeHtml = (str) => str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
