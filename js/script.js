@@ -6,33 +6,40 @@ const clearChatBtnn = document.getElementById("clearChatBtnn");
 const clearChatBtnnn = document.getElementById("clearChatBtnnn");
 const leftMenuBtn = document.getElementById("leftMenuBtn");
 const sidebar = document.getElementById("sidebar");
-const sidebars = document.getElementById("sidebar");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 const emptyMessage = document.getElementById("emptyMessage");
 const pusatbantuan = document.getElementById("pusatbantuan");
-
-let messages = [];
-let isLoading = false;
-let autoScrollEnabled = true;
-let teksgambar1 = ""; // Menyimpan hasil teks dari OCR
-let previewImageURL = "";
-
-// Pastikan elemen sudah dideklarasikan
+const inputContainer = document.querySelector(".input-container");
 const menufitur1 = document.getElementById("menufitur1");
 const menufiturawal = document.getElementById("menufiturawal");
 const menufiturkedua = document.getElementById("menufiturkedua");
-
-menufiturawal.style.display = "none";
-menufiturkedua.style.display = "none";
-
 const fileInput = document.getElementById("fileInput");
 const preview = document.getElementById("preview");
 const chatContainer = document.querySelector("section.chat-container");
 const uploadBtn = document.getElementById("uploadbtn");
-
-// Ambil elemen-elemen yang diperlukan dari DOM
 const sidebarToggleBtn = document.getElementById("sidebarToggle");
 const openSidebarBtn = document.getElementById("openSidebarBtn");
+
+let messages = [];
+let isLoading = false;
+let autoScrollEnabled = true;
+let teksgambar1 = "";
+let previewImageURL = "";
+
+function updateChatBoxPadding() {
+  if (!chatBox || !inputContainer) return;
+  const inputHeight = inputContainer.offsetHeight;
+  const extraMargin = 15;
+  chatBox.style.paddingBottom = `${inputHeight + extraMargin}px`;
+}
+
+if (inputContainer) {
+  const observer = new ResizeObserver(updateChatBoxPadding);
+  observer.observe(inputContainer);
+}
+
+menufiturawal.style.display = "none";
+menufiturkedua.style.display = "none";
 
 pusatbantuan.addEventListener("click", () => {
   showToast("Fitur ini segera hadir");
@@ -49,33 +56,20 @@ sidebarOverlay.addEventListener("click", () => {
 });
 
 window.addEventListener("resize", () => {
-  document.querySelector(".chat-box")?.scrollTo(0, document.querySelector(".chat-box").scrollHeight);
+  const chatBoxElement = document.querySelector(".chat-box");
+  if (chatBoxElement) {
+    chatBoxElement.scrollTo(0, chatBoxElement.scrollHeight);
+  }
 });
 
 function showPreview(file) {
-  preview.innerHTML = ""; // Reset preview
-
+  preview.innerHTML = "";
   const fileType = file.type;
   const fileName = file.name;
-
   const wrapper = document.createElement("div");
-  wrapper.style.position = "relative";
-  wrapper.style.display = "inline-block";
-  wrapper.style.marginBottom = "5px";
-
   const closeBtn = document.createElement("img");
   closeBtn.src = "images/close.png";
   closeBtn.alt = "Hapus";
-  closeBtn.style.position = "absolute";
-  closeBtn.style.top = "-5px";
-  closeBtn.style.right = "-5px";
-  closeBtn.style.cursor = "pointer";
-  closeBtn.style.backgroundColor = "#fff";
-  closeBtn.style.border = "1px solid #ccc";
-  closeBtn.style.borderRadius = "50%";
-  closeBtn.style.width = "16px";
-  closeBtn.style.height = "16px";
-  closeBtn.style.padding = "2px";
 
   closeBtn.addEventListener("click", () => {
     preview.innerHTML = "";
@@ -90,30 +84,20 @@ function showPreview(file) {
     const reader = new FileReader();
     reader.onload = function (e) {
       const dataURL = e.target.result;
-
       const img = document.createElement("img");
       img.src = dataURL;
-      img.style.maxWidth = "150px";
-      img.style.borderRadius = "10px";
-      img.style.display = "block";
-      img.style.marginBottom = "5px";
       wrapper.appendChild(img);
-
       preview.appendChild(wrapper);
       wrapper.appendChild(closeBtn);
-
-      previewImageURL = dataURL; // Simpan untuk penggunaan selanjutnya
-
-      // Simpan gambar di localStorage
+      previewImageURL = dataURL;
       localStorage.setItem("previewImage", dataURL);
 
-      // Proses OCR dengan Tesseract menggunakan dataURL
       Tesseract.recognize(dataURL, "eng", {
         logger: (m) => console.log(m),
       })
         .then(({ data: { text } }) => {
           teksgambar1 = text.trim();
-          localStorage.setItem("ocrText", teksgambar1); // Simpan OCR ke localStorage
+          localStorage.setItem("ocrText", teksgambar1);
         })
         .catch((err) => {
           console.error("OCR gagal:", err);
@@ -124,11 +108,7 @@ function showPreview(file) {
     reader.readAsDataURL(file);
   } else {
     const fileText = document.createElement("div");
-    fileText.textContent = "📄 " + fileName;
-    fileText.style.padding = "8px";
-    fileText.style.backgroundColor = "#f0f0f0";
-    fileText.style.borderRadius = "5px";
-    fileText.style.display = "inline-block";
+    fileText.textContent = `📄 ${fileName}`;
     wrapper.appendChild(fileText);
     wrapper.appendChild(closeBtn);
     preview.appendChild(wrapper);
@@ -136,40 +116,29 @@ function showPreview(file) {
 }
 
 document.getElementById("menu4").addEventListener("click", function () {
-  // Ganti URL berikut dengan halaman tujuanmu
   window.location.href = "voice.html";
 });
 
-// Klik ikon upload untuk buka dialog file
-uploadBtn.addEventListener("click", () => {
-  fileInput.click();
-});
+uploadBtn.addEventListener("click", () => fileInput.click());
 
-// Saat file dipilih dari dialog
 fileInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
-  if (!file) return;
-  showPreview(file);
+  if (file) showPreview(file);
 });
 
-// Drag & Drop di seluruh section.chat-container
 chatContainer.addEventListener("dragover", (e) => {
   e.preventDefault();
-  chatContainer.style.border = "2px dashed #007bff";
-  chatContainer.style.backgroundColor = "#e9f5ff";
+  chatContainer.classList.add("drag-over");
 });
 
 chatContainer.addEventListener("dragleave", (e) => {
   e.preventDefault();
-  chatContainer.style.border = "";
-  chatContainer.style.backgroundColor = "";
+  chatContainer.classList.remove("drag-over");
 });
 
 chatContainer.addEventListener("drop", (e) => {
   e.preventDefault();
-  chatContainer.style.border = "";
-  chatContainer.style.backgroundColor = "";
-
+  chatContainer.classList.remove("drag-over");
   if (e.dataTransfer.files.length > 0) {
     const file = e.dataTransfer.files[0];
     fileInput.files = e.dataTransfer.files;
@@ -177,110 +146,58 @@ chatContainer.addEventListener("drop", (e) => {
   }
 });
 
-// [✅ KODE JS FINAL - LEBIH SEDERHANA & AKURAT]
-
-// Hapus trik --vh jika ada, karena kita akan langsung menggunakan visualViewport
-// Hapus juga blok visualViewport yang lama
-
 if (window.visualViewport) {
-  const chatContainer = document.querySelector(".chat-container");
-
   const adjustLayout = () => {
     if (!chatContainer) return;
-
-    // HANYA ini yang kita perlukan.
-    // Atur tinggi container utama (.chat-container) agar sama persis
-    // dengan tinggi area layar yang terlihat. CSS akan mengurus sisanya.
     chatContainer.style.height = `${window.visualViewport.height}px`;
-
-    // Scroll ke pesan terakhir setelah browser selesai mengatur ulang ukuran
-    const chatBox = document.getElementById("chatBox");
     if (chatBox) {
       setTimeout(() => {
         chatBox.scrollTo(0, chatBox.scrollHeight);
-      }, 50); // Diberi sedikit delay untuk hasil yang lebih konsisten
+      }, 50);
     }
   };
-
-  // Panggil fungsi saat ukuran viewport berubah (keyboard muncul/hilang)
   window.visualViewport.addEventListener("resize", adjustLayout);
-
-  // Panggil sekali di awal untuk mengatur layout awal
   adjustLayout();
 }
+
 const text = "Apakah ada yang bisa saya bantu?";
 let index = 0;
 
 function typeWriter() {
   if (index === 0) {
-    // Tampilkan menufitur1 sekali saat mulai ketik
-    menufitur1.style.cssText = `
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      height: 100%;
-    `;
+    menufitur1.style.display = "flex";
   }
-
   if (index < text.length) {
     emptyMessage.textContent += text.charAt(index);
     index++;
     setTimeout(typeWriter, 100);
   } else {
-    menufiturawal.style.display = "block";
-    menufiturkedua.style.display = "block";
-    menufiturawal.style.cssText = `
-      margin-top: 20px;
-      bottom: 1rem;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 1rem;
-      align-items: center;
-      justify-content: center;
-      padding: 0 1rem;
-      max-width: 100%;
-      box-sizing: border-box;
-    `;
-    menufiturkedua.style.cssText = menufiturawal.style.cssText;
+    menufiturawal.style.display = "flex";
+    menufiturkedua.style.display = "flex";
   }
 }
 
 typeWriter();
 
-// Auto resize textarea
 chatInput.addEventListener("input", () => {
   chatInput.style.height = "auto";
   const maxHeight = 120;
-  chatInput.style.height = Math.min(chatInput.scrollHeight, maxHeight) + "px";
+  chatInput.style.height = `${Math.min(chatInput.scrollHeight, maxHeight)}px`;
 });
 
-// Fungsi untuk mendeteksi apakah perangkat adalah mobile
 function isMobileDevice() {
-  return window.innerWidth <= 768; // Anda dapat menyesuaikan lebar ini sesuai kebutuhan
+  return window.innerWidth <= 768;
 }
 
-// Submit pesan dengan enter tanpa shift di laptop, dan tambah baris di mobile
 chatInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    if (isMobileDevice()) {
-      // Di perangkat mobile, tekan Enter untuk menambah baris baru
-      // Tidak ada tindakan lain, biarkan textarea menambah baris baru
-    } else {
-      // Di laptop, jika tidak ada shift, kirim pesan
-      if (!e.shiftKey) {
-        e.preventDefault(); // Mencegah penambahan baris baru
-        chatForm.requestSubmit(); // Kirim form
-      }
-    }
+  if (e.key === "Enter" && !isMobileDevice() && !e.shiftKey) {
+    e.preventDefault();
+    chatForm.requestSubmit();
   }
 });
 
-// Load pesan dari localStorage saat halaman dibuka
 window.addEventListener("DOMContentLoaded", () => {
+  updateChatBoxPadding();
   loadMessagesFromStorage();
 });
 
@@ -289,7 +206,6 @@ chatBox.addEventListener("scroll", () => {
   const distanceFromBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight;
   autoScrollEnabled = distanceFromBottom < threshold;
 });
-
 // Modifikasi pada event listener submit form chat
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -731,15 +647,36 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
 }
 
 function highlightCode(code) {
-  return code
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/(\/\/.*)/g, '<span class="comment">$1</span>')
-    .replace(/\b(const|let|var|function|return|if|else|for|while|await|async|try|catch|throw|new|class|this)\b/g, '<span class="keyword">$1</span>')
-    .replace(/(["'`].*?["'`])/g, '<span class="string">$1</span>')
-    .replace(/\b\d+(\.\d+)?\b/g, '<span class="number">$&</span>')
-    .replace(/\b(console|log|document|window|alert|prompt)\b/g, '<span class="function">$1</span>');
+  // 1. Lakukan HTML escaping terlebih dahulu untuk seluruh kode.
+  // Ini sangat penting untuk mencegah injection dan memastikan karakter seperti '<' dan '>'
+  // dalam kode asli (misal: "i < 5") tidak rusak oleh tag <span> yang kita tambahkan.
+  let escapedCode = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  // 2. Terapkan highlighting dengan urutan yang benar (dari yang paling spesifik/panjang).
+  // Urutan ini penting agar, misalnya, keyword di dalam string atau komentar tidak ikut ter-highlight.
+  return (
+    escapedCode
+      // Komentar (multi-baris dan satu baris)
+      .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="comment">$1</span>')
+      .replace(/(\/\/.*)/g, '<span class="comment">$1</span>')
+
+      // Strings (menangani escape quotes seperti \" atau \' di dalamnya)
+      .replace(/"((?:\\.|[^"\\])*)"/g, '<span class="string">"$1"</span>')
+      .replace(/'((?:\\.|[^'\\])*)'/g, "<span class=\"string\">'$1'</span>")
+      .replace(/`((?:\\.|[^`\\])*)`/g, '<span class="string">`$1`</span>')
+
+      // Keywords
+      .replace(/\b(const|let|var|function|return|if|else|for|while|await|async|try|catch|throw|new|class|this|import|export|from|default|extends|super)\b/g, '<span class="keyword">$1</span>')
+
+      // Angka
+      .replace(/\b(\d+(\.\d+)?)\b/g, '<span class="number">$1</span>')
+
+      // Nama fungsi setelah keyword "function"
+      .replace(/\b(function)\s+([a-zA-Z0-9_$]+)/g, '<span class="keyword">$1</span> <span class="function-name">$2</span>')
+
+      // Objek/fungsi bawaan umum
+      .replace(/\b(console|log|document|window|alert|prompt|JSON|stringify|parse|Math|Date|Array|Object)\b/g, '<span class="builtin">$1</span>')
+  );
 }
 
 async function typeText(element, rawText, delay = 10, onFinish = () => {}) {
