@@ -177,28 +177,51 @@ chatContainer.addEventListener("drop", (e) => {
   }
 });
 
-// [KODE JS INI SUDAH SESUAI]
+// [KODE JS FINAL - PALING STABIL]
+
+// Trik untuk mengatasi masalah 100vh di browser mobile
+const setVhVariable = () => {
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty("--vh", `${vh}px`);
+};
+// Panggil saat halaman dimuat dan saat ukuran jendela berubah
+window.addEventListener("resize", setVhVariable);
+setVhVariable();
 
 if (window.visualViewport) {
   const chatContainer = document.querySelector(".chat-container");
+  const inputContainer = document.querySelector(".input-container");
+  const initialBottom = 10;
 
   const adjustLayout = () => {
-    if (!chatContainer) return;
+    if (!chatContainer || !inputContainer) return;
 
-    // Atur tinggi .chat-container agar sama persis dengan area yang terlihat.
-    chatContainer.style.height = `${window.visualViewport.height}px`;
-    
+    const vpHeight = window.visualViewport.height;
+    const vpOffsetTop = window.visualViewport.offsetTop;
+
+    // Atur tinggi dan posisi container utama
+    chatContainer.style.height = `${vpHeight}px`;
+    chatContainer.style.top = `${vpOffsetTop}px`;
+
+    // Untuk input container, kita hitung posisi bottomnya relatif ke viewport
+    const keyboardHeight = window.innerHeight - (vpOffsetTop + vpHeight);
+
+    if (keyboardHeight > 50) {
+      inputContainer.style.bottom = `${keyboardHeight + initialBottom}px`;
+    } else {
+      inputContainer.style.bottom = `${initialBottom}px`;
+    }
+
     // Scroll ke pesan terakhir
     const chatBox = document.getElementById("chatBox");
     if (chatBox) {
-        chatBox.scrollTo(0, chatBox.scrollHeight);
+      setTimeout(() => chatBox.scrollTo(0, chatBox.scrollHeight), 50);
     }
   };
 
   window.visualViewport.addEventListener("resize", adjustLayout);
-  adjustLayout(); // Panggil sekali untuk set layout awal
+  adjustLayout();
 }
-
 const text = "Apakah ada yang bisa saya bantu?";
 let index = 0;
 

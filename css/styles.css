@@ -156,18 +156,27 @@ body {
   pointer-events: all;
 }
 
+/* Ganti blok .chat-container lama Anda dengan yang ini */
+
 .chat-container {
-  flex: 1;
+  /* KUNCI #1: Menjadi 'kanvas' atau jangkar untuk .input-container */
+  position: relative;
+
+  /* KUNCI #2: Mengatur anak-anaknya (chat-box & input-container) dalam format kolom */
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  height: auto;
-  color: #e0e0e0;
-  inset: 0;
-  height: 100vh; /* Awalnya, isi seluruh tinggi viewport */
-  width: 100%;
-}
 
+  /* KUNCI #3: Memastikan container mengisi sisa ruang yang tersedia */
+  width: 100%;
+  height: 100%; /* Lebih andal daripada 100vh jika html & body juga 100% */
+
+  /* Mencegah elemen 'absolute' di dalamnya meluber keluar */
+  overflow: hidden;
+
+  /* Gaya visual Anda */
+  color: #e0e0e0;
+  background-color: #212121; /* Contoh warna latar belakang */
+}
 .chat-header {
   display: flex;
   align-items: center;
@@ -564,18 +573,17 @@ code {
 /* [✅ PERBAIKAN FINAL] CSS untuk Input Container yang Melayang */
 
 .input-container {
-  /* 1. Menggunakan 'fixed' untuk efek melayang di atas segalanya */
-  position: relative; /* KUNCI #1: Ini menjadi jangkar untuk elemen 'absolute' di dalamnya */
-  overflow: hidden;   /* Mencegah elemen meluber keluar */
+  /* KUNCI #2: Membuat elemen ini 'melayang' di dalam induknya yang 'relative' */
+  position: absolute;
 
-  /* 2. Mengatur posisi awal di bawah, sedikit mengambang */
-  bottom: 0px;
+  /* Mengatur posisi di dasar 'kanvas' dengan sedikit jarak */
+  bottom: 10px;
 
-  /* 3. Trik untuk centering horizontal elemen 'fixed' */
+  /* Trik untuk centering horizontal di dalam induknya */
   left: 50%;
   transform: translateX(-50%);
 
-  /* 4. Mencegah animasi patah-patah saat keyboard muncul */
+  /* Animasi saat posisinya diubah oleh JavaScript */
   transition: bottom 0.25s ease-out;
 
   /* Gaya visual Anda yang sudah bagus dipertahankan */
@@ -591,6 +599,7 @@ code {
   border-radius: 16px;
   z-index: 20;
 }
+
 .input-container textarea {
   flex: 1;
   width: 100%;
