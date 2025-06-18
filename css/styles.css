@@ -48,7 +48,7 @@ body {
   font-family: "Inter", system-ui, sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(-45deg, #000000, #000000, #001f3f, #000000, #000000, #002852, #000000);
+  background: linear-gradient(-45deg, #212121, #212121, #212121, #212121, #212121, #212121, #212121);
   background-size: 500% 500%;
   animation: animatedGradient 30s ease infinite;
   color: #e0e0e0;
@@ -82,12 +82,25 @@ body {
   padding: 10px 15px;
 }
 
+/* GANTI ATURAN LAMA DENGAN YANG INI */
 .menu-btn {
   background: none;
   border: none;
   color: #fff;
-  font-size: 1.8em;
   cursor: pointer;
+
+  /* Pengaturan Ukuran Baru */
+  font-size: 1.6em; /* Ukuran untuk ikon ☰ di dalamnya */
+  width: 25px; /* Lebar area tombol */
+  height: 25px; /* Tinggi area tombol */
+  padding: 0; /* Hapus padding default agar ukuran presisi */
+
+  /* Trik untuk membuat ikon selalu di tengah tombol */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%; /* Membuatnya menjadi lingkaran, hapus jika ingin kotak */
+  transition: background-color 0.2s ease;
 }
 
 .container {
@@ -156,8 +169,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 20px;
-  border-bottom: 1px solid #535353;
+  padding: 18px 20px;
+  border-bottom: 0px solid #535353;
 }
 
 .chat-header p {
@@ -343,16 +356,17 @@ body {
   margin-right: 0;
 }
 
+/* GANTI ATURAN LAMA DENGAN YANG INI */
 .message-container.user .message {
-  background-color: #cfcfcf;
-  color: #000000;
+  background-color: #2d2d2d; /* Background diubah menjadi abu-abu */
+  color: #ffffff; /* Warna teks diubah menjadi putih agar terbaca */
 }
 
 .message-container.bot {
   width: 100%;
   display: flex;
   justify-content: flex-start;
-  padding: 4px 0;
+  padding: 0px 0;
   box-sizing: border-box;
 }
 
@@ -364,7 +378,7 @@ body {
 .message-container.bot .message {
   width: 100%; /* ✅ Ini yang membuat isi merentang penuh */
   max-width: 100%;
-  padding: 16px;
+  padding: 22px;
   border-radius: 14px;
   color: #f9f9f9;
   box-sizing: border-box;
@@ -552,14 +566,13 @@ code {
   justify-content: center;
   width: 94%;
   max-width: 700px;
-  margin: 8px auto; /* Sedikit jarak dari bawah */
-  padding: 0px 16px;
+  margin: 0px auto; /* Sedikit jarak dari bawah */
+  padding: 4px 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(18, 18, 18, 0.65); /* Transparan gelap */
+  background: #212121; /* Transparan gelap */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px); /* Safari */
   border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35); /* Efek mengambang */
   z-index: 20;
   transition: all 0.3s ease;
 }
@@ -604,7 +617,7 @@ code {
 .input-bawah-send button {
   margin-right: 8px; /* Ganti dari margin-left ke margin-right */
   margin-bottom: 6px;
-  background-color: #b5b5b5;
+  background-color: #ffffff;
   border: none;
   border-radius: 50%;
   padding: 5px;
@@ -623,6 +636,8 @@ code {
   border-radius: 50%;
   padding: 5px;
   cursor: pointer;
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: flex-start; /* Tengah dalam tombol */
@@ -630,9 +645,7 @@ code {
 }
 
 .input-container button:hover {
-  background-color: #2d2d2e;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  transform: scale(1.05); /* Sedikit membesar saat hover */
+  background-color: #6e6e6e;
 }
 
 .input-container button .material-icons {
@@ -645,11 +658,11 @@ code {
   font-size: 14px;
   color: #888;
   padding: 8px 0;
-  background-color: rgba(18, 18, 18, 0.6); /* Hitam transparan */
+  background-color: #212121; /* Hitam transparan */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px); /* Untuk Safari */
   margin-top: 0px;
-  border-top: 1px solid #535353;
+  border-top: 0px solid #535353;
 }
 
 .loading-animation .dot {
@@ -676,6 +689,34 @@ code {
   font-family: monospace;
   font-size: 16px;
   color: #ddd;
+}
+
+/* GANTI CSS LAMA ANDA DENGAN YANG INI */
+
+/* Styling untuk Notifikasi Toast (Gaya Baru Sesuai Gambar) */
+.toast-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f0f0f0; /* Warna abu-abu terang */
+  color: #212121; /* Warna teks gelap */
+  padding: 10px 20px;
+  border-radius: 8px; /* Sudut sedikit melengkung, tidak pil */
+  border: 1px solid #dcdcdc; /* Garis tepi tipis agar terlihat tegas */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Bayangan lebih halus */
+  z-index: 9999;
+  font-size: 14px;
+  font-weight: 400; /* Berat font normal */
+  opacity: 0;
+  transform: translate(-50%, 20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+.toast-notification.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 @keyframes blink {
@@ -752,20 +793,234 @@ code {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 20px;
-  /* Glassmorphism dark tipis */
-  background-color: rgba(18, 18, 18, 0.6); /* Hitam transparan */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px); /* Untuk Safari */
-  border-right: 1px solid #535353;
+  padding: 4px 12px 4px 12px;
+  background-color: #121212; /* Diubah menjadi hitam solid */
+  /* backdrop-filter dan -webkit-backdrop-filter dihapus karena tidak lagi transparan */
+  border-right: 0px solid #535353;
+  width: 280px;
 }
 
-/* Chat list tetap di atas dan dapat scroll jika banyak */
+/* --- Gaya Baru untuk Isi Sidebar --- */
+
+/* Kolom Pencarian */
+.sidebar-search {
+  display: flex;
+  align-items: center;
+  background-color: #2d2d2d;
+  border-radius: 90px;
+  padding: 10px 16px;
+  margin-bottom: 1rem;
+}
+
+.sidebar-search .search-icon {
+  color: #888;
+  margin-right: 10px;
+  font-size: 22px;
+}
+
+.sidebar-search input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e0e0e0;
+  font-size: 14px;
+}
+
+.sidebar-search input::placeholder {
+  color: #888;
+}
+
+/* Tombol Aksi (Chat Baru & Jelajahi) */
+.sidebar-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Jarak antara ikon dan teks */
+  width: 100%;
+  background-color: transparent;
+  border: 0px solid #444;
+  color: #e0e0e0;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-radius: 90px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-action-btn:hover {
+  background-color: #2d2d2d;
+  border-radius: 90px;
+}
+
+/* Garis Pemisah */
+.sidebar-divider {
+  border: none;
+  border-top: 0px solid #333;
+  margin: 12px 0;
+}
+
+/* Judul Section (Terbaru) */
+.sidebar-heading {
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  padding: 0 12px;
+  margin-bottom: 8px;
+  margin-top: 12px;
+}
+
+/* Container untuk header sidebar */
+.sidebar-header {
+  display: flex; /* Mengaktifkan Flexbox */
+  justify-content: space-between; /* Mendorong item ke ujung: satu ke kiri, satu ke kanan */
+  align-items: center; /* Menyejajarkan item secara vertikal di tengah */
+  height: 60px; /* Menetapkan tinggi standar untuk header */
+}
+
+/* Gaya umum untuk tombol ikon (close dan search) */
+.sidebar-icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #ffffff; /* Warna ikon standar Google */
+  padding: 8px; /* Membuat area klik lebih besar */
+  border-radius: 50%; /* Membuat efek hover melingkar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Atur ukuran font untuk semua ikon di dalam tombol ikon */
+.sidebar-icon-btn .material-icons {
+  font-size: 20px; /* <<< ATUR UKURAN YANG DIINGINKAN DI SINI */
+}
+
+/* Efek saat mouse diarahkan ke tombol ikon */
+.sidebar-icon-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Untuk menyembunyikan kontainer search pada awalnya */
+.sidebar-search-container.hidden {
+  display: none;
+}
+
+/* Penyesuaian untuk Chat List & Footer */
 .chat-list {
-  flex-grow: 0;
-  max-height: 300px; /* sesuaikan jika perlu */
+  flex-grow: 1; /* Biarkan daftar chat mengisi sisa ruang */
   overflow-y: auto;
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
+  padding-left: 0;
+}
+
+.sidebar-footer {
+  margin-top: auto; /* Mendorong footer ke bagian paling bawah */
+  padding-top: 1rem;
+  border-top: 0px solid #333;
+}
+
+/* --- [BARU] Gaya untuk Dialog Konfirmasi Kustom --- */
+
+/* --- [PERBAIKAN] Gaya untuk Dialog Konfirmasi Kustom (Tema Gelap & Lebih Kecil) --- */
+
+/* Latar belakang gelap yang menutupi seluruh layar */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Dibuat sedikit lebih gelap */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+/* Kelas untuk menampilkan dialog */
+.dialog-overlay:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+
+/* Kotak dialog di tengah */
+.dialog-box {
+  background-color: #212121; /* [✅ Diubah] Background menjadi gelap */
+  padding: 20px; /* [✅ Diperkecil] Padding internal dikurangi */
+  border-radius: 10px; /* Sedikit lebih kecil */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  max-width: 360px; /* [✅ Diperkecil] Lebar maksimum dikurangi dari 400px */
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.dialog-overlay:not(.hidden) .dialog-box {
+  transform: scale(1);
+}
+
+.dialog-title {
+  margin-top: 0;
+  font-size: 1.15rem; /* [✅ Diperkecil] Ukuran font judul dikurangi */
+  font-weight: 600;
+  color: #e0e0e0; /* [✅ Diubah] Warna teks menjadi putih keabuan agar kontras */
+}
+
+.dialog-message {
+  margin-bottom: 24px;
+  color: #bdbdbd; /* [✅ Diubah] Warna teks pesan menjadi abu-abu terang */
+  line-height: 1.5;
+  font-size: 0.95rem; /* [✅ Diperkecil] Ukuran font pesan dikurangi */
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Gaya umum untuk tombol */
+.dialog-buttons .btn {
+  border: none;
+  padding: 8px 20px; /* [✅ Diperkecil] Padding tombol dikurangi */
+  border-radius: 6px; /* [✅ Diperkecil] */
+  font-size: 0.9rem; /* [✅ Diperkecil] */
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.dialog-buttons .btn:active {
+  transform: scale(0.97);
+}
+
+/* [✅ Diubah] Tombol sekunder (Batal) untuk tema gelap */
+.btn-secondary {
+  background-color: #424242; /* Warna abu-abu gelap */
+  color: #e0e0e0;
+}
+
+.btn-secondary:hover {
+  background-color: #555555;
+}
+
+/* Tombol bahaya (Hapus) sudah cocok dengan tema gelap */
+.btn-danger {
+  background-color: #d32f2f; /* Warna merah yang sedikit lebih soft */
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c62828;
 }
 
 /* Login/Register */
@@ -800,28 +1055,23 @@ code {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  gap: 12px; /* Jarak antara ikon dan teks */
   width: 100%;
+  background-color: transparent;
+  border: 0px solid #444;
+  color: #e0e0e0;
   padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 16px;
+  margin-bottom: 10px;
+  border-radius: 90px;
   cursor: pointer;
-  margin-bottom: 20px;
-
-  /* Warna & efek glassmorphism */
-  background-color: rgba(18, 18, 18, 0.4); /* transparan hitam tipis */
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-
-  color: #ffffff;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
 }
 
 .help-center-btn:hover {
   background-color: rgba(30, 30, 30, 0.6);
-  transform: scale(1.02);
 }
 
 .help-center-btn .icon {
@@ -935,7 +1185,7 @@ code.inline-code {
   }
 
   .navbar div {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1.2em;
   }
   .navbar .trash {
@@ -984,37 +1234,50 @@ code.inline-code {
   }
 
   /* Sidebar geser dan overlay */
+  /* Letakkan atau perbarui kode ini di dalam blok @media (max-width: 768px) { ... } */
+
   .sidebar {
-    position: fixed;
-    top: 50px;
+    position: fixed; /* 1. Membuatnya "melayang" dan posisinya tetap */
+    top: 0; /* 2. Menempel di paling atas layar */
     left: 0;
     width: 250px;
-    height: calc(100vh - 50px);
+    height: 100vh; /* 3. Tingginya 100% dari layar */
+    z-index: 2000; /* 4. Lapisan paling depan, menimpa elemen lain */
+
+    /* Properti untuk menyembunyikan dan transisi */
     transform: translateX(-100%);
     transition: transform 0.3s ease;
-    z-index: 2000;
+
+    /* Styling Anda yang lain */
     padding: 8px;
-    /* Glassmorphism dark tipis */
-    background-color: rgba(18, 18, 18, 0.6); /* Hitam transparan */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px); /* Untuk Safari */
+    background-color: #121212;
   }
 
   .sidebar.active {
+    /* Memunculkan sidebar ke dalam layar saat class 'active' ditambahkan */
     transform: translateX(0);
   }
 
-  /* Overlay aktif saat sidebar aktif */
   .sidebar-overlay {
     display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1500; /* Di bawah sidebar, tapi di atas konten lain */
+
+    /* Efek transisi untuk overlay */
+    background-color: rgba(0, 0, 0, 0.5); /* Latar belakang gelap transparan */
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
-    z-index: 1500;
   }
+
   .sidebar-overlay.active {
+    /* Memunculkan overlay saat sidebar aktif */
     opacity: 1;
-    pointer-events: all;
+    pointer-events: all; /* Agar bisa diklik untuk menutup sidebar */
   }
 
   .profile {
@@ -1067,21 +1330,25 @@ code.inline-code {
   }
 
   .input-container {
-    padding: 8px 12px;
+    padding: 1px 6px;
   }
 
   .input-container textarea {
-    font-size: 14px;
+    font-size: 16px;
     padding: 10px 14px;
     min-height: 40px;
     max-height: 100px;
   }
 
   .input-container button {
-    padding: 10px;
+    padding: 4px;
     margin-left: 8px;
-    width: 42px;
-    height: 42px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
+  }
+
+  .input-container button:hover {
+    background-color: #ffffff;
   }
 }

@@ -23,99 +23,90 @@
         });"
     ></script>
 
-    <!-- KaTeX CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
-    <!-- KaTeX JS -->
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250316_191334.jpg?alt=media&token=afb5c73d-872f-4e27-ad76-13f4c2b4481a" type="image/png" />
     <link rel="stylesheet" href="css/styles.css" />
-    <!-- PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
-    <!-- Mammoth.js (untuk .docx) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
 
-    <!-- JSZip (untuk .pptx) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   </head>
   <body class="fade-in">
-    <!-- Navbar Mobile -->
     <div class="navbar">
-      <button class="menu-btn" id="leftMenuBtn" aria-label="Toggle sidebar">&#9776;</button>
+      <button class="menu-btn" id="leftMenuBtn" aria-label="Toggle sidebar" style="font-size: 20px">&#9776;</button>
       <div>Ai Digging</div>
-      <img src="images/icons_write.png" alt="trash" class="trash" title="Delete chat" id="clearChatBtn" style="height: 25px; width: 25px" />
+      <img src="images/icons_write.png" alt="trash" class="trash" title="Delete chat" id="clearChatBtn" style="height: 20px; width: 20px" />
     </div>
 
     <div class="container">
       <aside class="sidebar" id="sidebar">
-        <h2>Riwayat Chat</h2>
-        <p>Segera Hadir seiring waktu.</p>
+        <div class="sidebar-header" style="padding-left: 8px; padding-right: 8px; margin-bottom: 10px">
+          <button class="menu-btn" aria-label="Toggle sidebar" style="font-size: 20px">&#9776;</button>
 
-        <ul class="chat-list" style="display: none">
-          <li class="chat">Chat 1</li>
-          <li class="chat">Chat 2</li>
-          <li class="chat">Chat 3</li>
-          <li class="chat">Chat 4</li>
-        </ul>
-
-        <!-- Login/Register -->
-        <div class="auth-buttons" style="display: none">
-          <button class="login-btn" type="button">Masuk</button>
-          <button class="register-btn" type="button">Daftar</button>
-        </div>
-
-        <!-- Pusat Bantuan -->
-        <div class="sidebar-footer">
-          <button class="help-center-btn" type="button" onclick="alert('Pusat bantuan akan segera hadir!')">
-            <img class="icon" src="images/help.png" alt="Help" />
-            <span>Pusat Bantuan</span>
+          <button class="sidebar-icon-btn" id="searchBtn">
+            <span class="material-icons">search</span>
           </button>
         </div>
 
-        <!-- Profil di paling bawah -->
-        <div class="sidebar-footer" style="display: none">
-          <div class="profile">
+        <button class="sidebar-action-btn" id="clearChatBtnnn">
+          <img src="images/icons_write.png" alt="trash" class="trash" title="Delete chat" style="height: 20px; width: 20px; filter: brightness(0) invert(1)" />
+          <span>Chat Baru</span>
+        </button>
+
+        <button class="sidebar-action-btn">
+          <span class="material-icons" style="font-size: 20px">apps</span>
+          <span>Jelajahi Developer</span>
+        </button>
+
+        <h3 class="sidebar-heading">Terbaru</h3>
+
+        <div class="sidebar-footer">
+          <button class="help-center-btn" id="pusatbantuan" type="button">
+            <span class="material-icons">settings</span>
+            <span>Setelan & bantuan</span>
+          </button>
+
+          <div class="profile" style="display: none">
             <img src="https://i.pravatar.cc/40" alt="Profile Image" class="profile-image-sidebar" />
             <span class="profile-name">Profile</span>
           </div>
         </div>
       </aside>
 
-      <!-- Overlay -->
       <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-      <!-- Chat Container -->
       <section class="chat-container">
         <header class="chat-header">
           <p>Ai Digging</p>
-          <img src="images/icons_write.png" alt="trash" class="trash" title="Delete chat" id="clearChatBtnn" style="height: 25px; width: 25px" />
+          <img src="images/icons_write.png" alt="trash" class="trash" title="Delete chat" id="clearChatBtnn" style="height: 20px; width: 20px" />
         </header>
 
         <div class="chat-box" id="chatBox">
-          <!-- Messages will appear here -->
           <div class="containermenu" id="menufitur1">
             <div id="emptyMessage" class="empty-message"></div>
             <div class="info-awal-message"></div>
             <div class="suggestion-options" id="menufiturawal">
-              <button id="menu1">
+              <button id="menu1" style="display: none">
                 <img src="images/icons_analyze.png" alt="Reset" class="icon" />
                 Riset
               </button>
-              <button id="menu2">
+              <button id="menu2" style="display: none">
                 <img src="images/icons_graph.png" alt="Analiysiz" class="icon" />
                 Analisis
               </button>
-              <button id="menu3">
+              <button id="menu3" style="display: none">
                 <img src="images/icons_coding.png" alt="Code" class="icon" />
                 Code
               </button>
             </div>
             <div class="suggestion-options" id="menufiturkedua">
-              <button id="menu4">
+              <button id="menu4" style="display: none">
                 <span class="material-icons" style="color: black">mic</span>
                 Bicara Suara
               </button>
-              <button id="menu5">
+              <button id="menu5" style="display: none">
                 <img src="images/icons_jurn.png" alt="Jurnal" class="icon" />
                 Buat Jurnal
               </button>
@@ -124,29 +115,35 @@
         </div>
 
         <form class="input-container" id="chatForm">
-          <!-- PREVIEW FILE DI ATAS INPUT -->
           <div id="preview" style="margin-bottom: 10px"></div>
 
           <textarea id="chatInput" placeholder="Tanyakan apa saja" rows="1" autocomplete="off" required></textarea>
 
           <div class="input-bawah-send">
-            <!-- Tombol Upload -->
-            <img src="images/upload.png" class="upload-file" alt="Send" id="uploadbtn" style="width: 35px; height: 35px; cursor: pointer" />
+            <img src="images/ic_attach_file_grey.png" class="upload-file" alt="Send" id="uploadbtn" />
 
-            <!-- Input File Tersembunyi -->
             <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.doc,.docx,.ppt,.pptx,.pdf" style="display: none" />
 
-            <!-- Tombol Kirim -->
             <button type="submit" aria-label="Send message">
               <img src="images/up.png" alt="Send" style="width: 20px; height: 20px" />
             </button>
           </div>
         </form>
+
+        <footer class="footer">© 2025 AI DIGGING. By M Putra Ramadhani-Id</footer>
       </section>
     </div>
 
-    <footer class="footer">© 2025 AI DIGGING. By M Putra Ramadhani-Id</footer>
-
+    <div class="dialog-overlay hidden" id="customDialogOverlay">
+      <div class="dialog-box">
+        <h3 class="dialog-title" id="dialogTitle">Konfirmasi Tindakan</h3>
+        <p class="dialog-message" id="dialogMessage">Apakah Anda yakin ingin melanjutkan?</p>
+        <div class="dialog-buttons">
+          <button class="btn btn-secondary" id="dialogCancelBtn">Batal</button>
+          <button class="btn btn-danger" id="dialogConfirmBtn">Hapus</button>
+        </div>
+      </div>
+    </div>
     <script src="js/script.js"></script>
   </body>
 </html>
