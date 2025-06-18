@@ -180,28 +180,32 @@ chatContainer.addEventListener("drop", (e) => {
 // [✅ KODE BARU YANG LEBIH STABIL]
 
 if (window.visualViewport) {
-  const chatContainer = document.querySelector(".chat-container");
+  const inputContainer = document.querySelector(".input-container");
 
-  const adjustLayout = () => {
-    // Langsung atur tinggi container sesuai dengan tinggi viewport yang terlihat.
-    // Ini secara otomatis akan mendorong input bar ke atas saat keyboard muncul.
-    chatContainer.style.height = `${window.visualViewport.height}px`;
+  function adjustInputContainer() {
+    // visualViewport.height = tinggi viewport visible (tidak termasuk keyboard)
+    // window.innerHeight = tinggi viewport total (termasuk area keyboard)
+    // Kita set jarak bottom sesuai tinggi keyboard
+    const keyboardHeight = window.innerHeight - window.visualViewport.height;
 
-    // Kita juga bisa menyesuaikan offset jika ada elemen UI lain dari browser
-    chatContainer.style.top = `${window.visualViewport.offsetTop}px`;
-    
-    // Scroll ke bawah saat keyboard muncul, jika diperlukan
-    const chatBox = document.getElementById("chatBox");
-    if (chatBox) {
-        chatBox.scrollTo(0, chatBox.scrollHeight);
+    if (keyboardHeight > 100) {
+      // Keyboard muncul
+      inputContainer.style.bottom = keyboardHeight + "px";
+    } else {
+      // Keyboard hilang
+      inputContainer.style.bottom = "0px";
     }
-  };
+  }
 
-  // Panggil fungsi saat ukuran viewport berubah (keyboard muncul/hilang)
-  window.visualViewport.addEventListener("resize", adjustLayout);
+  window.visualViewport.addEventListener("resize", adjustInputContainer);
+  window.visualViewport.addEventListener("scroll", adjustInputContainer);
 
-  // Panggil sekali di awal untuk mengatur layout awal
-  adjustLayout();
+  // Panggil sekali saat load
+  adjustInputContainer();
+} else {
+  // Fallback jika visualViewport tidak ada (lama atau desktop)
+  // Cukup set fixed di bawah viewport saja
+  // Bisa ditambahkan event resize untuk lebih canggih
 }
 const text = "Apakah ada yang bisa saya bantu?";
 let index = 0;
