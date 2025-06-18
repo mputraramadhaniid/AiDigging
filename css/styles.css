@@ -577,7 +577,7 @@ code {
   position: absolute;
 
   /* Mengatur posisi di dasar 'kanvas' dengan sedikit jarak */
-  bottom: 10px;
+  bottom: 40px;
 
   /* Trik untuk centering horizontal di dalam induknya */
   left: 50%;

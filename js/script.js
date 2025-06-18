@@ -177,49 +177,35 @@ chatContainer.addEventListener("drop", (e) => {
   }
 });
 
-// [KODE JS FINAL - PALING STABIL]
+// [✅ KODE JS FINAL - LEBIH SEDERHANA & AKURAT]
 
-// Trik untuk mengatasi masalah 100vh di browser mobile
-const setVhVariable = () => {
-  let vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty("--vh", `${vh}px`);
-};
-// Panggil saat halaman dimuat dan saat ukuran jendela berubah
-window.addEventListener("resize", setVhVariable);
-setVhVariable();
+// Hapus trik --vh jika ada, karena kita akan langsung menggunakan visualViewport
+// Hapus juga blok visualViewport yang lama
 
 if (window.visualViewport) {
   const chatContainer = document.querySelector(".chat-container");
-  const inputContainer = document.querySelector(".input-container");
-  const initialBottom = 10;
 
   const adjustLayout = () => {
-    if (!chatContainer || !inputContainer) return;
+    if (!chatContainer) return;
 
-    const vpHeight = window.visualViewport.height;
-    const vpOffsetTop = window.visualViewport.offsetTop;
+    // HANYA ini yang kita perlukan.
+    // Atur tinggi container utama (.chat-container) agar sama persis
+    // dengan tinggi area layar yang terlihat. CSS akan mengurus sisanya.
+    chatContainer.style.height = `${window.visualViewport.height}px`;
 
-    // Atur tinggi dan posisi container utama
-    chatContainer.style.height = `${vpHeight}px`;
-    chatContainer.style.top = `${vpOffsetTop}px`;
-
-    // Untuk input container, kita hitung posisi bottomnya relatif ke viewport
-    const keyboardHeight = window.innerHeight - (vpOffsetTop + vpHeight);
-
-    if (keyboardHeight > 50) {
-      inputContainer.style.bottom = `${keyboardHeight + initialBottom}px`;
-    } else {
-      inputContainer.style.bottom = `${initialBottom}px`;
-    }
-
-    // Scroll ke pesan terakhir
+    // Scroll ke pesan terakhir setelah browser selesai mengatur ulang ukuran
     const chatBox = document.getElementById("chatBox");
     if (chatBox) {
-      setTimeout(() => chatBox.scrollTo(0, chatBox.scrollHeight), 50);
+      setTimeout(() => {
+        chatBox.scrollTo(0, chatBox.scrollHeight);
+      }, 50); // Diberi sedikit delay untuk hasil yang lebih konsisten
     }
   };
 
+  // Panggil fungsi saat ukuran viewport berubah (keyboard muncul/hilang)
   window.visualViewport.addEventListener("resize", adjustLayout);
+
+  // Panggil sekali di awal untuk mengatur layout awal
   adjustLayout();
 }
 const text = "Apakah ada yang bisa saya bantu?";
