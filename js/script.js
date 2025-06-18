@@ -647,36 +647,15 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
 }
 
 function highlightCode(code) {
-  // 1. Lakukan HTML escaping terlebih dahulu untuk seluruh kode.
-  // Ini sangat penting untuk mencegah injection dan memastikan karakter seperti '<' dan '>'
-  // dalam kode asli (misal: "i < 5") tidak rusak oleh tag <span> yang kita tambahkan.
-  let escapedCode = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // Fungsi ini diubah untuk hanya menampilkan kode sebagai teks biasa (plain text)
+  // dengan aman di dalam halaman HTML, tanpa menambahkan warna atau tag span.
+  // Proses ini disebut HTML escaping, yang sangat penting untuk keamanan.
 
-  // 2. Terapkan highlighting dengan urutan yang benar (dari yang paling spesifik/panjang).
-  // Urutan ini penting agar, misalnya, keyword di dalam string atau komentar tidak ikut ter-highlight.
-  return (
-    escapedCode
-      // Komentar (multi-baris dan satu baris)
-      .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="comment">$1</span>')
-      .replace(/(\/\/.*)/g, '<span class="comment">$1</span>')
-
-      // Strings (menangani escape quotes seperti \" atau \' di dalamnya)
-      .replace(/"((?:\\.|[^"\\])*)"/g, '<span class="string">"$1"</span>')
-      .replace(/'((?:\\.|[^'\\])*)'/g, "<span class=\"string\">'$1'</span>")
-      .replace(/`((?:\\.|[^`\\])*)`/g, '<span class="string">`$1`</span>')
-
-      // Keywords
-      .replace(/\b(const|let|var|function|return|if|else|for|while|await|async|try|catch|throw|new|class|this|import|export|from|default|extends|super)\b/g, '<span class="keyword">$1</span>')
-
-      // Angka
-      .replace(/\b(\d+(\.\d+)?)\b/g, '<span class="number">$1</span>')
-
-      // Nama fungsi setelah keyword "function"
-      .replace(/\b(function)\s+([a-zA-Z0-9_$]+)/g, '<span class="keyword">$1</span> <span class="function-name">$2</span>')
-
-      // Objek/fungsi bawaan umum
-      .replace(/\b(console|log|document|window|alert|prompt|JSON|stringify|parse|Math|Date|Array|Object)\b/g, '<span class="builtin">$1</span>')
-  );
+  // Mengganti karakter spesial HTML dengan entitasnya agar tidak dieksekusi oleh browser.
+  return code
+    .replace(/&/g, "&amp;") // Karakter &
+    .replace(/</g, "&lt;") // Karakter <
+    .replace(/>/g, "&gt;"); // Karakter >
 }
 
 async function typeText(element, rawText, delay = 10, onFinish = () => {}) {
