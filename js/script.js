@@ -177,32 +177,26 @@ chatContainer.addEventListener("drop", (e) => {
   }
 });
 
-// [✅ KODE BARU] Ganti blok visualViewport lama Anda dengan yang ini.
-
-// [✅ KODE JAVASCRIPT YANG BENAR UNTUK STRUKTUR FLEXBOX]
+// [KODE JS INI SUDAH SESUAI]
 
 if (window.visualViewport) {
   const chatContainer = document.querySelector(".chat-container");
 
   const adjustLayout = () => {
-    if (!chatContainer) return; // Pastikan elemen ada
+    if (!chatContainer) return;
 
     // Atur tinggi .chat-container agar sama persis dengan area yang terlihat.
-    // Ini akan secara otomatis dan alami mendorong .input-container ke atas.
     chatContainer.style.height = `${window.visualViewport.height}px`;
-
-    // Scroll ke pesan terakhir saat keyboard muncul
+    
+    // Scroll ke pesan terakhir
     const chatBox = document.getElementById("chatBox");
     if (chatBox) {
-      chatBox.scrollTo(0, chatBox.scrollHeight);
+        chatBox.scrollTo(0, chatBox.scrollHeight);
     }
   };
 
-  // Panggil fungsi saat ukuran viewport berubah (keyboard muncul/hilang)
   window.visualViewport.addEventListener("resize", adjustLayout);
-
-  // Panggil sekali di awal untuk mengatur layout
-  adjustLayout();
+  adjustLayout(); // Panggil sekali untuk set layout awal
 }
 
 const text = "Apakah ada yang bisa saya bantu?";
