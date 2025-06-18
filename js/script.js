@@ -62,59 +62,61 @@ window.addEventListener("resize", () => {
   }
 });
 
+// Ganti fungsi showPreview lama Anda dengan yang ini.
 function showPreview(file) {
-  preview.innerHTML = "";
-  const fileType = file.type;
-  const fileName = file.name;
-  const wrapper = document.createElement("div");
-  const closeBtn = document.createElement("img");
-  closeBtn.src = "images/close.png";
-  closeBtn.alt = "Hapus";
+  const previewContainer = document.getElementById("preview");
+  const fileInput = document.getElementById("fileInput");
 
-  closeBtn.addEventListener("click", () => {
-    preview.innerHTML = "";
-    fileInput.value = "";
-    teksgambar1 = "";
-    previewImageURL = "";
-    localStorage.removeItem("previewImage");
-    localStorage.removeItem("ocrText");
-  });
+  // 1. Kosongkan preview yang sudah ada sebelumnya
+  previewContainer.innerHTML = "";
 
-  if (fileType.startsWith("image/")) {
+  // Jika tidak ada file yang dipilih, hentikan fungsi
+  if (!file) {
+    return;
+  }
+
+  // 2. Hanya proses jika file adalah gambar
+  if (file.type.startsWith("image/")) {
     const reader = new FileReader();
-    reader.onload = function (e) {
-      const dataURL = e.target.result;
-      const img = document.createElement("img");
-      img.src = dataURL;
-      wrapper.appendChild(img);
-      preview.appendChild(wrapper);
-      wrapper.appendChild(closeBtn);
-      previewImageURL = dataURL;
-      localStorage.setItem("previewImage", dataURL);
 
-      Tesseract.recognize(dataURL, "eng", {
-        logger: (m) => console.log(m),
-      })
-        .then(({ data: { text } }) => {
-          teksgambar1 = text.trim();
-          localStorage.setItem("ocrText", teksgambar1);
-        })
-        .catch((err) => {
-          console.error("OCR gagal:", err);
-          teksgambar1 = "";
-          localStorage.removeItem("ocrText");
-        });
+    // 3. Saat file berhasil dibaca
+    reader.onload = function (e) {
+      // Buat elemen-elemen yang diperlukan
+      const wrapper = document.createElement("div");
+      wrapper.className = "preview-item";
+
+      const img = document.createElement("img");
+      img.src = e.target.result; // e.target.result berisi data URL gambar
+
+      const closeBtn = document.createElement("button");
+      closeBtn.type = "button";
+      closeBtn.className = "preview-remove-btn";
+      closeBtn.setAttribute("aria-label", "Hapus gambar");
+      closeBtn.innerHTML = "&times;"; // Simbol '×' untuk silang
+
+      // 4. Tambahkan aksi saat tombol silang diklik
+      closeBtn.addEventListener("click", () => {
+        previewContainer.innerHTML = ""; // Hapus preview dari tampilan
+        fileInput.value = ""; // Reset input file agar bisa memilih file yang sama lagi
+
+        // (Opsional) Reset juga variabel global jika Anda menggunakannya
+        teksgambar1 = "";
+        previewImageURL = "";
+      });
+
+      // 5. Gabungkan dan tampilkan ke halaman
+      wrapper.appendChild(img);
+      wrapper.appendChild(closeBtn);
+      previewContainer.appendChild(wrapper);
     };
+
+    // 6. Baca file gambar. Ini akan memicu reader.onload di atas.
     reader.readAsDataURL(file);
   } else {
-    const fileText = document.createElement("div");
-    fileText.textContent = `📄 ${fileName}`;
-    wrapper.appendChild(fileText);
-    wrapper.appendChild(closeBtn);
-    preview.appendChild(wrapper);
+    // (Opsional) Tampilkan nama file jika bukan gambar
+    previewContainer.innerHTML = `<div class="preview-item">${file.name}</div>`;
   }
 }
-
 document.getElementById("menu4").addEventListener("click", function () {
   window.location.href = "voice.html";
 });
@@ -207,78 +209,111 @@ chatBox.addEventListener("scroll", () => {
   autoScrollEnabled = distanceFromBottom < threshold;
 });
 // Modifikasi pada event listener submit form chat
+// GANTI SELURUH BLOK INI DI KODE ANDA
+// GANTI SELURUH BLOK FUNGSI ANDA DENGAN YANG INI
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const userText = chatInput.value.trim();
-  if ((!userText && !teksgambar1) || isLoading) return;
-
-  // Gabungkan teks untuk dikirim ke server
-  let combinedTextForServer = userText;
-  if (teksgambar1.trim() !== "") {
-    combinedTextForServer += `\n\n[📷 Teks dari gambar]:\n${teksgambar1.trim()}`;
-  }
-
-  let imageURL = "";
   const imgElem = preview.querySelector("img");
-  if (imgElem) {
-    imageURL = imgElem.src;
-  }
+  const imageSrc = imgElem ? imgElem.src : "";
 
-  // Tampilkan di UI hanya userText + gambar, tanpa teksgambar1
-  appendMessage("user", userText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", imageURL);
+  // Validasi: Pastikan ada teks atau gambar sebelum mengirim
+  if ((!userText && !imageSrc) || isLoading) return;
 
-  // Simpan ke messages dengan properti ocrText, nanti dikirim gabungan
+  // Tampilkan pesan pengguna di UI
+  // Parameter untuk appendMessage disesuaikan dengan fungsi yang Anda miliki
+  appendMessage("user", userText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", imageSrc, false);
+
+  // Simpan pesan saat ini ke array messages untuk riwayat
   messages.push({
     role: "user",
-    content: combinedTextForServer,
-    ocrText: teksgambar1.trim(),
-    imageURL: imageURL,
+    content: userText,
+    imageURL: imageSrc,
   });
   saveMessagesToStorage();
 
-  // Reset UI input dan preview
+  // Reset UI
   chatInput.value = "";
   chatInput.style.height = "auto";
   chatInput.blur();
-  teksgambar1 = "";
   preview.innerHTML = "";
   fileInput.value = "";
 
-  // Hentikan animasi loading sebelumnya jika ada
-  removeLoadingMessage(); // Hapus pesan loading sebelumnya
-  isLoading = true; // Set isLoading ke true
-  appendLoadingMessage(); // Tampilkan pesan loading
+  removeLoadingMessage();
+  isLoading = true;
+  appendLoadingMessage();
 
   try {
-    // Struktur payload untuk Gemini API
-    const contents = messages.map((msg) => {
+    // --- PERUBAHAN UTAMA 1: RIWAYAT PERCAKAPAN MENJADI MULTIMODAL ---
+    // Kini, riwayat tidak hanya mengirim teks, tapi juga gambar dari percakapan sebelumnya.
+    const historyContents = messages.slice(0, -1).map((msg) => {
+      const historyParts = [];
+      // Tambahkan bagian teks dari riwayat jika ada
+      if (msg.content) {
+        historyParts.push({ text: msg.content });
+      }
+      // Tambahkan bagian gambar dari riwayat jika ada
+      if (msg.imageURL && msg.imageURL.startsWith("data:image")) {
+        const mimeType = msg.imageURL.substring(msg.imageURL.indexOf(":") + 1, msg.imageURL.indexOf(";"));
+        const base64Data = msg.imageURL.substring(msg.imageURL.indexOf(",") + 1);
+        historyParts.push({
+          inline_data: {
+            mime_type: mimeType,
+            data: base64Data,
+          },
+        });
+      }
       return {
-        // Ubah 'assistant' menjadi 'model' untuk Gemini API
         role: msg.role === "assistant" ? "model" : "user",
-        parts: [{ text: msg.content }],
+        parts: historyParts,
       };
     });
 
+    // Siapkan 'parts' untuk pesan yang sedang dikirim saat ini
+    const currentUserParts = [];
+    if (userText) {
+      currentUserParts.push({ text: userText });
+    }
+    if (imageSrc && imageSrc.startsWith("data:image")) {
+      const mimeType = imageSrc.substring(imageSrc.indexOf(":") + 1, imageSrc.indexOf(";"));
+      const base64Data = imageSrc.substring(imageSrc.indexOf(",") + 1);
+      currentUserParts.push({
+        inline_data: {
+          mime_type: mimeType,
+          data: base64Data,
+        },
+      });
+    }
+
+    // Gabungkan riwayat dengan pesan baru
+    const finalContents = [
+      ...historyContents,
+      {
+        role: "user",
+        parts: currentUserParts,
+      },
+    ];
+
+    // --- PERUBAHAN UTAMA 2: MENAMBAHKAN SYSTEM INSTRUCTION ---
     const requestBody = {
-      contents: contents,
-      // Anda bisa menambahkan generationConfig jika perlu
-      // generationConfig: {
-      //   temperature: 0.7,
-      //   topK: 1,
-      //   topP: 1,
-      //   maxOutputTokens: 2048,
-      // },
+      contents: finalContents,
+      systemInstruction: {
+        parts: [
+          {
+            text: "You are AI Digging. A helpful and smart assistant. Your answers should be informative and well-structured.",
+          },
+        ],
+      },
+      // Anda juga bisa menambahkan safetySettings jika perlu
+      // safetySettings: [ ... ]
     };
 
-    // Ganti YOUR_API_KEY_HERE dengan kunci API Anda yang sebenarnya
-    const apiKey = "AIzaSyAppIpLXqeL2fyeFkIr3_ERCK1PR5aws3k"; // <-- GANTI DENGAN API KEY ANDA
+    const apiKey = "AIzaSyAppIpLXqeL2fyeFkIr3_ERCK1PR5aws3k"; // Ganti dengan API key Anda
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const response = await fetch(apiUrl, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestBody),
     });
 
@@ -288,27 +323,27 @@ chatForm.addEventListener("submit", async (e) => {
     }
 
     const data = await response.json();
-
-    // Ekstrak balasan dari struktur respons Gemini
     const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Maaf, saya tidak bisa memberikan respons saat ini.";
 
-    removeLoadingMessage(); // Hapus pesan loading setelah mendapatkan respons
+    removeLoadingMessage();
 
+    // Tampilkan balasan bot
+    // Parameter disesuaikan dengan fungsi appendMessage yang Anda miliki
     appendMessage("bot", botReply, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
 
-    messages.push({ role: "assistant", content: botReply });
+    // Simpan balasan bot ke riwayat
+    messages.push({ role: "assistant", content: botReply, imageURL: "" });
     saveMessagesToStorage();
   } catch (err) {
     console.error("API Error:", err);
-    removeLoadingMessage(); // Hapus pesan loading jika terjadi kesalahan
+    removeLoadingMessage();
     const errorMessage = err.message || "Terjadi kesalahan saat menghubungi server.";
     appendMessage("bot", errorMessage, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
   } finally {
-    isLoading = false; // Set isLoading ke false
+    isLoading = false;
     chatInput.disabled = false;
   }
 });
-
 // Simpan ke localStorage
 function saveMessagesToStorage() {
   try {
@@ -342,7 +377,7 @@ function loadMessagesFromStorage() {
         }
       }
 
-      appendMessage(role, displayContent, username, profileUrl, true, msg.imageURL || "");
+      appendMessage(role, displayContent, username, profileUrl, msg.imageURL || "", true);
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -439,7 +474,9 @@ function checkChatEmpty() {
   }
 }
 
-function appendMessage(sender, text, username, profileUrl, isHistory = false) {
+// GANTI SELURUH FUNGSI appendMessage ANDA DENGAN VERSI FINAL INI
+function appendMessage(sender, text, username, profileUrl, imageURL = "", isHistory = false) {
+  // 1. Buat elemen dasar pesan
   const container = document.createElement("div");
   container.className = `message-container ${sender} message-fade-in`;
 
@@ -454,193 +491,150 @@ function appendMessage(sender, text, username, profileUrl, isHistory = false) {
     messageEl.style.paddingBottom = "32px";
     messageEl.classList.add("bot-message");
   } else {
-    messageEl.style.paddingBottom = "8px";
+    messageEl.style.paddingBottom = text || imageURL ? "8px" : "0px";
     messageEl.classList.add("user-message");
   }
 
-  content.appendChild(messageEl);
-
-  if (sender === "bot") {
-    const codeRegex = /```(.*?)\n([\s\S]*?)```/g;
-    let lastIndex = 0;
-    let match;
-
-    // Fungsi helper untuk menempelkan konten tanpa div wrapper
-    const appendContentWithoutWrapper = (htmlContent) => {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = htmlContent;
-      while (tempDiv.firstChild) {
-        messageEl.appendChild(tempDiv.firstChild);
-      }
-    };
-
-    while ((match = codeRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        const textBefore = text.substring(lastIndex, match.index);
-        // <<< PERUBAHAN LOGIKA DI SINI >>>
-        // Tidak lagi menggunakan div wrapper, agar struktur sama dengan typeText
-        appendContentWithoutWrapper(parseMarkdown(textBefore));
-        // <<< AKHIR PERUBAHAN >>>
-      }
-
-      const filename = match[1].trim();
-      const code = match[2];
-      lastIndex = codeRegex.lastIndex;
-
-      // ... (Kode untuk membuat code-wrapper tetap sama)
-      const codeWrapper = document.createElement("div");
-      codeWrapper.className = "code-wrapper";
-      Object.assign(codeWrapper.style, {
-        backgroundColor: "#1e1e1e",
-        fontFamily: "'Source Code Pro', monospace",
-        fontSize: "0.9em",
-        color: "#d4d4d4",
-        position: "relative",
-      });
-      const codeHeader = document.createElement("div");
-      Object.assign(codeHeader.style, {
-        display: "flex",
-        alignItems: "center",
-        padding: "8px",
-        gap: "2px",
-        paddingBottom: "8px",
-        borderBottom: "1px solid #333",
-        backgroundColor: "#1e1e1e",
-      });
-      const codeLabel = document.createElement("span");
-      codeLabel.textContent = filename;
-      Object.assign(codeLabel.style, {
-        color: "#ccc",
-        fontWeight: "600",
-        userSelect: "none",
-      });
-      const copyBtn = document.createElement("button");
-      copyBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-          <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-        </svg>`;
-      Object.assign(copyBtn.style, {
-        background: "transparent",
-        border: "none",
-        cursor: "pointer",
-        color: "#ccc",
-        padding: "0",
-        userSelect: "none",
-        height: "24px",
-        width: "24px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        marginLeft: "auto",
-        transition: "color 0.3s",
-      });
-      copyBtn.onmouseenter = () => (copyBtn.style.color = "#fff");
-      copyBtn.onmouseleave = () => (copyBtn.style.color = "#ccc");
-      copyBtn.onclick = () => {
-        navigator.clipboard.writeText(code).then(() => {
-          copyBtn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-              <path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/>
-            </svg>`;
-          setTimeout(() => {
-            copyBtn.innerHTML = `
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-                <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-              </svg>`;
-          }, 1500);
-        });
-      };
-      codeHeader.appendChild(codeLabel);
-      codeHeader.appendChild(copyBtn);
-      const pre = document.createElement("pre");
-      Object.assign(pre.style, {
-        backgroundColor: "transparent",
-        margin: "0",
-        paddingTop: "8px",
-        overflowX: "auto",
-        color: "#d4d4d4",
-        fontFamily: "'Source Code Pro', monospace",
-        fontSize: "0.9em",
-        whiteSpace: "pre-wrap",
-        wordWrap: "break-word",
-      });
-      const codeElement = document.createElement("code");
-      codeElement.textContent = code;
-      pre.appendChild(codeElement);
-      codeWrapper.appendChild(codeHeader);
-      codeWrapper.appendChild(pre);
-      messageEl.appendChild(codeWrapper);
-    }
-
-    if (lastIndex < text.length) {
-      const remainingText = text.substring(lastIndex);
-      // <<< PERUBAHAN LOGIKA DI SINI >>>
-      // Menggunakan helper yang sama untuk sisa teks
-      appendContentWithoutWrapper(parseMarkdown(remainingText));
-      // <<< AKHIR PERUBAHAN >>>
-    }
-
-    const copyAllBtn = document.createElement("button");
-    copyAllBtn.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-        <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-      </svg>`;
-
-    Object.assign(copyAllBtn.style, {
-      position: "absolute",
-      bottom: "4px",
-      left: "0px",
-      marginTop: "4px",
-      background: "transparent",
-      border: "none",
-      cursor: "pointer",
-      color: "#fff",
-      padding: "0",
-      userSelect: "none",
+  // 2. Tambahkan gambar jika ada
+  if (imageURL) {
+    const imgElement = document.createElement("img");
+    imgElement.src = imageURL;
+    Object.assign(imgElement.style, {
+      maxWidth: "250px",
+      borderRadius: "8px",
+      display: "block",
+      marginBottom: text ? "8px" : "0",
     });
-
-    // GANTI BLOK onclick LAMA DENGAN INI:
-    copyAllBtn.onclick = () => {
-      // rawText atau text, tergantung konteks fungsi (appendMessage atau typeText)
-      const textToCopy = typeof rawText !== "undefined" ? rawText : text;
-
-      navigator.clipboard.writeText(textToCopy).then(() => {
-        showToast("Tersalin ke papan klip");
-        const iconCopy = copyAllBtn.querySelector(".icon-copy");
-        const iconCheck = copyAllBtn.querySelector(".icon-check");
-
-        // Pastikan elemen ditemukan sebelum mengubah style
-        if (iconCopy && iconCheck) {
-          iconCopy.style.display = "none";
-          iconCheck.style.display = "inline-block";
-        }
-
-        setTimeout(() => {
-          if (iconCopy && iconCheck) {
-            iconCopy.style.display = "inline-block";
-            iconCheck.style.display = "none";
-          }
-        }, 1500);
-      });
-    };
-    messageEl.appendChild(copyAllBtn);
-  } else {
-    const textDiv = document.createElement("div");
-    textDiv.innerHTML = parseMarkdown(text);
-    messageEl.appendChild(textDiv);
+    messageEl.appendChild(imgElement);
   }
 
-  container.appendChild(content);
-  chatBox.appendChild(container);
+  // 3. Proses konten teks
+  const isNewBotMessage = sender === "bot" && !isHistory;
 
-  if (sender === "bot" && !isHistory) {
-    messageEl.innerHTML = "";
-    typeText(messageEl, text).then(() => {
+  if (isNewBotMessage) {
+    // --- KASUS A: Pesan BOT BARU (Animasi) ---
+    const textAnimationContainer = document.createElement("div");
+    messageEl.appendChild(textAnimationContainer);
+
+    typeText(textAnimationContainer, text).then(() => {
+      const copyAllBtn = document.createElement("button");
+      const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
+      const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4ade80" viewBox="0 0 24 24"><path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+      copyAllBtn.innerHTML = copyIcon;
+      Object.assign(copyAllBtn.style, { position: "absolute", bottom: "4px", left: "0px", marginTop: "4px", background: "transparent", border: "none", cursor: "pointer", color: "#fff", padding: "0", userSelect: "none" });
+      copyAllBtn.onmouseenter = () => {
+        copyAllBtn.style.opacity = "1";
+      };
+      copyAllBtn.onmouseleave = () => {
+        copyAllBtn.style.opacity = "0.7";
+      };
+      copyAllBtn.onclick = () => {
+        navigator.clipboard.writeText(text).then(() => {
+          copyAllBtn.innerHTML = checkIcon;
+          setTimeout(() => {
+            copyAllBtn.innerHTML = copyIcon;
+          }, 1500);
+          showToast("Tersalin ke papan klip");
+        });
+      };
+      messageEl.appendChild(copyAllBtn);
+
       if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
       chatInput.disabled = false;
       checkChatEmpty();
     });
   } else {
+    // --- KASUS B: Pesan USER atau BOT dari RIWAYAT (Statis) ---
+    if (text) {
+      if (sender === "bot") {
+        const codeRegex = /```(.*?)\n([\s\S]*?)```/g;
+        let lastIndex = 0;
+        let match;
+        const appendContent = (html) => {
+          const temp = document.createElement("div");
+          temp.innerHTML = html;
+          while (temp.firstChild) messageEl.appendChild(temp.firstChild);
+        };
+        while ((match = codeRegex.exec(text)) !== null) {
+          if (match.index > lastIndex) appendContent(parseMarkdown(text.substring(lastIndex, match.index)));
+          const [fullMatch, filename, code] = match;
+          lastIndex = match.index + fullMatch.length;
+
+          const codeWrapper = document.createElement("div");
+          codeWrapper.className = "code-wrapper";
+          Object.assign(codeWrapper.style, { backgroundColor: "#1e1e1e", fontFamily: "'Source Code Pro', monospace", fontSize: "0.9em", color: "#d4d4d4", position: "relative", margin: "8px 0", borderRadius: "8px", overflow: "hidden" });
+          const codeHeader = document.createElement("div");
+          Object.assign(codeHeader.style, { display: "flex", alignItems: "center", padding: "8px", borderBottom: "1px solid #333", backgroundColor: "#252526" });
+          const codeLabel = document.createElement("span");
+          codeLabel.textContent = filename.trim() || "code";
+          Object.assign(codeLabel.style, { color: "#ccc", fontWeight: "600" });
+
+          const copyBtn = document.createElement("button");
+          const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
+          const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4ade80" viewBox="0 0 24 24"><path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+          copyBtn.innerHTML = copyIcon;
+          Object.assign(copyBtn.style, { background: "transparent", border: "none", cursor: "pointer", marginLeft: "auto", padding: "4px" });
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(code).then(() => {
+              copyBtn.innerHTML = checkIcon;
+              setTimeout(() => {
+                copyBtn.innerHTML = copyIcon;
+              }, 1500);
+            });
+          };
+
+          codeHeader.appendChild(codeLabel);
+          codeHeader.appendChild(copyBtn);
+          const pre = document.createElement("pre");
+          Object.assign(pre.style, { margin: "0", padding: "12px", overflowX: "auto" });
+          const codeElement = document.createElement("code");
+          codeElement.textContent = code;
+          pre.appendChild(codeElement);
+          codeWrapper.appendChild(codeHeader);
+          codeWrapper.appendChild(pre);
+          messageEl.appendChild(codeWrapper);
+        }
+        if (lastIndex < text.length) appendContent(parseMarkdown(text.substring(lastIndex)));
+
+        // Tombol Copy All untuk bot dari history
+        const copyAllBtn = document.createElement("button");
+
+        copyAllBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
+
+        Object.assign(copyAllBtn.style, { position: "absolute", bottom: "4px", left: "0px", marginTop: "4px", background: "transparent", border: "none", cursor: "pointer", color: "#fff", padding: "0", userSelect: "none" });
+        copyAllBtn.onmouseenter = () => {
+          copyAllBtn.style.opacity = "1";
+        };
+        copyAllBtn.onmouseleave = () => {
+          copyAllBtn.style.opacity = "0.7";
+        };
+        copyAllBtn.onclick = () => {
+          navigator.clipboard.writeText(text).then(() => {
+            copyAllBtn.innerHTML = checkAllIcon;
+            setTimeout(() => {
+              copyAllBtn.innerHTML = copyAllIcon;
+            }, 1500);
+            showToast("Tersalin ke papan klip");
+          });
+        };
+        messageEl.appendChild(copyAllBtn);
+      } else {
+        // Pesan user
+        if (text) {
+          const textDiv = document.createElement("div");
+          textDiv.innerHTML = parseMarkdown(text);
+          messageEl.appendChild(textDiv);
+        }
+      }
+    }
+  }
+
+  // 4. Gabungkan semua elemen dan tampilkan di chat
+  content.appendChild(messageEl);
+  container.appendChild(content);
+  chatBox.appendChild(container);
+
+  if (!isNewBotMessage) {
     if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
     checkChatEmpty();
   }
@@ -659,164 +653,176 @@ function highlightCode(code) {
 }
 
 async function typeText(element, rawText, delay = 10, onFinish = () => {}) {
-  element.innerHTML = "";
+  element.innerHTML = ""; // Kosongkan elemen target
 
-  const escapeHtml = (str) => str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-
+  // Regex untuk menemukan blok kode
   const codeRegex = /```(.*?)\n([\s\S]*?)```/g;
   let lastIndex = 0;
-  const parts = [];
+  const parts = []; // Array untuk menyimpan bagian teks dan kode
 
+  // 1. Pisahkan teks mentah menjadi bagian teks biasa dan blok kode
   let match;
   while ((match = codeRegex.exec(rawText)) !== null) {
+    // Ambil teks sebelum blok kode
     if (match.index > lastIndex) {
       parts.push({ type: "text", content: rawText.slice(lastIndex, match.index) });
     }
-
+    // Ambil blok kode
     parts.push({
       type: "code",
-      filename: match[1].trim() || "code",
+      filename: match[1].trim() || "code", // Ambil nama file atau default "code"
       code: match[2],
     });
-
     lastIndex = codeRegex.lastIndex;
   }
-
+  // Ambil sisa teks setelah blok kode terakhir
   if (lastIndex < rawText.length) {
     parts.push({ type: "text", content: rawText.slice(lastIndex) });
   }
 
+  // 2. Proses setiap bagian dengan animasi
   for (const part of parts) {
     if (part.type === "text") {
-      const temp = document.createElement("div");
-      temp.innerHTML = part.content
-        .replace(/### (.*?)(\n|$)/g, `<span class="md-heading">$1</span>\n`)
-        .replace(/\*\*(.*?)\*\*/g, '<span class="md-bold">$1</span>')
-        .replace(/_(.*?)_/g, '<span class="md-italic">$1</span>')
-        .replace(/`([^`]+)`/g, (m, inlineCode) => `<code class="md-inline-code">${escapeHtml(inlineCode)}</code>`)
-        .replace(/---/g, '<hr class="md-hr" />')
-        .replace(/\n/g, "<br>");
+      // Untuk teks biasa, gunakan logika yang ada (sudah benar)
+      const parsedHtml = parseMarkdown(part.content);
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = parsedHtml;
 
-      for (const node of temp.childNodes) {
+      // Fungsi untuk mengetik node
+      const typeNode = async (node) => {
         if (node.nodeType === Node.TEXT_NODE) {
           for (const char of node.textContent) {
-            const span = document.createElement("span");
-            span.textContent = char;
-            element.appendChild(span);
+            element.innerHTML += char;
             if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
             await new Promise((r) => setTimeout(r, delay));
           }
-        } else {
-          element.appendChild(node.cloneNode(true));
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          // Untuk tag HTML seperti <strong>, <em>, dll, buat tagnya dulu lalu isi dalamnya
+          const newElem = document.createElement(node.tagName);
+          // Salin atribut jika ada
+          for (let i = 0; i < node.attributes.length; i++) {
+            const attr = node.attributes[i];
+            newElem.setAttribute(attr.name, attr.value);
+          }
+          element.appendChild(newElem);
+          // Rekursif untuk mengetik konten di dalam elemen ini
+          for (const childNode of Array.from(node.childNodes)) {
+            await typeNodeInElement(childNode, newElem);
+          }
         }
+      };
+
+      const typeNodeInElement = async (node, parentElement) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          for (const char of node.textContent) {
+            parentElement.innerHTML += char;
+            if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+            await new Promise((r) => setTimeout(r, delay));
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const newElem = document.createElement(node.tagName);
+          for (let i = 0; i < node.attributes.length; i++) {
+            const attr = node.attributes[i];
+            newElem.setAttribute(attr.name, attr.value);
+          }
+          parentElement.appendChild(newElem);
+          for (const childNode of Array.from(node.childNodes)) {
+            await typeNodeInElement(childNode, newElem);
+          }
+        }
+      };
+
+      for (const node of Array.from(tempDiv.childNodes)) {
+        await typeNodeInElement(node, element);
       }
     } else if (part.type === "code") {
+      // <<< INI BAGIAN YANG DIUBAH >>>
+      // Untuk blok kode, buat kerangkanya dulu, lalu ketik isinya.
+
+      // Buat struktur wrapper, header, dan pre untuk blok kode
       const wrapper = document.createElement("div");
       wrapper.className = "code-wrapper";
-      wrapper.style.backgroundColor = "#1e1e1e";
-      wrapper.style.color = "#d4d4d4";
-      wrapper.style.fontFamily = "'Source Code Pro', monospace";
-      wrapper.style.marginTop = "12px";
-      wrapper.style.position = "relative";
+      Object.assign(wrapper.style, {
+        backgroundColor: "#1e1e1e",
+        fontFamily: "'Source Code Pro', monospace",
+        fontSize: "0.9em",
+        color: "#d4d4d4",
+        position: "relative",
+      });
 
       const header = document.createElement("div");
-      header.style.display = "flex";
-      header.style.alignItems = "center";
-      header.style.justifyContent = "space-between";
-      header.style.padding = "8px";
-      header.style.borderBottom = "1px solid #333";
+      Object.assign(header.style, {
+        display: "flex",
+        alignItems: "center",
+        padding: "8px",
+        gap: "2px",
+        paddingBottom: "8px",
+        borderBottom: "1px solid #333",
+        backgroundColor: "#1e1e1e",
+      });
 
       const label = document.createElement("span");
       label.textContent = part.filename;
-      label.style.color = "#ccc";
-      label.style.fontWeight = "600";
+      Object.assign(label.style, { color: "#ccc", fontWeight: "600", userSelect: "none" });
 
       const copyBtn = document.createElement("button");
-      copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-        <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
-      copyBtn.style.background = "transparent";
-      copyBtn.style.border = "none";
-      copyBtn.style.cursor = "pointer";
-      copyBtn.style.color = "#ccc";
-
+      copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
+      Object.assign(copyBtn.style, {
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        color: "#ccc",
+        padding: "0",
+        userSelect: "none",
+        height: "24px",
+        width: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginLeft: "auto",
+        transition: "color 0.3s",
+      });
       copyBtn.onclick = () => {
-        navigator.clipboard.writeText(part.code).then(() => {
-          copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#10B981" viewBox="0 0 24 24">
-            <path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
-          setTimeout(() => {
-            copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-              <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
-          }, 1500);
-        });
+        navigator.clipboard.writeText(part.code).then(() => showToast("Kode tersalin!"));
       };
 
       header.appendChild(label);
       header.appendChild(copyBtn);
 
       const pre = document.createElement("pre");
-      pre.style.margin = "0";
-      pre.style.padding = "8px";
-      pre.style.overflowX = "auto";
-      pre.style.whiteSpace = "pre-wrap";
+      Object.assign(pre.style, {
+        backgroundColor: "transparent",
+        margin: "0",
+        paddingTop: "8px",
+        overflowX: "auto",
+        color: "#d4d4d4",
+        fontFamily: "'Source Code Pro', monospace",
+        fontSize: "0.9em",
+        whiteSpace: "pre-wrap",
+        wordWrap: "break-word",
+      });
 
       const codeEl = document.createElement("code");
-      codeEl.innerHTML = highlightCode(part.code);
-
       pre.appendChild(codeEl);
       wrapper.appendChild(header);
       wrapper.appendChild(pre);
+
+      // Tambahkan kerangka kosong ke DOM
       element.appendChild(wrapper);
+
+      // Sekarang, ketik isi kode karakter per karakter ke dalam elemen <code>
+      for (const char of part.code) {
+        // Gunakan textContent untuk keamanan (mencegah eksekusi HTML dalam kode)
+        codeEl.textContent += char;
+        if (autoScrollEnabled) {
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        // Gunakan delay yang lebih cepat untuk kode agar tidak terlalu lama
+        await new Promise((r) => setTimeout(r, 5));
+      }
+      // <<< AKHIR PERUBAHAN >>>
     }
   }
-
-  const copyAllBtn = document.createElement("button");
-  copyAllBtn.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24">
-      <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-    </svg>`;
-
-  // <<< PERUBAHAN DI SINI >>>
-  // Saya juga memperbaiki typo 'copyAllTtn' menjadi 'copyAllBtn'
-  Object.assign(copyAllBtn.style, {
-    position: "absolute",
-    bottom: "4px",
-    left: "6px", // 1. Sejajar dengan teks kiri
-    marginTop: "4px", // 2. Tambah margin atas
-    background: "transparent",
-    border: "none",
-    cursor: "pointer",
-    color: "#fff",
-    padding: "0",
-    userSelect: "none",
-  });
-  // <<< AKHIR PERUBAHAN >>>
-
-  // GANTI BLOK onclick LAMA DENGAN INI:
-  copyAllBtn.onclick = () => {
-    // rawText atau text, tergantung konteks fungsi (appendMessage atau typeText)
-    const textToCopy = typeof rawText !== "undefined" ? rawText : text;
-
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      showToast("Tersalin ke papan klip");
-      const iconCopy = copyAllBtn.querySelector(".icon-copy");
-      const iconCheck = copyAllBtn.querySelector(".icon-check");
-
-      // Pastikan elemen ditemukan sebelum mengubah style
-      if (iconCopy && iconCheck) {
-        iconCopy.style.display = "none";
-        iconCheck.style.display = "inline-block";
-      }
-
-      setTimeout(() => {
-        if (iconCopy && iconCheck) {
-          iconCopy.style.display = "inline-block";
-          iconCheck.style.display = "none";
-        }
-      }, 1500);
-    });
-  };
-
-  element.appendChild(copyAllBtn);
 
   chatInput.disabled = false;
   onFinish();

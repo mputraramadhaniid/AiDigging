@@ -392,7 +392,8 @@ body {
 .message-container.bot .message {
   width: 100%; /* ✅ Ini yang membuat isi merentang penuh */
   max-width: 100%;
-  padding: 22px;
+  padding: 0px;
+  margin-bottom: 8px;
   border-radius: 14px;
   color: #f9f9f9;
   box-sizing: border-box;
@@ -668,6 +669,79 @@ code {
   flex-shrink: 0;
 }
 
+/* Styling untuk Preview Gambar
+*/
+
+/* Styling untuk Preview Gambar di Bawah Input Area */
+
+/* Kontainer utama untuk semua item preview */
+#preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: 10px;
+  /* margin-bottom sudah ada dari inline style Anda, jadi tidak perlu ditambahkan */
+}
+
+/* Pembungkus untuk setiap gambar dan tombol hapusnya */
+.preview-item {
+  position: relative; /* Penting agar tombol 'X' bisa menempel */
+  display: inline-block;
+  animation: fadeIn 0.3s ease; /* Animasi muncul */
+}
+
+/* Gaya untuk gambar preview itu sendiri */
+.preview-item img {
+  height: 70px; /* Ukuran medium yang konsisten */
+  width: auto;
+  max-width: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Gaya untuk tombol silang (X) penghapus */
+.preview-remove-btn {
+  /* Posisi di sudut kanan atas */
+  position: absolute;
+  top: -10px;
+  right: -10px;
+
+  /* Bentuk dan warna */
+  width: 26px;
+  height: 26px;
+  background-color: #333; /* Latar belakang gelap */
+  color: white;
+  border: 1px solid white; /* Garis tepi putih agar kontras */
+  border-radius: 50%; /* Lingkaran sempurna */
+
+  /* Teks 'X' di tengah */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+
+  /* Efek interaktif */
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.preview-remove-btn:hover {
+  background-color: #d32f2f; /* Merah saat disentuh mouse */
+  transform: scale(1.1);
+}
+
+/* Animasi sederhana saat preview muncul */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 .input-container button:hover {
   background-color: #6e6e6e;
 }
@@ -704,7 +778,6 @@ code {
 .loading-animation .dot:nth-child(3) {
   animation-delay: 0.4s;
 }
-
 
 .typewriter {
   white-space: nowrap;
@@ -1360,12 +1433,12 @@ code.inline-code {
   }
 
   .input-container {
-    padding: 1px 6px;
+    padding: 4px 6px;
   }
 
   .input-container textarea {
     font-size: 16px;
-    padding: 10px 14px;
+    padding: 4px 14px;
     min-height: 40px;
     max-height: 100px;
   }
