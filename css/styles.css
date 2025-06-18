@@ -161,8 +161,11 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  height: 100%;
+  height: auto;
   color: #e0e0e0;
+  inset: 0;
+  height: 100vh; /* Awalnya, isi seluruh tinggi viewport */
+  width: 100%;
 }
 
 .chat-header {
@@ -216,6 +219,7 @@ body {
   min-height: 0; /* 🔑 penting agar scroll aktif dalam flex container */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */
+  -webkit-overflow-scrolling: touch;
 }
 
 .chat-box::-webkit-scrollbar {
@@ -557,26 +561,30 @@ code {
   color: #ccc;
 }
 
+/* Ganti blok .input-container lama Anda dengan yang ini */
+/* [✅ PENTING] Kembalikan .input-container ke posisi normal */
 .input-container {
-  position: sticky;
-  bottom: 0;
+  /* HAPUS 'position: sticky/fixed' dan 'bottom', 'left', 'right'. */
+  /* Posisinya sekarang akan diatur oleh Flexbox dari .chat-container */
+
+  flex-shrink: 0; /* Pastikan input container tidak ikut menyusut */
+
+  /* Gaya Anda yang lain bisa dipertahankan */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
   width: 94%;
   max-width: 700px;
-  margin: 0px auto; /* Sedikit jarak dari bawah */
+  margin: 0 auto 10px auto; /* Atas Bawah: 0, Kiri Kanan: auto, Bawah: 10px */
   padding: 4px 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #212121; /* Transparan gelap */
+  background: #212121;
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* Safari */
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 16px;
   z-index: 20;
-  transition: all 0.3s ease;
 }
-
 .input-container textarea {
   flex: 1;
   width: 100%;

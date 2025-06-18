@@ -177,36 +177,34 @@ chatContainer.addEventListener("drop", (e) => {
   }
 });
 
-// [✅ KODE BARU YANG LEBIH STABIL]
+// [✅ KODE BARU] Ganti blok visualViewport lama Anda dengan yang ini.
+
+// [✅ KODE JAVASCRIPT YANG BENAR UNTUK STRUKTUR FLEXBOX]
 
 if (window.visualViewport) {
-  const inputContainer = document.querySelector(".input-container");
+  const chatContainer = document.querySelector(".chat-container");
 
-  function adjustInputContainer() {
-    // visualViewport.height = tinggi viewport visible (tidak termasuk keyboard)
-    // window.innerHeight = tinggi viewport total (termasuk area keyboard)
-    // Kita set jarak bottom sesuai tinggi keyboard
-    const keyboardHeight = window.innerHeight - window.visualViewport.height;
+  const adjustLayout = () => {
+    if (!chatContainer) return; // Pastikan elemen ada
 
-    if (keyboardHeight > 100) {
-      // Keyboard muncul
-      inputContainer.style.bottom = keyboardHeight + "px";
-    } else {
-      // Keyboard hilang
-      inputContainer.style.bottom = "0px";
+    // Atur tinggi .chat-container agar sama persis dengan area yang terlihat.
+    // Ini akan secara otomatis dan alami mendorong .input-container ke atas.
+    chatContainer.style.height = `${window.visualViewport.height}px`;
+
+    // Scroll ke pesan terakhir saat keyboard muncul
+    const chatBox = document.getElementById("chatBox");
+    if (chatBox) {
+      chatBox.scrollTo(0, chatBox.scrollHeight);
     }
-  }
+  };
 
-  window.visualViewport.addEventListener("resize", adjustInputContainer);
-  window.visualViewport.addEventListener("scroll", adjustInputContainer);
+  // Panggil fungsi saat ukuran viewport berubah (keyboard muncul/hilang)
+  window.visualViewport.addEventListener("resize", adjustLayout);
 
-  // Panggil sekali saat load
-  adjustInputContainer();
-} else {
-  // Fallback jika visualViewport tidak ada (lama atau desktop)
-  // Cukup set fixed di bawah viewport saja
-  // Bisa ditambahkan event resize untuk lebih canggih
+  // Panggil sekali di awal untuk mengatur layout
+  adjustLayout();
 }
+
 const text = "Apakah ada yang bisa saya bantu?";
 let index = 0;
 
