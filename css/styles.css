@@ -561,25 +561,31 @@ code {
   color: #ccc;
 }
 
-/* Ganti blok .input-container lama Anda dengan yang ini */
-/* [✅ PENTING] Kembalikan .input-container ke posisi normal */
+/* [✅ PERBAIKAN FINAL] CSS untuk Input Container yang Melayang */
+
 .input-container {
-  /* HAPUS 'position: sticky/fixed' dan 'bottom', 'left', 'right'. */
-  /* Posisinya sekarang akan diatur oleh Flexbox dari .chat-container */
+  /* 1. Menggunakan 'fixed' untuk efek melayang di atas segalanya */
+  position: relative; /* KUNCI #1: Ini menjadi jangkar untuk elemen 'absolute' di dalamnya */
+  overflow: hidden;   /* Mencegah elemen meluber keluar */
 
-  flex-shrink: 0; /* Pastikan input container tidak ikut menyusut */
+  /* 2. Mengatur posisi awal di bawah, sedikit mengambang */
+  bottom: 0px;
 
-  /* Gaya Anda yang lain bisa dipertahankan */
+  /* 3. Trik untuk centering horizontal elemen 'fixed' */
+  left: 50%;
+  transform: translateX(-50%);
+
+  /* 4. Mencegah animasi patah-patah saat keyboard muncul */
+  transition: bottom 0.25s ease-out;
+
+  /* Gaya visual Anda yang sudah bagus dipertahankan */
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
   width: 94%;
   max-width: 700px;
-  margin: 0 auto 10px auto; /* Atas Bawah: 0, Kiri Kanan: auto, Bawah: 10px */
   padding: 4px 8px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #212121;
+  background: rgba(33, 33, 33, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 16px;
