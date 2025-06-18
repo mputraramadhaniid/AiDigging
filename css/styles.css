@@ -31,6 +31,18 @@ html {
   box-sizing: border-box;
 }
 
+:root {
+  --primary-color: #007bff; /* Contoh: Biru cerah */
+  --danger-color: #dc3545; /* Contoh: Merah untuk hapus */
+  --dark-bg: #212121; /* Latar belakang gelap umum */
+  --light-text: #e0e0e0; /* Warna teks terang */
+  --border-color: #232323; /* Warna border default */
+  --border-radius-sm: 8px; /* Radius border kecil */
+  --border-radius-md: 12px; /* Radius border sedang */
+  --spacing-sm: 4px; /* Spasi kecil */
+  --spacing-md: 10px; /* Spasi sedang */
+}
+
 /* Background animasi gradasi hitam biru */
 @keyframes animatedGradient {
   0% {
@@ -678,35 +690,67 @@ code {
 /* == CSS UNTUK FITUR MULTI-UPLOAD GAMBAR == */
 /* ================================================= */
 
-/* Styling untuk Pratinjau Gambar di Bawah Input Area */
+/* Area pembungkus untuk semua pratinjau file di bawah input */
 #preview {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 5px 8px; /* Beri sedikit padding */
+  gap: var(--spacing-md); /* Spasi antar item pratinjau */
+  padding: var(--spacing-sm) var(--spacing-md); /* Padding di dalam area pratinjau */
+  align-items: center; /* Memastikan item vertikal sejajar */
 }
 
-/* Pembungkus untuk setiap gambar dan tombol hapusnya */
+/* Pembungkus individual untuk setiap item pratinjau (gambar atau dokumen) */
 .preview-item {
   position: relative;
-  width: 75px;
-  height: 75px;
-  animation: fadeIn 0.3s ease;
+  width: 75px; /* Lebar tetap untuk konsistensi */
+  height: 75px; /* Tinggi tetap untuk konsistensi */
+  animation: fadeIn 0.3s ease-out; /* Animasi muncul */
+  box-sizing: border-box; /* Pastikan padding/border tidak menambah ukuran */
 }
 
+/* Styling khusus untuk pratinjau gambar */
 .preview-item img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid #444;
+  object-fit: cover; /* Memastikan gambar mengisi area tanpa terdistorsi */
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color); /* Border tipis */
 }
 
-/* Tombol silang (X) untuk menghapus pratinjau */
+/* Styling khusus untuk pratinjau dokumen (PDF, DOCX) */
+.preview-item-doc {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 8px 12px; /* Padding di dalam tag dokumen */
+  border-radius: 20px; /* Bentuk pil untuk dokumen */
+  color: var(--light-text);
+  height: 40px; /* Tinggi yang lebih terkontrol */
+  background-color: var(--dark-bg); /* Latar belakang gelap untuk dokumen */
+  border: 1px solid var(--border-color);
+  flex-shrink: 0; /* Mencegah item menyusut jika ruang terbatas */
+  width: auto; /* Biarkan lebar menyesuaikan konten */
+  max-width: 150px; /* Batasi lebar agar tidak terlalu panjang */
+  overflow: hidden; /* Sembunyikan jika nama file terlalu panjang */
+  text-overflow: ellipsis; /* Tampilkan ... jika terpotong */
+}
+
+.preview-item-doc .material-icons {
+  font-size: 20px;
+  /* Warna ikon bisa disesuaikan di JS, atau override di sini */
+}
+
+.preview-file-name {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap; /* Mencegah nama file putus baris */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tombol silang (X) untuk menghapus pratinjau (gambar & dokumen) */
 .preview-remove-btn {
   position: absolute;
-  top: -8px;
-  right: -8px;
   width: 22px;
   height: 22px;
   background-color: rgba(0, 0, 0, 0.8);
@@ -721,13 +765,35 @@ code {
   line-height: 1;
   padding: 0;
   transition: all 0.2s ease;
+  z-index: 10; /* Pastikan di atas gambar/dokumen */
+}
+
+/* Penempatan tombol hapus untuk gambar */
+.preview-item:not(.preview-item-doc) .preview-remove-btn {
+  top: -8px;
+  right: -8px;
+}
+
+/* Penempatan tombol hapus untuk dokumen */
+.preview-item-doc .preview-remove-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  right: 5px; /* Lebih dekat ke tepi kanan dokumen */
+  transform: translateY(-50%);
+  opacity: 0.8; /* Sedikit transparan */
 }
 
 .preview-remove-btn:hover {
-  background-color: #d32f2f; /* Merah */
+  background-color: var(--danger-color); /* Merah saat hover */
   transform: scale(1.1);
+  border-color: var(--danger-color); /* Border juga merah saat hover */
+  opacity: 1;
 }
 
+/* Animasi fadeIn untuk item pratinjau */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -739,26 +805,87 @@ code {
   }
 }
 
+/* ======================================= */
+/* ====== STYLING FILE DALAM CHAT ====== */
+/* ======================================= */
+
+/* Kontainer umum untuk semua jenis file di dalam pesan chat */
+.message-files-container {
+  margin-bottom: var(--spacing-sm); /* Spasi di bawah file sebelum teks pesan */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm); /* Spasi antara grid gambar dan grid dokumen */
+  padding-bottom: var(--spacing-sm); /* Untuk memberi ruang jika ada teks setelahnya */
+  border-bottom: 0px solid rgba(255, 255, 255, 0.1); /* Garis pemisah tipis */
+  padding-top: var(--spacing-sm); /* Spasi di atas file jika ada */
+}
+
 /* Styling untuk Grid Gambar di dalam Pesan Chat */
 .message-image-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 8px;
-  margin-bottom: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Lebih fleksibel */
+  gap: var(--spacing-sm);
+  padding: 0 var(--spacing-sm); /* Sedikit padding horizontal */
 }
 
 .message-image-grid img {
   width: 100%;
   height: 120px;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: var(--border-radius-md); /* Radius lebih besar untuk gambar di chat */
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Border halus */
 }
 
 .message-image-grid img:hover {
   transform: scale(1.03);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Styling untuk tag dokumen di dalam pesan chat */
+.message-doc-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  padding: 0 var(--spacing-sm); /* Sedikit padding horizontal */
+}
+
+.message-doc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(25, 118, 210, 0.7); /* Contoh: Biru tua transparan */
+  padding: 6px 12px;
+  border-radius: 20px; /* Bentuk pil */
+  font-size: 13px;
+  color: white;
+  border: 1px solid rgba(25, 118, 210, 0.9);
+  flex-shrink: 0; /* Mencegah tag menyusut */
+  max-width: 160px; /* Batasi lebar tag */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sesuaikan warna latar belakang tag PDF */
+.message-doc-tag .material-icons[title="picture_as_pdf"] {
+  color: #ffebee; /* Warna ikon PDF */
+}
+.message-doc-tag[data-filetype="pdf"] {
+  /* Perlu atribut data-filetype di HTML */
+  background-color: rgba(211, 47, 47, 0.7); /* Merah tua transparan */
+  border-color: rgba(211, 47, 47, 0.9);
+}
+
+.message-doc-tag .material-icons {
+  font-size: 16px;
+}
+
+/* Penyesuaian untuk teks pesan agar ada jarak dari tag file */
+/* Ini harus diterapkan pada elemen yang berisi teks pesan itu sendiri */
+.message-content > div:not(.message-files-container) {
+  padding-top: var(--spacing-sm); /* Memberi jarak jika ada file di atasnya */
 }
 
 .input-container button:hover {

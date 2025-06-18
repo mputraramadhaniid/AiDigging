@@ -115,14 +115,14 @@
         </div>
 
         <form class="input-container" id="chatForm">
-          <div id="preview" style="margin-bottom: 10px;"></div>
+          <div id="preview" style="margin-bottom: 10px"></div>
 
           <textarea id="chatInput" placeholder="Minta bantuan Ai Dingging" rows="1" autocomplete="off" required></textarea>
 
           <div class="input-bawah-send">
             <img src="images/ic_attach_file_grey.png" class="upload-file" alt="Send" id="uploadbtn" />
 
-            <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.doc,.docx,.ppt,.pptx,.pdf" style="display: none" />
+            <input type="file" id="fileInput" multiple accept="image/*, application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/msword" style="display: none" />
 
             <button type="submit" aria-label="Send message">
               <img src="images/up.png" alt="Send" style="width: 20px; height: 20px" />
