@@ -881,32 +881,39 @@ code {
 /* ======================================= */
 
 /* Kontainer umum untuk semua jenis file di dalam pesan chat */
+/* Kontainer utama untuk file di dalam gelembung chat */
 .message-files-container {
-  margin-bottom: var(--spacing-sm); /* Spasi di bawah file sebelum teks pesan */
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm); /* Spasi antara grid gambar dan grid dokumen */
-  padding-bottom: var(--spacing-sm); /* Untuk memberi ruang jika ada teks setelahnya */
-  border-bottom: 0px solid rgba(255, 255, 255, 0.1); /* Garis pemisah tipis */
-  padding-top: var(--spacing-sm); /* Spasi di atas file jika ada */
+  margin-bottom: px; /* Jarak antara file dan teks */
 }
 
-/* Styling untuk Grid Gambar di dalam Pesan Chat */
+/* Grid untuk menampilkan gambar */
 .message-image-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Lebih fleksibel */
-  gap: var(--spacing-sm);
-  padding: 0 var(--spacing-sm); /* Sedikit padding horizontal */
+  gap: 5px;
+  border-radius: 12px;
+  overflow: hidden;
 }
+
+/* Mengatur jumlah kolom pada grid */
+.message-image-grid.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.message-image-grid.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.message-image-grid.grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 
 .message-image-grid img {
   width: 100%;
-  height: 120px;
+  height: 100px;
   object-fit: cover;
   border-radius: var(--border-radius-md); /* Radius lebih besar untuk gambar di chat */
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Border halus */
+  border: 2px solid rgba(255, 255, 255, 0.2); /* Border halus */
 }
 
 .message-image-grid img:hover {
@@ -919,7 +926,7 @@ code {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-sm);
-  padding: 0 var(--spacing-sm); /* Sedikit padding horizontal */
+  padding: 0 ; /* Sedikit padding horizontal */
 }
 
 .message-doc-tag {
@@ -928,7 +935,8 @@ code {
   gap: 6px;
   background-color: rgba(25, 118, 210, 0.7); /* Contoh: Biru tua transparan */
   padding: 6px 12px;
-  border-radius: 20px; /* Bentuk pil */
+  margin-bottom: 4px;
+  border-radius: 12px; /* Bentuk pil */
   font-size: 13px;
   color: white;
   border: 1px solid rgba(25, 118, 210, 0.9);
