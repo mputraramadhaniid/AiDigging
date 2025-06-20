@@ -29,9 +29,9 @@ let selectedFiles = [];
 // --- PENTING: GANTI DENGAN URL SERVER PROXY NYATA ANDA! ---
 // Contoh: 'https://your-proxy-server.herokuapp.com/proxy'
 // Jika Anda belum punya, lihat bagian "Cara Membuat Server Proxy Sederhana" di respons sebelumnya.
-const PROXY_SERVER_URL = "http://localhost:3000/proxy";
+const PROXY_SERVER_URL = "https://ai-digging.vercel.app/";
 
-const OFFICIAL_WEBSITE_URL = "https://example.com/ai-digging"; // Ganti dengan URL website resmi Anda
+const OFFICIAL_WEBSITE_URL = "https://ai-digging.vercel.app/"; // Ganti dengan URL website resmi Anda
 
 // Inisialisasi worker untuk pdf.js jika library-nya ada
 if (window.pdfjsLib) {
