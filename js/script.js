@@ -111,6 +111,56 @@ window.addEventListener("resize", () => {
   }
 });
 
+// FUNGSI BARU UNTUK MENAMBAHKAN STYLE ANIMASI LOADING
+function addLoadingAnimationStyles() {
+  // Cek agar style tidak ditambahkan berulang kali
+  if (document.getElementById("loading-animation-styles")) return;
+
+  const styleSheet = document.createElement("style");
+  styleSheet.id = "loading-animation-styles";
+  styleSheet.textContent = `
+        .loading-animation {
+            display: flex;
+            align-items: center;
+            padding-top: 5px;
+            height: 20px; /* Memberi ruang agar dot tidak membuat layout melompat */
+        }
+        .loading-animation .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #aaa; /* Warna dot yang lebih lembut */
+            margin: 0 3px;
+            /* Nama animasi, durasi, perulangan, dan timing function */
+            animation: dot-pulse 1.4s infinite ease-in-out both;
+        }
+        
+        /* Memberi jeda animasi untuk setiap dot agar tidak bersamaan */
+        .loading-animation .dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        .loading-animation .dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        
+        /* Keyframes mendefinisikan langkah-langkah animasi */
+        @keyframes dot-pulse {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    `;
+  document.head.appendChild(styleSheet);
+}
+
+// Panggil fungsi ini sekali saat script dimuat
+addLoadingAnimationStyles();
+
 // Logika Pratinjau untuk Multi-Jenis File (termasuk PDF dan DOCX)
 function showFilePreview(files) {
   const maxFiles = 10;
@@ -1058,7 +1108,7 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
   // --- [PERBAIKAN BARU & KUNCI] ---
   // Memaksa gelembung teks untuk memiliki lebar maksimumnya sendiri agar TIDAK IKUT MEREGANG.
   // Ini adalah solusi untuk masalah "teks panjang mengikuti lebar gambar".
-  messageEl.style.maxWidth = "80%"; // Batasi lebar gelembung teks maksimal 80% dari kolom chat.
+  messageEl.style.maxWidth = "100%"; // Batasi lebar gelembung teks maksimal 80% dari kolom chat.
 
   // Untuk pesan pengguna, pastikan gelembungnya tetap menempel di kanan.
   if (sender === "user") {
@@ -1088,7 +1138,7 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
         display: "flex",
         overflowX: "auto",
         maxWidth: "100%",
-        padding: "3px",
+        padding: "2px",
       });
 
       imageFiles.forEach((file) => {
@@ -1362,7 +1412,7 @@ function appendLoadingMessage() {
 
   const loadingDots = document.createElement("div");
   loadingDots.className = "message loading-animation";
-  loadingDots.innerHTML = `<span class="dot">.</span><span class="dot">.</span><span class="dot">...</span>`; // Updated for better visual
+  loadingDots.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
 
   contentContainer.appendChild(nameEl);
   contentContainer.appendChild(loadingDots);
