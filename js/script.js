@@ -1016,7 +1016,87 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
     messageEl.style.paddingBottom = "36px";
   }
 
-  // ... (Logika render file Anda tetap di sini jika ada) ...
+  // --- PERBAIKAN UTAMA DIMULAI DI SINI ---
+  // Logika untuk menampilkan file di dalam gelembung chat
+  if (files && files.length > 0) {
+    const filesContainer = document.createElement("div");
+    filesContainer.className = "message-files-container";
+
+    const imageFiles = files.filter((f) => f.type && f.type.startsWith("image/"));
+    const otherFiles = files.filter((f) => !f.type || !f.type.startsWith("image/"));
+
+    // Render grid gambar jika ada
+    if (imageFiles.length > 0) {
+      const imageGrid = document.createElement("div");
+      imageGrid.className = "message-image-grid";
+
+      // Atur jumlah kolom berdasarkan jumlah gambar
+      if (imageFiles.length > 1) {
+        imageGrid.classList.add(`grid-cols-${Math.min(imageFiles.length, 4)}`);
+      }
+
+      imageFiles.forEach((file) => {
+        if (file.dataURL) {
+          const imgWrapper = document.createElement("div");
+          imgWrapper.className = "message-image-wrapper";
+          const img = document.createElement("img");
+          img.src = file.dataURL;
+          img.alt = file.name;
+          // Tambahkan fungsi untuk melihat gambar lebih besar saat diklik
+          img.onclick = () => {
+            const modal = document.createElement("div");
+            modal.className = "image-modal";
+            modal.innerHTML = `<span class="close-modal">&times;</span><img src="${file.dataURL}" />`;
+            document.body.appendChild(modal);
+            modal.querySelector(".close-modal").onclick = () => modal.remove();
+            modal.onclick = (e) => {
+              if (e.target === modal) modal.remove();
+            };
+          };
+          imgWrapper.appendChild(img);
+          imageGrid.appendChild(imgWrapper);
+        }
+      });
+      filesContainer.appendChild(imageGrid);
+    }
+
+    // Render file lain sebagai tag jika ada
+    if (otherFiles.length > 0) {
+      const docGrid = document.createElement("div");
+      docGrid.className = "message-doc-grid";
+      otherFiles.forEach((file) => {
+        const docTag = document.createElement("div");
+        docTag.className = "message-doc-tag";
+        docTag.title = file.originalUrl || file.name;
+
+        const icon = document.createElement("span");
+        icon.className = "material-icons";
+
+        if (file.type === "application/pdf") {
+          icon.textContent = "picture_as_pdf";
+          docTag.style.backgroundColor = "#D32F2F";
+        } else if (file.type === "video/youtube") {
+          icon.textContent = "ondemand_video";
+          docTag.style.backgroundColor = "#FF0000";
+        } else {
+          icon.textContent = "article";
+          docTag.style.backgroundColor = "#1976D2";
+        }
+
+        const fileNameSpan = document.createElement("span");
+        fileNameSpan.textContent = file.name.length > 20 ? file.name.substring(0, 17) + "..." : file.name;
+
+        docTag.appendChild(icon);
+        docTag.appendChild(fileNameSpan);
+        docGrid.appendChild(docTag);
+      });
+      filesContainer.appendChild(docGrid);
+    }
+
+    // Tambahkan kontainer file ke bagian paling atas dari gelembung chat
+    messageEl.appendChild(filesContainer);
+  }
+  // --- AKHIR PERBAIKAN ---
 
   const textContentDiv = document.createElement("div");
   if (text) {
@@ -1026,28 +1106,21 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
   if (sender === "user") {
     textContentDiv.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
   } else {
-    // sender === 'bot'
+    // Bot
     const onRenderFinish = () => {
-      // Setelah konten dirender (animasi atau instan), tambahkan tombol
       addBotActionButtons(messageEl, text, messageId);
-
-      // Jalankan Mermaid untuk merender diagram grafis
       const mermaidElements = textContentDiv.querySelectorAll(".mermaid");
       if (mermaidElements.length > 0 && window.mermaid) {
         try {
-          // Beri ID unik agar Mermaid tidak error saat merender ulang
           mermaidElements.forEach((el, index) => (el.id = `mermaid-${messageId}-${index}`));
           mermaid.run({ nodes: mermaidElements });
         } catch (e) {
           console.error("Mermaid.js error:", e);
-          mermaidElements.forEach((el) => {
-            el.innerHTML = "Gagal merender diagram.";
-          });
         }
       }
     };
 
-    // Panggil renderer utama. Bedakan hanya pada parameter `isAnimated`.
+    // Memanggil fungsi render utama yang sudah kita buat sebelumnya
     renderMessageContent(textContentDiv, text, !isHistory, onRenderFinish);
   }
 
