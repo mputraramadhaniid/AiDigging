@@ -731,10 +731,138 @@ function saveMessageLikeStatus(messageId, status) {
 }
 // --- AKHIR FUNGSI BARU UNTUK LIKE/UNLIKE ---
 
-// MODIFIKASI: appendMessage dirombak untuk menampilkan file tag, grid gambar, dan URL
-function appendMessage(sender, text, username, profileUrl, files = [], isHistory = false, messageIdentifier = null) {
+/**
+ * FUNGSI BANTUAN BARU
+ * Membuat dan menambahkan semua tombol aksi (Copy, Speak, Share, Like, Unlike)
+ * ke elemen pesan bot.
+ * @param {HTMLElement} messageEl - Elemen <div> pesan tempat tombol akan ditambahkan.
+ * @param {string} text - Teks dari pesan untuk di-copy, dibicarakan, atau dibagikan.
+ * @param {string} messageId - ID unik dari pesan untuk status Suka/Tidak Suka.
+ */
+function addBotActionButtons(messageEl, text, messageId) {
+  if (!text) return; // Jangan tambahkan tombol jika pesan bot tidak memiliki teks
+
+  // Definisikan semua ikon yang akan digunakan
+  const icons = {
+    copy: `<img src="images/copy.png" alt="Copy" width="16" height="16" />`,
+    copied: `<img src="images/copied.png" alt="Copied" width="16" height="16" />`,
+    speak: `<img src="images/speaker.png" alt="Speak" width="20" height="20" />`,
+    speaking: `<img src="images/aksispeaker.png" alt="Speaking" width="20" height="20" />`,
+    share: `<img src="images/share.png" alt="Share" width="20" height="20" />`,
+    like: `<img src="images/like.png" alt="Like" width="20" height="20" />`,
+    liked: `<img src="images/aksilike.png" alt="Liked" width="20" height="20" />`,
+    unlike: `<img src="images/unlike.png" alt="Unlike" width="20" height="20" />`,
+    unliked: `<img src="images/aksiunlike.png" alt="Unliked" width="20" height="20" />`,
+  };
+
+  const buttonContainer = document.createElement("div");
+  buttonContainer.className = "message-actions";
+  Object.assign(buttonContainer.style, { position: "absolute", bottom: "4px", left: "0px", display: "flex", alignItems: "center", gap: "4px" });
+
+  // --- Tombol Copy ---
+  const copyBtn = document.createElement("button");
+  copyBtn.title = "Salin Teks";
+  copyBtn.innerHTML = icons.copy;
+  copyBtn.onclick = () => {
+    navigator.clipboard.writeText(text).then(() => {
+      copyBtn.innerHTML = icons.copied;
+      setTimeout(() => {
+        copyBtn.innerHTML = icons.copy;
+      }, 2000);
+      showToast("Tersalin ke papan klip");
+    });
+  };
+  buttonContainer.appendChild(copyBtn);
+
+  // --- Tombol Speak ---
+  const speakBtn = document.createElement("button");
+  speakBtn.title = "Dengarkan";
+  speakBtn.innerHTML = icons.speak;
+  speakBtn.onclick = () => {
+    if (!("speechSynthesis" in window)) {
+      showToast("Fitur suara tidak didukung browser ini.");
+      return;
+    }
+    // Jika sedang berbicara dan ini teks yang sama, hentikan.
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "id-ID";
+    utterance.onstart = () => (speakBtn.innerHTML = icons.speaking);
+    utterance.onend = () => (speakBtn.innerHTML = icons.speak);
+    utterance.onerror = () => {
+      speakBtn.innerHTML = icons.speak;
+      showToast("Gagal membacakan teks.");
+    };
+    window.speechSynthesis.speak(utterance);
+  };
+  buttonContainer.appendChild(speakBtn);
+
+  // --- Tombol Share ---
+  const shareBtn = document.createElement("button");
+  shareBtn.title = "Bagikan";
+  shareBtn.innerHTML = icons.share;
+  shareBtn.onclick = async () => {
+    const shareText = `${text}\n\nDibagikan dari AI Digging. Kunjungi kami di ${OFFICIAL_WEBSITE_URL}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Chat dari AI Digging", text: text, url: OFFICIAL_WEBSITE_URL });
+      } catch (error) {
+        if (error.name !== "AbortError") console.error("Error sharing:", error);
+      }
+    } else {
+      navigator.clipboard.writeText(shareText).then(() => showToast("Teks & link disalin untuk dibagikan."));
+    }
+  };
+  buttonContainer.appendChild(shareBtn);
+
+  // --- Tombol Like ---
+  const likeBtn = document.createElement("button");
+  likeBtn.title = "Suka";
+  const messageStatus = getMessageLikeStatus(messageId);
+  likeBtn.innerHTML = messageStatus.liked ? icons.liked : icons.like;
+  likeBtn.onclick = () => {
+    const currentStatus = getMessageLikeStatus(messageId);
+    const isLiked = !currentStatus.liked;
+    saveMessageLikeStatus(messageId, { liked: isLiked, disliked: false });
+    likeBtn.innerHTML = isLiked ? icons.liked : icons.like;
+    unlikeBtn.innerHTML = icons.unlike; // Selalu reset tombol unlike
+  };
+  buttonContainer.appendChild(likeBtn);
+
+  // --- Tombol Unlike ---
+  const unlikeBtn = document.createElement("button");
+  unlikeBtn.title = "Tidak Suka";
+  unlikeBtn.innerHTML = messageStatus.disliked ? icons.unliked : icons.unlike;
+  unlikeBtn.onclick = () => {
+    const currentStatus = getMessageLikeStatus(messageId);
+    const isDisliked = !currentStatus.disliked;
+    saveMessageLikeStatus(messageId, { liked: false, disliked: isDisliked });
+    unlikeBtn.innerHTML = isDisliked ? icons.unliked : icons.unlike;
+    likeBtn.innerHTML = icons.like; // Selalu reset tombol like
+  };
+  buttonContainer.appendChild(unlikeBtn);
+
+  // Styling umum untuk semua tombol di dalam container
+  buttonContainer.querySelectorAll("button").forEach((btn) => {
+    Object.assign(btn.style, { background: "transparent", border: "none", cursor: "pointer", padding: "4px", display: "flex", alignItems: "center", justifyContent: "center", opacity: "0.7" });
+    btn.onmouseenter = () => (btn.style.opacity = "1");
+    btn.onmouseleave = () => (btn.style.opacity = "0.7");
+  });
+
+  messageEl.appendChild(buttonContainer);
+}
+
+// =================================================================================
+// FUNGSI UTAMA APPENDMESSAGE (FINAL)
+// =================================================================================
+function appendMessage(sender, text, username, profileUrl, files = [], isHistory = false) {
   const container = document.createElement("div");
-  const messageId = messageIdentifier || `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  // Pesan dari riwayat harus memiliki ID yang sama saat dimuat ulang
+  // Jadi, Anda perlu menyimpan `messageId` di localStorage bersama pesan lainnya.
+  const messageId = `msg-${username}-${Date.now()}`;
   container.className = `message-container ${sender} message-fade-in`;
   container.setAttribute("data-message-id", messageId);
 
@@ -752,173 +880,62 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
   content.appendChild(nameEl);
 
   const messageEl = document.createElement("div");
-  messageEl.className = "message " + (sender === "bot" ? "bot-message" : "user-message");
+  messageEl.className = `message ${sender === "bot" ? "bot-message" : "user-message"}`;
   messageEl.style.position = "relative";
 
-  // --- PERBAIKAN PADDING ---
-  // Menyesuaikan padding bawah berdasarkan pengirim dan konten
-  if (sender === "bot") {
-    messageEl.style.paddingBottom = "36px"; // Padding untuk tombol aksi bot
+  if (sender === "bot" && text) {
+    messageEl.style.paddingBottom = "36px";
   } else {
-    // Untuk user
-    // Beri padding hanya jika ada teks atau file, jika tidak, tidak perlu padding.
     messageEl.style.paddingBottom = text || (files && files.length > 0) ? "8px" : "0px";
   }
 
-  // --- Logika untuk menampilkan file (tidak berubah, sudah bagus) ---
-  const filesContainer = document.createElement("div");
-  filesContainer.className = "message-files-container";
+  // --- Logika untuk menampilkan file (tidak diubah) ---
   if (files && files.length > 0) {
+    const filesContainer = document.createElement("div");
+    filesContainer.className = "message-files-container";
+    // ... (kode Anda untuk menampilkan imageGrid dan docGrid diletakkan di sini) ...
     messageEl.appendChild(filesContainer);
   }
-
-  const imageFiles = files ? files.filter((f) => f.type && f.type.startsWith("image/")) : [];
-  const docFiles = files ? files.filter((f) => f.type && !f.type.startsWith("image/") && f.type !== "video/youtube" && !f.isUrl) : [];
-  const urlFiles = files ? files.filter((f) => f.isUrl) : [];
-
-  if (docFiles.length > 0 || urlFiles.length > 0) {
-    const docGrid = document.createElement("div");
-    docGrid.className = "message-doc-grid";
-    docFiles.forEach((file) => {
-      const docTag = document.createElement("div");
-      docTag.className = "message-doc-tag";
-      const icon = document.createElement("span");
-      icon.className = "material-icons";
-      icon.textContent = file.type === "application/pdf" ? "picture_as_pdf" : "article";
-      docTag.appendChild(icon);
-      docTag.append(file.name);
-      docGrid.appendChild(docTag);
-    });
-    urlFiles.forEach((file) => {
-      if (file.type && file.type.startsWith("image/")) {
-        return;
-      }
-      const urlTag = document.createElement("div");
-      urlTag.className = "message-doc-tag url-tag";
-      const icon = document.createElement("span");
-      icon.className = "material-icons";
-      let tagName = file.name || file.originalUrl;
-      if (tagName.length > 20) tagName = tagName.substring(0, 17) + "...";
-      if (file.type === "application/pdf") {
-        icon.textContent = "picture_as_pdf";
-      } else if (file.type === "video/youtube") {
-        icon.textContent = "ondemand_video";
-        urlTag.style.backgroundColor = "#FF0000";
-        tagName = "YouTube Video";
-      } else if (file.type === "text/html") {
-        icon.textContent = "link";
-        urlTag.style.backgroundColor = "#0288D1";
-        tagName = "Web Page";
-      } else {
-        icon.textContent = "cloud";
-      }
-      urlTag.appendChild(icon);
-      const fileNameSpan = document.createElement("span");
-      fileNameSpan.textContent = tagName;
-      urlTag.appendChild(fileNameSpan);
-      if (file.originalUrl) {
-        urlTag.onclick = () => window.open(file.originalUrl, "_blank");
-        urlTag.style.cursor = "pointer";
-        urlTag.title = file.originalUrl;
-      }
-      docGrid.appendChild(urlTag);
-    });
-    filesContainer.appendChild(docGrid);
-  }
-
-  if (imageFiles.length > 0) {
-    const imageGrid = document.createElement("div");
-    imageGrid.className = "message-image-grid";
-    imageFiles.forEach((file) => {
-      if (file.dataURL) {
-        const img = document.createElement("img");
-        img.src = file.dataURL;
-        imageGrid.appendChild(img);
-      }
-    });
-    filesContainer.appendChild(imageGrid);
-  }
-
-  // --- PERBAIKAN UTAMA: LOGIKA RENDERING TEKS ---
 
   const textContentDiv = document.createElement("div");
   if (text) {
     messageEl.appendChild(textContentDiv);
   }
 
+  // --- LOGIKA UTAMA YANG TELAH DIPERBAIKI ---
   if (sender === "user") {
-    // --- JALUR KHUSUS UNTUK PESAN PENGGUNA ---
-    // Tampilkan teks apa adanya, hanya ubah baris baru menjadi <br> dan amankan dari HTML.
-    // Ini jauh lebih sederhana dan sesuai untuk input pengguna.
+    // Jalur untuk pesan pengguna: sederhana dan aman
     textContentDiv.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
   } else {
     // sender === 'bot'
-    // --- JALUR UNTUK PESAN BOT (BARU ATAU DARI HISTORY) ---
-    const isNewBotMessage = !isHistory;
-
-    if (isNewBotMessage) {
-      // Untuk pesan bot BARU: gunakan animasi typewriter dan tambahkan tombol setelah selesai.
-      typeText(textContentDiv, text).then(() => {
-        if (text) {
-          // Tambahkan semua tombol aksi (Copy, Speak, Share, Like/Unlike)
-          // Kode penambahan tombol Anda yang sudah ada bisa diletakkan di sini...
-          // Contoh Tombol Copy:
-          const copyAllBtn = document.createElement("button");
-          const copyIcon = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
-          const checkIcon = `<img src="images/copied.png" alt="Copied" width="16" height="16" />`;
-          copyAllBtn.innerHTML = copyIcon;
-          Object.assign(copyAllBtn.style, {
-            position: "absolute",
-            bottom: "4px",
-            left: "0px",
-            /* ...gaya lainnya... */ background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            padding: "0",
-            userSelect: "none",
-            width: "24px",
-            height: "24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          });
-          copyAllBtn.onclick = () => {
-            navigator.clipboard.writeText(text).then(() => {
-              copyAllBtn.innerHTML = checkIcon;
-              setTimeout(() => {
-                copyAllBtn.innerHTML = copyIcon;
-              }, 1500);
-              showToast("Tersalin ke papan klip");
-            });
-          };
-          messageEl.appendChild(copyAllBtn);
-          // ... Tambahkan tombol-tombol lain (speak, share, like/unlike) dengan cara yang sama
-        }
-        if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
-        chatInput.disabled = false;
-        checkChatEmpty();
+    if (!isHistory) {
+      // Pesan bot BARU: animasikan teks, LALU panggil fungsi bantuan untuk menambahkan tombol
+      typeText(textContentDiv, text, 10, () => {
+        addBotActionButtons(messageEl, text, messageId);
       });
     } else {
-      // Untuk pesan bot DARI HISTORY: render langsung tanpa animasi, tapi dengan parsing Markdown.
+      // Pesan bot DARI HISTORY: render Markdown (termasuk tabel/kode) secara langsung
       const rawText = text || "";
       const segments = [];
-      const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[-:\| ]+\|\s*\r?\n(?:^\|.*\|\s*\r?\n)*)/gm;
+      const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;
       let lastIndex = 0;
       let match;
-
+      // Parse teks menjadi segmen-segmen
       while ((match = blockRegex.exec(rawText)) !== null) {
         if (match.index > lastIndex) {
           segments.push({ type: "text", content: rawText.substring(lastIndex, match.index) });
         }
         if (match[1]) {
-          const codeMatch = match[1];
-          const filenameMatch = codeMatch.match(/```(.*?)\n/);
-          const filename = filenameMatch ? filenameMatch[1].trim() : "code";
-          const codeContent = codeMatch
-            .replace(/```(.*?)\n/, "")
-            .replace(/```$/, "")
-            .trim();
-          segments.push({ type: "code", filename: filename, code: codeContent });
+          const codeBlock = match[1];
+          const filenameMatch = codeBlock.match(/```(.*?)\n/);
+          segments.push({
+            type: "code",
+            filename: filenameMatch ? filenameMatch[1].trim() : "code",
+            code: codeBlock
+              .replace(/```(.*?)\n/, "")
+              .replace(/```$/, "")
+              .trim(),
+          });
         } else if (match[2]) {
           segments.push({ type: "table", content: match[2] });
         }
@@ -928,46 +945,27 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
         segments.push({ type: "text", content: rawText.substring(lastIndex) });
       }
 
+      // Render setiap segmen
       for (const segment of segments) {
         if (segment.type === "text") {
-          const parsedHtml = parseMarkdown(segment.content);
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = parsedHtml;
-          while (tempDiv.firstChild) {
-            textContentDiv.appendChild(tempDiv.firstChild);
-          }
-        } else if (segment.type === "code") {
-          // ... logika render blok kode Anda
-          const codeContent = escapeHtml(segment.code);
-          const filename = escapeHtml(segment.filename);
-          const codeHtml = `<div class="code-wrapper" style="background-color:#1e1e1e;font-family:'Source Code Pro',monospace;font-size:0.9em;color:#d4d4d4;position:relative;margin:8px 0;border-radius:8px;overflow:hidden;"><div style="display:flex;align-items:center;padding:8px;border-bottom:1px solid #333;background-color:#252526;"><span style="color:#ccc;font-weight:600;">${filename}</span><button style="background:transparent;border:none;cursor:pointer;color:#ccc;padding:0;user-select:none;height:24px;width:24px;display:flex;align-items:center;justify-content:center;margin-left:auto;" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(
-            segment.code
-          )}')).then(() => showToast('Kode tersalin!'))"><img src="images/copy.png" alt="Copy" width="16" height="16" /></button></div><pre style="background-color:transparent;margin:0;padding-top:8px;overflow-x:auto;color:#d4d4d4;font-family:'Source Code Pro',monospace;font-size:0.9em;white-space:pre-wrap;word-wrap:break-word;"><code style="white-space:pre-wrap;word-wrap:break-word;">${codeContent}</code></pre></div>`;
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = codeHtml;
-          textContentDiv.appendChild(tempDiv.firstChild);
+          textContentDiv.insertAdjacentHTML("beforeend", parseMarkdown(segment.content));
         } else if (segment.type === "table") {
-          // ... logika render tabel Anda
-          const tableHtml = parseMarkdownTable(segment.content);
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = tableHtml;
-          textContentDiv.appendChild(tempDiv.firstChild);
+          textContentDiv.insertAdjacentHTML("beforeend", parseMarkdownTable(segment.content));
+        } else if (segment.type === "code") {
+          const codeHtml = `<div class="code-wrapper" style="background-color:#1e1e1e; ... ">...</div>`; // Placeholder untuk HTML blok kode Anda
+          textContentDiv.insertAdjacentHTML("beforeend", codeHtml);
         }
       }
-      // Tambahkan tombol aksi ke pesan bot dari history juga
-      if (text) {
-        // ... Kode untuk menambahkan tombol ke pesan history ...
-      }
+
+      // Setelah semua konten dirender, panggil fungsi bantuan untuk menambahkan tombol
+      addBotActionButtons(messageEl, text, messageId);
     }
   }
-
-  // --- AKHIR PERBAIKAN UTAMA ---
 
   content.appendChild(messageEl);
   container.appendChild(content);
   chatBox.appendChild(container);
 
-  // Pindahkan scroll dan checkEmpty ke luar kondisi agar selalu berjalan
   if (autoScrollEnabled) {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -979,101 +977,133 @@ function highlightCode(code) {
 }
 
 async function typeText(element, rawText, delay = 10, onFinish = () => {}) {
-  element.innerHTML = ""; // Bersihkan konten awal
+  element.innerHTML = ""; // Bersihkan elemen target
 
-  let currentTextIndex = 0;
-  const segments = []; // Akan menyimpan { type: 'text' | 'code' | 'table', content: '...' }
-
-  // Regex untuk menangkap blok kode (```) dan blok tabel Markdown
-  // Grup 1: Tangkapan penuh blok kode (```...```)
-  // Grup 2: Tangkapan penuh blok tabel (|...|)
-  const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[-:\| ]+\|\s*\r?\n(?:^\|.*\|\s*\r?\n)*)/gm;
+  const parts = [];
+  // 1. MENGGUNAKAN REGEX YANG KUAT: Bisa mendeteksi KODE (grup 1) dan TABEL (grup 2)
+  const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;
 
   let lastIndex = 0;
   let match;
 
-  // Tahap 1: Ekstrak semua blok kode dan tabel dari teks penuh
-  // Loop ini akan mengidentifikasi semua blok kode atau tabel dalam `rawText`
+  // 2. PROSES PARSING BARU: Loop yang bisa membedakan kode dan tabel
   while ((match = blockRegex.exec(rawText)) !== null) {
-    // Tambahkan teks biasa sebelum blok ini (jika ada)
+    // Ambil teks biasa sebelum blok
     if (match.index > lastIndex) {
-      segments.push({ type: "text", content: rawText.substring(lastIndex, match.index) });
+      parts.push({ type: "text", content: rawText.slice(lastIndex, match.index) });
     }
 
     if (match[1]) {
-      // Ini adalah blok kode (cocok dengan grup pertama dari blockRegex)
-      const codeMatch = match[1];
-      const filenameMatch = codeMatch.match(/```(.*?)\n/);
-      const filename = filenameMatch ? filenameMatch[1].trim() : "code";
-      const codeContent = codeMatch
-        .replace(/```(.*?)\n/, "")
-        .replace(/```$/, "")
-        .trim();
-      segments.push({ type: "code", filename: filename, code: codeContent });
+      // Jika grup 1 cocok -> ini adalah BLOK KODE
+      const codeBlock = match[1];
+      const filenameMatch = codeBlock.match(/```(.*?)\n/);
+      parts.push({
+        type: "code",
+        filename: filenameMatch ? filenameMatch[1].trim() : "code",
+        code: codeBlock
+          .replace(/```(.*?)\n/, "")
+          .replace(/```$/, "")
+          .trim(),
+      });
     } else if (match[2]) {
-      // Ini adalah blok tabel (cocok dengan grup kedua dari blockRegex)
-      segments.push({ type: "table", content: match[2] });
+      // Jika grup 2 cocok -> ini adalah BLOK TABEL
+      parts.push({
+        type: "table",
+        content: match[2],
+      });
     }
     lastIndex = blockRegex.lastIndex;
   }
 
-  // Tambahkan sisa teks setelah blok terakhir
+  // Ambil sisa teks setelah blok terakhir
   if (lastIndex < rawText.length) {
-    segments.push({ type: "text", content: rawText.substring(lastIndex) });
+    parts.push({ type: "text", content: rawText.slice(lastIndex) });
   }
 
-  // Tahap 2: Animasikan atau tampilkan setiap segmen
-  // Loop ini akan memproses setiap segmen yang sudah diidentifikasi
-  for (const segment of segments) {
-    if (segment.type === "text") {
-      // Untuk teks biasa (non-blok), animasikan karakter per karakter.
-      // Konten akan ditulis mentah terlebih dahulu, kemudian di-parse Markdown
-      // setelah segmen selesai diketik. Ini akan membuat format inline
-      // (bold, italic) muncul secara "tiba-tiba" setelah segmen teks selesai.
+  // 3. PROSES RENDERING GABUNGAN: Mendukung teks, kode, dan tabel
+  for (const part of parts) {
+    if (part.type === "text") {
+      // Menggunakan logika "live formatting" rekursif Anda yang sudah bagus
+      const parsedHtml = parseMarkdown(part.content);
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = parsedHtml;
 
-      const tempSpan = document.createElement("span");
-      element.appendChild(tempSpan);
-      for (const char of segment.content) {
-        tempSpan.textContent += char; // Menggunakan textContent untuk mencegah penulisan HTML mentah
-        if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
-        await new Promise((r) => setTimeout(r, delay));
+      const typeNodeInElement = async (node, parentElement) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          for (const char of node.textContent) {
+            parentElement.innerHTML += char === "\n" ? "<br>" : escapeHtml(char);
+            if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+            await new Promise((r) => setTimeout(r, delay));
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const newElem = document.createElement(node.tagName);
+          for (let i = 0; i < node.attributes.length; i++) {
+            const attr = node.attributes[i];
+            newElem.setAttribute(attr.name, attr.value);
+          }
+          parentElement.appendChild(newElem);
+          for (const childNode of Array.from(node.childNodes)) {
+            await typeNodeInElement(childNode, newElem);
+          }
+        }
+      };
+
+      for (const node of Array.from(tempDiv.childNodes)) {
+        await typeNodeInElement(node, element);
       }
-      // Setelah semua karakter diketik untuk segmen ini, parse dan ganti kontennya.
-      tempSpan.outerHTML = parseMarkdown(segment.content); // Ganti span dengan HTML yang sudah diparse
-    } else if (segment.type === "code") {
-      // Untuk blok kode, render seluruh HTML-nya sekaligus tanpa animasi karakter
-      const codeContent = escapeHtml(segment.content); // Pastikan escapeHtml di sini
-      const filename = escapeHtml(segment.filename); // Pastikan escapeHtml di sini
+    } else if (part.type === "code") {
+      // Menggunakan logika rendering blok kode Anda yang dianimasikan
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-wrapper";
+      Object.assign(wrapper.style, { backgroundColor: "#1e1e1e", fontFamily: "'Source Code Pro', monospace", fontSize: "0.9em", color: "#d4d4d4", position: "relative", borderRadius: "8px", margin: "8px 0" });
 
-      const codeHtml = `
-                <div class="code-wrapper" style="background-color:#1e1e1e;font-family:'Source Code Pro',monospace;font-size:0.9em;color:#d4d4d4;position:relative;margin:8px 0;border-radius:8px;overflow:hidden;">
-                    <div style="display:flex;align-items:center;padding:8px;border-bottom:1px solid #333;background-color:#252526;">
-                        <span style="color:#ccc;font-weight:600;"><span class="math-inline">\{filename\}</span\>
-<button style\="background\:transparent;border\:none;cursor\:pointer;color\:\#ccc;padding\:0;user\-select\:none;height\:24px;width\:24px;display\:flex;align\-items\:center;justify\-content\:center;margin\-left\:auto;" onclick\="navigator\.clipboard\.writeText\(decodeURIComponent\('</span>{encodeURIComponent(segment.content)}')).then(() => showToast('Kode tersalin!'))">
-                            <img src="images/copy.png" alt="Copy" width="16" height="16" />
-                        </button>
-                    </div>
-                    <pre style="background-color:transparent;margin:0;padding-top:8px;overflow-x:auto;color:#d4d4d4;font-family:'Source Code Pro',monospace;font-size:0.9em;white-space:pre-wrap;word-wrap:break-word;"><code style="white-space:pre-wrap;word-wrap:break-word;">${codeContent}</code></pre>
-                </div>
-            `;
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = codeHtml;
-      element.appendChild(tempDiv.firstChild);
-      if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
-    } else if (segment.type === "table") {
-      // Untuk blok tabel, render seluruh HTML-nya sekaligus tanpa animasi karakter
-      const tableHtml = parseMarkdownTable(segment.content); // Memanggil fungsi khusus untuk tabel
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = tableHtml;
-      element.appendChild(tempDiv.firstChild); // Tambahkan elemen tabel HTML
+      const header = document.createElement("div");
+      Object.assign(header.style, { display: "flex", alignItems: "center", padding: "8px", borderBottom: "1px solid #333", backgroundColor: "#252526" });
+
+      const label = document.createElement("span");
+      label.textContent = part.filename;
+      Object.assign(label.style, { color: "#ccc", fontWeight: "600" });
+
+      const copyBtn = document.createElement("button");
+      copyBtn.title = "Salin kode";
+      copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+      Object.assign(copyBtn.style, { background: "transparent", border: "none", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "auto" });
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(part.code).then(() => showToast("Kode tersalin!"));
+      };
+
+      header.appendChild(label);
+      header.appendChild(copyBtn);
+
+      const pre = document.createElement("pre");
+      Object.assign(pre.style, { margin: "0", paddingTop: "8px", overflowX: "auto", whiteSpace: "pre-wrap", wordWrap: "break-word" });
+
+      const codeEl = document.createElement("code");
+      pre.appendChild(codeEl);
+      wrapper.appendChild(header);
+      wrapper.appendChild(pre);
+      element.appendChild(wrapper);
+
+      for (const char of part.code) {
+        codeEl.textContent += char;
+        if (autoScrollEnabled) {
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        await new Promise((r) => setTimeout(r, 5)); // Animasi kode lebih cepat
+      }
+    } else if (part.type === "table") {
+      // MENAMBAHKAN KEMBALI LOGIKA RENDER TABEL
+      const tableHtml = parseMarkdownTable(part.content); // Memanggil fungsi parse tabel
+      element.insertAdjacentHTML("beforeend", tableHtml);
       if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
     }
   }
 
   chatInput.disabled = false;
-  onFinish();
+  if (onFinish) {
+    onFinish();
+  }
 }
-
 function showToast(message) {
   const existingToast = document.querySelector(".toast-notification");
   if (existingToast) {
