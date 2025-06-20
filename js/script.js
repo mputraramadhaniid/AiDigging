@@ -856,13 +856,140 @@ function addBotActionButtons(messageEl, text, messageId) {
 }
 
 // =================================================================================
-// FUNGSI UTAMA APPENDMESSAGE (FINAL)
+// FUNGSI BARU (PENGGANTI typeText): Satu fungsi untuk semua rendering konten bot
 // =================================================================================
-function appendMessage(sender, text, username, profileUrl, files = [], isHistory = false) {
+/**
+ * Merender konten mentah dari bot (teks, markdown, tabel, kode, diagram) ke dalam elemen target.
+ * @param {HTMLElement} element - Elemen div target untuk diisi konten.
+ * @param {string} rawText - Teks mentah dari AI.
+ * @param {boolean} isAnimated - Jika true, konten akan dianimasikan (efek ketik).
+ * @param {function} onFinish - Callback yang dijalankan setelah rendering selesai.
+ */
+async function renderMessageContent(element, rawText, isAnimated = false, onFinish = () => {}) {
+  element.innerHTML = ""; // Selalu bersihkan elemen target
+  const delay = isAnimated ? 10 : 0; // Atur jeda animasi
+
+  const parts = [];
+  const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;
+  let lastIndex = 0;
+  let match;
+
+  // 1. Parsing teks mentah menjadi segmen-segmen (teks, kode, tabel)
+  while ((match = blockRegex.exec(rawText)) !== null) {
+    if (match.index > lastIndex) parts.push({ type: "text", content: rawText.slice(lastIndex, match.index) });
+    if (match[1]) {
+      const codeBlock = match[1];
+      const filenameMatch = codeBlock.match(/```(.*?)\n/);
+      const language = filenameMatch ? filenameMatch[1].trim().toLowerCase() : "code";
+      parts.push({
+        type: "code",
+        filename: language,
+        code: codeBlock
+          .replace(/```(.*?)\n/, "")
+          .replace(/```$/, "")
+          .trim(),
+      });
+    } else if (match[2]) {
+      parts.push({ type: "table", content: match[2] });
+    }
+    lastIndex = blockRegex.lastIndex;
+  }
+  if (lastIndex < rawText.length) parts.push({ type: "text", content: rawText.slice(lastIndex) });
+
+  // 2. Fungsi rekursif untuk animasi teks (hanya digunakan jika isAnimated=true)
+  const animateNode = async (node, parentElement) => {
+    for (const childNode of Array.from(node.childNodes)) {
+      if (childNode.nodeType === Node.TEXT_NODE) {
+        for (const char of childNode.textContent) {
+          parentElement.innerHTML += char === "\n" ? "<br>" : escapeHtml(char);
+          if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+          if (isAnimated) await new Promise((r) => setTimeout(r, delay));
+        }
+      } else if (childNode.nodeType === Node.ELEMENT_NODE) {
+        const newElem = document.createElement(childNode.tagName);
+        parentElement.appendChild(newElem);
+        await animateNode(childNode, newElem);
+      }
+    }
+  };
+
+  // 3. Merender setiap segmen
+  for (const part of parts) {
+    if (part.type === "text") {
+      const sourceContainer = document.createElement("div");
+      sourceContainer.innerHTML = parseMarkdown(part.content);
+      await animateNode(sourceContainer, element);
+    } else if (part.type === "table") {
+      element.insertAdjacentHTML("beforeend", parseMarkdownTable(part.content));
+    } else if (part.type === "code") {
+      const lang = part.filename;
+      if (lang === "mermaid") {
+        const mermaidDiv = document.createElement("div");
+        mermaidDiv.className = "mermaid";
+        mermaidDiv.textContent = part.code;
+        element.appendChild(mermaidDiv);
+      } else if (lang === "diagram" || lang === "flowchart") {
+        const pre = document.createElement("pre");
+        pre.className = "text-diagram";
+        pre.textContent = part.code;
+        element.appendChild(pre);
+      } else {
+        // Render blok kode standar
+        const wrapper = document.createElement("div");
+        wrapper.className = "code-wrapper";
+        Object.assign(wrapper.style, { backgroundColor: "#1e1e1e", fontFamily: "'Source Code Pro', monospace", margin: "8px 0", borderRadius: "8px", overflow: "hidden" });
+
+        const header = document.createElement("div");
+        Object.assign(header.style, { display: "flex", alignItems: "center", padding: "8px", borderBottom: "1px solid #333", backgroundColor: "#252526" });
+
+        const label = document.createElement("span");
+        label.textContent = lang;
+        Object.assign(label.style, { color: "#ccc", fontWeight: "600" });
+
+        const copyBtn = document.createElement("button");
+        copyBtn.title = "Salin kode";
+        copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+        Object.assign(copyBtn.style, { background: "transparent", border: "none", cursor: "pointer", marginLeft: "auto" });
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(part.code).then(() => showToast("Kode tersalin!"));
+        };
+
+        header.append(label, copyBtn);
+
+        const pre = document.createElement("pre");
+        Object.assign(pre.style, { margin: "0", padding: "12px", overflowX: "auto", whiteSpace: "pre-wrap", wordWrap: "break-word" });
+
+        const codeEl = document.createElement("code");
+        codeEl.className = `language-${lang}`; // Untuk library highlighting jika ada
+        pre.appendChild(codeEl);
+        wrapper.append(header, pre);
+        element.appendChild(wrapper);
+
+        // Animasikan atau tampilkan langsung isi kode
+        if (isAnimated) {
+          for (const char of part.code) {
+            codeEl.textContent += char;
+            if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+            await new Promise((r) => setTimeout(r, 5));
+          }
+        } else {
+          codeEl.textContent = part.code;
+        }
+      }
+    }
+    if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  // 4. Jalankan callback setelah semua selesai
+  if (onFinish) onFinish();
+}
+
+// =================================================================================
+// FUNGSI UTAMA APPENDMESSAGE (FINAL & DISATUKAN)
+// =================================================================================
+function appendMessage(sender, text, username, profileUrl, files = [], isHistory = false, messageId = null) {
+  messageId = messageId || `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   const container = document.createElement("div");
-  // Pesan dari riwayat harus memiliki ID yang sama saat dimuat ulang
-  // Jadi, Anda perlu menyimpan `messageId` di localStorage bersama pesan lainnya.
-  const messageId = `msg-${username}-${Date.now()}`;
   container.className = `message-container ${sender} message-fade-in`;
   container.setAttribute("data-message-id", messageId);
 
@@ -873,6 +1000,7 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
 
   const content = document.createElement("div");
   content.className = "message-content";
+  container.appendChild(content);
 
   const nameEl = document.createElement("div");
   nameEl.className = "username";
@@ -882,93 +1010,49 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
   const messageEl = document.createElement("div");
   messageEl.className = `message ${sender === "bot" ? "bot-message" : "user-message"}`;
   messageEl.style.position = "relative";
+  content.appendChild(messageEl);
 
   if (sender === "bot" && text) {
     messageEl.style.paddingBottom = "36px";
-  } else {
-    messageEl.style.paddingBottom = text || (files && files.length > 0) ? "8px" : "0px";
   }
 
-  // --- Logika untuk menampilkan file (tidak diubah) ---
-  if (files && files.length > 0) {
-    const filesContainer = document.createElement("div");
-    filesContainer.className = "message-files-container";
-    // ... (kode Anda untuk menampilkan imageGrid dan docGrid diletakkan di sini) ...
-    messageEl.appendChild(filesContainer);
-  }
+  // ... (Logika render file Anda tetap di sini jika ada) ...
 
   const textContentDiv = document.createElement("div");
   if (text) {
     messageEl.appendChild(textContentDiv);
   }
 
-  // --- LOGIKA UTAMA YANG TELAH DIPERBAIKI ---
   if (sender === "user") {
-    // Jalur untuk pesan pengguna: sederhana dan aman
     textContentDiv.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
   } else {
     // sender === 'bot'
-    if (!isHistory) {
-      // Pesan bot BARU: animasikan teks, LALU panggil fungsi bantuan untuk menambahkan tombol
-      typeText(textContentDiv, text, 10, () => {
-        addBotActionButtons(messageEl, text, messageId);
-      });
-    } else {
-      // Pesan bot DARI HISTORY: render Markdown (termasuk tabel/kode) secara langsung
-      const rawText = text || "";
-      const segments = [];
-      const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;
-      let lastIndex = 0;
-      let match;
-      // Parse teks menjadi segmen-segmen
-      while ((match = blockRegex.exec(rawText)) !== null) {
-        if (match.index > lastIndex) {
-          segments.push({ type: "text", content: rawText.substring(lastIndex, match.index) });
-        }
-        if (match[1]) {
-          const codeBlock = match[1];
-          const filenameMatch = codeBlock.match(/```(.*?)\n/);
-          segments.push({
-            type: "code",
-            filename: filenameMatch ? filenameMatch[1].trim() : "code",
-            code: codeBlock
-              .replace(/```(.*?)\n/, "")
-              .replace(/```$/, "")
-              .trim(),
-          });
-        } else if (match[2]) {
-          segments.push({ type: "table", content: match[2] });
-        }
-        lastIndex = blockRegex.lastIndex;
-      }
-      if (lastIndex < rawText.length) {
-        segments.push({ type: "text", content: rawText.substring(lastIndex) });
-      }
-
-      // Render setiap segmen
-      for (const segment of segments) {
-        if (segment.type === "text") {
-          textContentDiv.insertAdjacentHTML("beforeend", parseMarkdown(segment.content));
-        } else if (segment.type === "table") {
-          textContentDiv.insertAdjacentHTML("beforeend", parseMarkdownTable(segment.content));
-        } else if (segment.type === "code") {
-          const codeHtml = `<div class="code-wrapper" style="background-color:#1e1e1e; ... ">...</div>`; // Placeholder untuk HTML blok kode Anda
-          textContentDiv.insertAdjacentHTML("beforeend", codeHtml);
-        }
-      }
-
-      // Setelah semua konten dirender, panggil fungsi bantuan untuk menambahkan tombol
+    const onRenderFinish = () => {
+      // Setelah konten dirender (animasi atau instan), tambahkan tombol
       addBotActionButtons(messageEl, text, messageId);
-    }
+
+      // Jalankan Mermaid untuk merender diagram grafis
+      const mermaidElements = textContentDiv.querySelectorAll(".mermaid");
+      if (mermaidElements.length > 0 && window.mermaid) {
+        try {
+          // Beri ID unik agar Mermaid tidak error saat merender ulang
+          mermaidElements.forEach((el, index) => (el.id = `mermaid-${messageId}-${index}`));
+          mermaid.run({ nodes: mermaidElements });
+        } catch (e) {
+          console.error("Mermaid.js error:", e);
+          mermaidElements.forEach((el) => {
+            el.innerHTML = "Gagal merender diagram.";
+          });
+        }
+      }
+    };
+
+    // Panggil renderer utama. Bedakan hanya pada parameter `isAnimated`.
+    renderMessageContent(textContentDiv, text, !isHistory, onRenderFinish);
   }
 
-  content.appendChild(messageEl);
-  container.appendChild(content);
   chatBox.appendChild(container);
-
-  if (autoScrollEnabled) {
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
+  if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
   checkChatEmpty();
 }
 
