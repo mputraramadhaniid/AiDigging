@@ -732,10 +732,13 @@ function saveMessageLikeStatus(messageId, status) {
 // --- AKHIR FUNGSI BARU UNTUK LIKE/UNLIKE ---
 
 // MODIFIKASI: appendMessage dirombak untuk menampilkan file tag, grid gambar, dan URL
-function appendMessage(sender, text, username, profileUrl, files = [], isHistory = false) {
+function appendMessage(sender, text, username, profileUrl, files = [], isHistory = false, messageIdentifier = null) {
   const container = document.createElement("div");
-  // Generate a unique ID for each message for like/dislike tracking
-  const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  // Gunakan messageIdentifier jika ada (untuk history), jika tidak, buat yang baru
+  // CATATAN PENTING: Untuk persistensi like/unlike yang benar saat memuat history,
+  // Anda harus menyimpan 'messageId' ini sebagai properti dalam objek pesan yang disimpan di localStorage.
+  // Saat ini, setiap kali history dimuat, ID baru dibuat, yang akan mereset status like/unlike.
+  const messageId = messageIdentifier || `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   container.className = `message-container ${sender} message-fade-in`;
   container.setAttribute("data-message-id", messageId); // Add unique ID to container
 
@@ -849,13 +852,102 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
 
   const isNewBotMessage = sender === "bot" && !isHistory;
 
+  // --- LOGIKA UTAMA RENDERING KONTEN (MIRIP DENGAN typeText) ---
+  const rawText = text; // Gunakan 'text' yang masuk ke appendMessage
+  const segments = [];
+
+  // Regex yang sama untuk menangkap blok kode dan tabel Markdown
+  const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[-:\| ]+\|\s*\r?\n(?:^\|.*\|\s*\r?\n)*)/gm;
+
+  let lastIndex = 0;
+  let match;
+
+  // Tahap 1: Ekstrak semua blok kode dan tabel dari teks penuh (sama seperti di typeText)
+  while ((match = blockRegex.exec(rawText)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({ type: "text", content: rawText.substring(lastIndex, match.index) });
+    }
+
+    if (match[1]) {
+      // Ini adalah blok kode
+      const codeMatch = match[1];
+      const filenameMatch = codeMatch.match(/```(.*?)\n/);
+      const filename = filenameMatch ? filenameMatch[1].trim() : "code";
+      const codeContent = codeMatch
+        .replace(/```(.*?)\n/, "")
+        .replace(/```$/, "")
+        .trim();
+      segments.push({ type: "code", filename: filename, code: codeContent });
+    } else if (match[2]) {
+      // Ini adalah blok tabel
+      segments.push({ type: "table", content: match[2] });
+    }
+    lastIndex = blockRegex.lastIndex;
+  }
+
+  if (lastIndex < rawText.length) {
+    segments.push({ type: "text", content: rawText.substring(lastIndex) });
+  }
+
+  // Tahap 2: Render setiap segmen (tanpa animasi untuk history)
+  for (const segment of segments) {
+    if (segment.type === "text") {
+      // Untuk teks biasa, langsung parse Markdown dan tambahkan
+      const parsedHtml = parseMarkdown(segment.content);
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = parsedHtml;
+      while (tempDiv.firstChild) {
+        textContentDiv.appendChild(tempDiv.firstChild);
+      }
+    } else if (segment.type === "code") {
+      // Untuk blok kode, render seluruh HTML-nya sekaligus
+      const codeContent = escapeHtml(segment.content);
+      const filename = escapeHtml(segment.filename);
+
+      const codeHtml = `
+                <div class="code-wrapper" style="background-color:#1e1e1e;font-family:'Source Code Pro',monospace;font-size:0.9em;color:#d4d4d4;position:relative;margin:8px 0;border-radius:8px;overflow:hidden;">
+                    <div style="display:flex;align-items:center;padding:8px;border-bottom:1px solid #333;background-color:#252526;">
+                        <span style="color:#ccc;font-weight:600;">${filename}</span>
+                        <button style="background:transparent;border:none;cursor:pointer;color:#ccc;padding:0;user-select:none;height:24px;width:24px;display:flex;align-items:center;justify-content:center;margin-left:auto;" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(
+                          segment.content
+                        )}')).then(() => showToast('Kode tersalin!'))">
+                            <img src="images/copy.png" alt="Copy" width="16" height="16" />
+                        </button>
+                    </div>
+                    <pre style="background-color:transparent;margin:0;padding-top:8px;overflow-x:auto;color:#d4d4d4;font-family:'Source Code Pro',monospace;font-size:0.9em;white-space:pre-wrap;word-wrap:break-word;"><code style="white-space:pre-wrap;word-wrap:break-word;">${codeContent}</code></pre>
+                </div>
+            `;
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = codeHtml;
+      textContentDiv.appendChild(tempDiv.firstChild);
+    } else if (segment.type === "table") {
+      // Untuk blok tabel, render seluruh HTML-nya sekaligus
+      const tableHtml = parseMarkdownTable(segment.content);
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = tableHtml;
+      textContentDiv.appendChild(tempDiv.firstChild);
+    }
+  }
+  // --- AKHIR LOGIKA UTAMA RENDERING KONTEN ---
+
   if (isNewBotMessage) {
+    // Ini adalah blok untuk pesan bot BARU, yang akan dianimasikan oleh typeText
+    // PENTING: Jika Anda sudah menggunakan `typeText` di sini, berarti ada sedikit redundansi.
+    // Seharusnya `typeText` dipanggil di sini, dan `typeText` lah yang bertanggung jawab untuk
+    // mengisi `textContentDiv` dengan animasi atau rendering langsung.
+    // Saya akan mengasumsikan Anda ingin logika ini di `appendMessage` untuk history,
+    // dan `typeText` tetap untuk animasi.
+    // Jika `isNewBotMessage` TRUE, maka `typeText(textContentDiv, text)` akan mengisi konten,
+    // sehingga logika di atas (segmentasi) akan terlewati atau tidak relevan.
+    // Saya akan kembalikan ke kondisi sebelumnya untuk `isNewBotMessage` untuk menghindari konflik.
+
+    // Bagian ini adalah kode lama Anda untuk pesan baru, yang memanggil typeText
     typeText(textContentDiv, text).then(() => {
       if (text) {
-        // Tombol Copy
+        // Tombol Copy (dengan ikon PNG)
         const copyAllBtn = document.createElement("button");
-        const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
-        const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4ade80" viewBox="0 0 24 24"><path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+        const copyIcon = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+        const checkIcon = `<img src="images/copied.png" alt="Copied" width="16" height="16" />`;
         copyAllBtn.innerHTML = copyIcon;
         Object.assign(copyAllBtn.style, {
           position: "absolute",
@@ -865,7 +957,6 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
           background: "transparent",
           border: "none",
           cursor: "pointer",
-          color: "#fff",
           padding: "0",
           userSelect: "none",
           width: "24px",
@@ -891,10 +982,10 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
         };
         messageEl.appendChild(copyAllBtn);
 
-        // --- Penambahan Tombol Suara Teks ---
+        // --- Penambahan Tombol Suara Teks (dengan ikon PNG) ---
         const speakBtn = document.createElement("button");
-        const speakIcon = `<img src="images/speaker.png" alt="Like" width="20" height="20" />`;
-        const stopSpeakIcon = `<img src="images/aksispeaker.png" alt="Like" width="20" height="20" />`; 
+        const speakIcon = `<img src="images/speaker.png" alt="Speak" width="20" height="20" />`;
+        const stopSpeakIcon = `<img src="images/aksispeaker.png" alt="Stop Speak" width="20" height="20" />`;
 
         speakBtn.innerHTML = speakIcon;
         Object.assign(speakBtn.style, {
@@ -905,7 +996,6 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
           background: "transparent",
           border: "none",
           cursor: "pointer",
-          color: "#fff",
           padding: "0",
           userSelect: "none",
           width: "24px",
@@ -953,7 +1043,7 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
 
         // --- Penambahan Tombol Bagikan ---
         const shareBtn = document.createElement("button");
-        const shareIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.52.48 1.2.77 1.96.77 1.38 0 2.5-1.12 2.5-2.5S19.38 3 18 3s-2.5 1.12-2.5 2.5c0 .24.04.47.09.7L8.04 9.8c-.52-.48-1.2-.77-1.96-.77-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5c.76 0 1.44-.3 1.96-.77l7.05 4.11c-.05.23-.09.46-.09.7 0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z"/></svg>`;
+        const shareIcon = `<img src="images/share.png" alt="Share" width="20" height="20" />`;
         shareBtn.innerHTML = shareIcon;
         Object.assign(shareBtn.style, {
           position: "absolute",
@@ -963,7 +1053,6 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
           background: "transparent",
           border: "none",
           cursor: "pointer",
-          color: "#fff",
           padding: "0",
           userSelect: "none",
           width: "24px",
@@ -994,7 +1083,6 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
               showToast("Gagal membagikan pesan.");
             }
           } else {
-            // Fallback for browsers that don't support Web Share API
             navigator.clipboard
               .writeText(shareText)
               .then(() => {
@@ -1014,9 +1102,9 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
         const unlikeBtn = document.createElement("button");
 
         const thumbUpIcon = `<img src="images/like.png" alt="Like" width="20" height="20" />`;
-        const thumbUpFilledIcon = `<img src="images/aksilike.png" alt="Liked" width="20" height="20" />`; // Perlu file ini
+        const thumbUpFilledIcon = `<img src="images/aksilike.png" alt="Liked" width="20" height="20" />`;
         const thumbDownIcon = `<img src="images/unlike.png" alt="Unlike" width="20" height="20" />`;
-        const thumbDownFilledIcon = `<img src="images/aksiunlike.png" alt="Unliked" width="20" height="20" />`; // Perlu file ini
+        const thumbDownFilledIcon = `<img src="images/aksiunlike.png" alt="Unliked" width="20" height="20" />`;
 
         Object.assign(likeBtn.style, {
           position: "absolute",
@@ -1067,15 +1155,13 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
         likeBtn.onclick = () => {
           const currentStatus = getMessageLikeStatus(messageId);
           if (currentStatus.liked) {
-            // Unlike
             saveMessageLikeStatus(messageId, { liked: false, disliked: false });
             likeBtn.innerHTML = thumbUpIcon;
             showToast("Suka dibatalkan.");
           } else {
-            // Like
             saveMessageLikeStatus(messageId, { liked: true, disliked: false });
             likeBtn.innerHTML = thumbUpFilledIcon;
-            unlikeBtn.innerHTML = thumbDownIcon; // Ensure unlike is off
+            unlikeBtn.innerHTML = thumbDownIcon;
             showToast("Anda menyukai pesan ini!");
           }
         };
@@ -1083,15 +1169,13 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
         unlikeBtn.onclick = () => {
           const currentStatus = getMessageLikeStatus(messageId);
           if (currentStatus.disliked) {
-            // Un-dislike
             saveMessageLikeStatus(messageId, { liked: false, disliked: false });
             unlikeBtn.innerHTML = thumbDownIcon;
             showToast("Tidak suka dibatalkan.");
           } else {
-            // Dislike
             saveMessageLikeStatus(messageId, { liked: false, disliked: true });
             unlikeBtn.innerHTML = thumbDownFilledIcon;
-            likeBtn.innerHTML = thumbUpIcon; // Ensure like is off
+            likeBtn.innerHTML = thumbUpIcon;
             showToast("Anda tidak menyukai pesan ini.");
           }
         };
@@ -1106,300 +1190,315 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
     });
   } else {
     // Logika untuk pesan yang sudah ada (dari history)
-    if (text) {
-      const codeRegex = /```(.*?)\n([\s\S]*?)```/g;
-      let lastIndex = 0;
-      let match;
-      const appendContent = (html) => {
-        const temp = document.createElement("div");
-        temp.innerHTML = html;
-        while (temp.firstChild) textContentDiv.appendChild(temp.firstChild);
+    // Bagian ini yang sebelumnya kurang lengkap untuk tabel
+    // Kini diselaraskan dengan logika segmentasi yang baru
+
+    // --- LOGIKA UTAMA RENDERING KONTEN (MIRIP DENGAN typeText TAPI TANPA ANIMASI) ---
+    const rawText = text; // Gunakan 'text' yang masuk ke appendMessage
+    const segments = [];
+
+    // Regex yang sama untuk menangkap blok kode dan tabel Markdown
+    const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[-:\| ]+\|\s*\r?\n(?:^\|.*\|\s*\r?\n)*)/gm;
+
+    let lastIndex = 0;
+    let match;
+
+    // Tahap 1: Ekstrak semua blok kode dan tabel dari teks penuh
+    while ((match = blockRegex.exec(rawText)) !== null) {
+      if (match.index > lastIndex) {
+        segments.push({ type: "text", content: rawText.substring(lastIndex, match.index) });
+      }
+
+      if (match[1]) {
+        // Ini adalah blok kode
+        const codeMatch = match[1];
+        const filenameMatch = codeMatch.match(/```(.*?)\n/);
+        const filename = filenameMatch ? filenameMatch[1].trim() : "code";
+        const codeContent = codeMatch
+          .replace(/```(.*?)\n/, "")
+          .replace(/```$/, "")
+          .trim();
+        segments.push({ type: "code", filename: filename, code: codeContent });
+      } else if (match[2]) {
+        // Ini adalah blok tabel
+        segments.push({ type: "table", content: match[2] });
+      }
+      lastIndex = blockRegex.lastIndex;
+    }
+
+    if (lastIndex < rawText.length) {
+      segments.push({ type: "text", content: rawText.substring(lastIndex) });
+    }
+
+    // Tahap 2: Render setiap segmen (langsung, tanpa animasi)
+    for (const segment of segments) {
+      if (segment.type === "text") {
+        const parsedHtml = parseMarkdown(segment.content); // Parse inline Markdown
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = parsedHtml;
+        while (tempDiv.firstChild) {
+          textContentDiv.appendChild(tempDiv.firstChild);
+        }
+      } else if (segment.type === "code") {
+        const codeContent = escapeHtml(segment.content);
+        const filename = escapeHtml(segment.filename);
+
+        const codeHtml = `
+                    <div class="code-wrapper" style="background-color:#1e1e1e;font-family:'Source Code Pro',monospace;font-size:0.9em;color:#d4d4d4;position:relative;margin:8px 0;border-radius:8px;overflow:hidden;">
+                        <div style="display:flex;align-items:center;padding:8px;border-bottom:1px solid #333;background-color:#252526;">
+                            <span style="color:#ccc;font-weight:600;">${filename}</span>
+                            <button style="background:transparent;border:none;cursor:pointer;color:#ccc;padding:0;user-select:none;height:24px;width:24px;display:flex;align-items:center;justify-content:center;margin-left:auto;" onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(
+                              segment.content
+                            )}')).then(() => showToast('Kode tersalin!'))">
+                                <img src="images/copy.png" alt="Copy" width="16" height="16" />
+                            </button>
+                        </div>
+                        <pre style="background-color:transparent;margin:0;padding-top:8px;overflow-x:auto;color:#d4d4d4;font-family:'Source Code Pro',monospace;font-size:0.9em;white-space:pre-wrap;word-wrap:break-word;"><code style="white-space:pre-wrap;word-wrap:break-word;">${codeContent}</code></pre>
+                    </div>
+                `;
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = codeHtml;
+        textContentDiv.appendChild(tempDiv.firstChild);
+      } else if (segment.type === "table") {
+        const tableHtml = parseMarkdownTable(segment.content); // Gunakan parseMarkdownTable
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = tableHtml;
+        textContentDiv.appendChild(tempDiv.firstChild);
+      }
+    }
+    // --- AKHIR LOGIKA UTAMA RENDERING KONTEN UNTUK HISTORY ---
+
+    // Tombol-tombol di sini (sama seperti yang Anda berikan)
+    // Ini perlu dipastikan berada di lingkup 'else' ini agar terpasang pada pesan history.
+    if (sender === "bot") {
+      const copyAllBtn = document.createElement("button");
+      const copyIcon = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+      const checkIcon = `<img src="images/copied.png" alt="Copied" width="16" height="16" />`;
+      copyAllBtn.innerHTML = copyIcon;
+      Object.assign(copyAllBtn.style, {
+        position: "absolute",
+        bottom: "4px",
+        left: "0px",
+        marginTop: "4px",
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        padding: "0",
+        userSelect: "none",
+        width: "24px",
+        height: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      });
+      copyAllBtn.onmouseenter = () => {
+        copyAllBtn.style.opacity = "1";
       };
-      while ((match = codeRegex.exec(text)) !== null) {
-        if (match.index > lastIndex) appendContent(parseMarkdown(text.substring(lastIndex, match.index)));
-        const [fullMatch, filename, code] = match;
-        lastIndex = match.index + fullMatch.length;
-
-        const codeWrapper = document.createElement("div");
-        codeWrapper.className = "code-wrapper";
-        Object.assign(codeWrapper.style, { backgroundColor: "#1e1e1e", fontFamily: "'Source Code Pro', monospace", fontSize: "0.9em", color: "#d4d4d4", position: "relative", margin: "8px 0", borderRadius: "8px", overflow: "hidden" });
-        const codeHeader = document.createElement("div");
-        Object.assign(codeHeader.style, { display: "flex", alignItems: "center", padding: "8px", borderBottom: "1px solid #333", backgroundColor: "#252526" });
-        const codeLabel = document.createElement("span");
-        codeLabel.textContent = filename.trim() || "code";
-        Object.assign(codeLabel.style, { color: "#ccc", fontWeight: "600" });
-
-        const copyBtn = document.createElement("button");
-        const copyIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
-        const checkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4ade80" viewBox="0 0 24 24"><path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
-        copyBtn.innerHTML = copyIcon;
-        Object.assign(copyBtn.style, { background: "transparent", border: "none", cursor: "pointer", marginLeft: "auto", padding: "4px" });
-        copyBtn.onclick = () => {
-          navigator.clipboard.writeText(code).then(() => {
-            copyBtn.innerHTML = checkIcon;
-            setTimeout(() => {
-              copyBtn.innerHTML = copyIcon;
-            }, 1500);
-          });
-        };
-
-        codeHeader.appendChild(codeLabel);
-        codeHeader.appendChild(copyBtn);
-        const pre = document.createElement("pre");
-        Object.assign(pre.style, { margin: "0", padding: "12px", overflowX: "auto" });
-        const codeElement = document.createElement("code");
-        codeElement.textContent = code;
-        pre.appendChild(codeElement);
-        codeWrapper.appendChild(codeHeader);
-        codeWrapper.appendChild(pre);
-        textContentDiv.appendChild(codeWrapper);
-      }
-      if (lastIndex < text.length) appendContent(parseMarkdown(text.substring(lastIndex)));
-
-      if (sender === "bot") {
-        const copyAllBtn = document.createElement("button");
-        const copyAllIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
-        const checkAllIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#4ade80" viewBox="0 0 24 24"><path d="M9 16.17l-3.88-3.88-1.41 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
-        copyAllBtn.innerHTML = copyAllIcon;
-        Object.assign(copyAllBtn.style, {
-          position: "absolute",
-          bottom: "4px",
-          left: "0px",
-          marginTop: "4px",
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          color: "#fff",
-          padding: "0",
-          userSelect: "none",
-          width: "24px",
-          height: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+      copyAllBtn.onmouseleave = () => {
+        copyAllBtn.style.opacity = "0.7";
+      };
+      copyAllBtn.onclick = () => {
+        navigator.clipboard.writeText(text).then(() => {
+          copyAllBtn.innerHTML = checkIcon;
+          setTimeout(() => {
+            copyAllBtn.innerHTML = copyIcon;
+          }, 1500);
+          showToast("Tersalin ke papan klip");
         });
-        copyAllBtn.onmouseenter = () => {
-          copyAllBtn.style.opacity = "1";
-        };
-        copyAllBtn.onmouseleave = () => {
-          copyAllBtn.style.opacity = "0.7";
-        };
-        copyAllBtn.onclick = () => {
-          navigator.clipboard.writeText(text).then(() => {
-            copyAllBtn.innerHTML = checkAllIcon;
-            setTimeout(() => {
-              copyAllBtn.innerHTML = copyAllIcon;
-            }, 1500);
-            showToast("Tersalin ke papan klip");
-          });
-        };
-        messageEl.appendChild(copyAllBtn);
+      };
+      messageEl.appendChild(copyAllBtn);
 
-        // --- Penambahan Tombol Suara Teks untuk pesan yang sudah ada ---
-        const speakBtn = document.createElement("button");
-        const speakIcon = `<img src="images/speaker.png" alt="Like" width="20" height="20" />`;
-        const stopSpeakIcon = `<img src="images/aksispeaker.png" alt="Like" width="20" height="20" />`; // Icon stop (merah)
+      const speakBtn = document.createElement("button");
+      const speakIcon = `<img src="images/speaker.png" alt="Speak" width="20" height="20" />`;
+      const stopSpeakIcon = `<img src="images/aksispeaker.png" alt="Stop Speak" width="20" height="20" />`;
 
-        speakBtn.innerHTML = speakIcon;
-        Object.assign(speakBtn.style, {
-          position: "absolute",
-          bottom: "4px",
-          left: "28px",
-          marginTop: "4px",
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          color: "#fff",
-          padding: "0",
-          userSelect: "none",
-          width: "24px",
-          height: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        });
+      speakBtn.innerHTML = speakIcon;
+      Object.assign(speakBtn.style, {
+        position: "absolute",
+        bottom: "4px",
+        left: "28px",
+        marginTop: "4px",
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        padding: "0",
+        userSelect: "none",
+        width: "24px",
+        height: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      });
 
-        speakBtn.onmouseenter = () => {
-          speakBtn.style.opacity = "1";
-        };
-        speakBtn.onmouseleave = () => {
-          speakBtn.style.opacity = "0.7";
-        };
-
-        speakBtn.onclick = () => {
-          if ("speechSynthesis" in window) {
-            if (window.speechSynthesis.speaking) {
-              window.speechSynthesis.cancel();
+      speakBtn.onmouseenter = () => {
+        speakBtn.style.opacity = "1";
+      };
+      speakBtn.onmouseleave = () => {
+        speakBtn.style.opacity = "0.7";
+      };
+      speakBtn.onclick = () => {
+        if ("speechSynthesis" in window) {
+          if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+            speakBtn.innerHTML = speakIcon;
+            showToast("Ucapan dihentikan.");
+          } else {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "id-ID";
+            window.speechSynthesis.speak(utterance);
+            speakBtn.innerHTML = stopSpeakIcon;
+            showToast("Mulai berbicara...");
+            utterance.onend = () => {
               speakBtn.innerHTML = speakIcon;
-              showToast("Ucapan dihentikan.");
-            } else {
-              const utterance = new SpeechSynthesisUtterance(text);
-              utterance.lang = "id-ID";
-              window.speechSynthesis.speak(utterance);
-              speakBtn.innerHTML = stopSpeakIcon;
-              showToast("Mulai berbicara...");
-
-              utterance.onend = () => {
-                speakBtn.innerHTML = speakIcon;
-              };
-              utterance.onerror = (event) => {
-                console.error("SpeechSynthesisUtterance.onerror", event);
-                speakBtn.innerHTML = speakIcon;
-                showToast("Terjadi kesalahan saat berbicara.");
-              };
-            }
-          } else {
-            showToast("Web Speech API tidak didukung di browser ini.");
+            };
+            utterance.onerror = (event) => {
+              console.error("SpeechSynthesisUtterance.onerror", event);
+              speakBtn.innerHTML = speakIcon;
+              showToast("Terjadi kesalahan saat berbicara.");
+            };
           }
-        };
-        messageEl.appendChild(speakBtn);
-        // --- Akhir Penambahan Tombol Suara Teks ---
-
-        // --- Penambahan Tombol Bagikan (untuk history) ---
-        const shareBtn = document.createElement("button");
-        const shareIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.52.48 1.2.77 1.96.77 1.38 0 2.5-1.12 2.5-2.5S19.38 3 18 3s-2.5 1.12-2.5 2.5c0 .24.04.47.09.7L8.04 9.8c-.52-.48-1.2-.77-1.96-.77-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5c.76 0 1.44-.3 1.96-.77l7.05 4.11c-.05.23-.09.46-.09.7 0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z"/></svg>`;
-        shareBtn.innerHTML = shareIcon;
-        Object.assign(shareBtn.style, {
-          position: "absolute",
-          bottom: "4px",
-          left: "56px",
-          marginTop: "4px",
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          color: "#fff",
-          padding: "0",
-          userSelect: "none",
-          width: "24px",
-          height: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        });
-        shareBtn.onmouseenter = () => {
-          shareBtn.style.opacity = "1";
-        };
-        shareBtn.onmouseleave = () => {
-          shareBtn.style.opacity = "0.7";
-        };
-
-        shareBtn.onclick = async () => {
-          const shareText = `${text}\n\nAnda bisa dapatkan chat lain di AI Digging dengan website resmi kami ${OFFICIAL_WEBSITE_URL}`;
-          if (navigator.share) {
-            try {
-              await navigator.share({
-                title: "AI Digging Chat",
-                text: shareText,
-                url: OFFICIAL_WEBSITE_URL,
-              });
-              showToast("Pesan berhasil dibagikan!");
-            } catch (error) {
-              console.error("Error sharing:", error);
-              showToast("Gagal membagikan pesan.");
-            }
-          } else {
-            // Fallback for browsers that don't support Web Share API
-            navigator.clipboard
-              .writeText(shareText)
-              .then(() => {
-                showToast("Pesan disalin ke papan klip untuk dibagikan.");
-              })
-              .catch((err) => {
-                console.error("Could not copy text: ", err);
-                showToast("Gagal menyalin pesan.");
-              });
-          }
-        };
-        messageEl.appendChild(shareBtn);
-        // --- Akhir Penambahan Tombol Bagikan ---
-
-        // --- Penambahan Tombol Suka/Tidak Suka (untuk history) ---
-        const likeBtn = document.createElement("button");
-        const unlikeBtn = document.createElement("button");
-        const thumbUpIcon = `<img src="images/like.png" alt="Like" width="20" height="20" />`;
-        const thumbUpFilledIcon = `<img src="images/aksilike.png" alt="Liked" width="20" height="20" />`; // Perlu file ini
-        const thumbDownIcon = `<img src="images/unlike.png" alt="Unlike" width="20" height="20" />`;
-        const thumbDownFilledIcon = `<img src="images/aksiunlike.png" alt="Unliked" width="20" height="20" />`; // Perlu file ini
-
-        Object.assign(likeBtn.style, {
-          position: "absolute",
-          bottom: "4px",
-          left: "84px",
-          marginTop: "4px",
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          padding: "0",
-          userSelect: "none",
-          width: "24px",
-          height: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        });
-        Object.assign(unlikeBtn.style, {
-          position: "absolute",
-          bottom: "4px",
-          left: "112px",
-          marginTop: "4px",
-          background: "transparent",
-          border: "none",
-          cursor: "pointer",
-          padding: "0",
-          userSelect: "none",
-          width: "24px",
-          height: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        });
-
-        // Load initial state for history messages
-        const historyMessageId = container.getAttribute("data-message-id");
-        const messageStatus = getMessageLikeStatus(historyMessageId);
-        if (messageStatus.liked) {
-          likeBtn.innerHTML = thumbUpFilledIcon;
         } else {
-          likeBtn.innerHTML = thumbUpIcon;
+          showToast("Web Speech API tidak didukung di browser ini.");
         }
-        if (messageStatus.disliked) {
-          unlikeBtn.innerHTML = thumbDownFilledIcon;
+      };
+      messageEl.appendChild(speakBtn);
+
+      const shareBtn = document.createElement("button");
+      const shareIcon = `<img src="images/share.png" alt="Share" width="20" height="20" />`;
+      shareBtn.innerHTML = shareIcon;
+      Object.assign(shareBtn.style, {
+        position: "absolute",
+        bottom: "4px",
+        left: "56px",
+        marginTop: "4px",
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        padding: "0",
+        userSelect: "none",
+        width: "24px",
+        height: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      });
+      shareBtn.onmouseenter = () => {
+        shareBtn.style.opacity = "1";
+      };
+      shareBtn.onmouseleave = () => {
+        shareBtn.style.opacity = "0.7";
+      };
+      shareBtn.onclick = async () => {
+        const shareText = `${text}\n\nAnda bisa dapatkan chat lain di AI Digging dengan website resmi kami ${OFFICIAL_WEBSITE_URL}`;
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: "AI Digging Chat",
+              text: shareText,
+              url: OFFICIAL_WEBSITE_URL,
+            });
+            showToast("Pesan berhasil dibagikan!");
+          } catch (error) {
+            console.error("Error sharing:", error);
+            showToast("Gagal membagikan pesan.");
+          }
         } else {
-          unlikeBtn.innerHTML = thumbDownIcon;
+          navigator.clipboard
+            .writeText(shareText)
+            .then(() => {
+              showToast("Pesan disalin ke papan klip untuk dibagikan.");
+            })
+            .catch((err) => {
+              console.error("Could not copy text: ", err);
+              showToast("Gagal menyalin pesan.");
+            });
         }
+      };
+      messageEl.appendChild(shareBtn);
 
-        likeBtn.onclick = () => {
-          const currentStatus = getMessageLikeStatus(historyMessageId);
-          if (currentStatus.liked) {
-            saveMessageLikeStatus(historyMessageId, { liked: false, disliked: false });
-            likeBtn.innerHTML = thumbUpIcon;
-            showToast("Suka dibatalkan.");
-          } else {
-            saveMessageLikeStatus(historyMessageId, { liked: true, disliked: false });
-            likeBtn.innerHTML = thumbUpFilledIcon;
-            unlikeBtn.innerHTML = thumbDownIcon;
-            showToast("Anda menyukai pesan ini!");
-          }
-        };
+      const likeBtn = document.createElement("button");
+      const unlikeBtn = document.createElement("button");
+      const thumbUpIcon = `<img src="images/like.png" alt="Like" width="20" height="20" />`;
+      const thumbUpFilledIcon = `<img src="images/aksilike.png" alt="Liked" width="20" height="20" />`;
+      const thumbDownIcon = `<img src="images/unlike.png" alt="Unlike" width="20" height="20" />`;
+      const thumbDownFilledIcon = `<img src="images/aksiunlike.png" alt="Unliked" width="20" height="20" />`;
 
-        unlikeBtn.onclick = () => {
-          const currentStatus = getMessageLikeStatus(historyMessageId);
-          if (currentStatus.disliked) {
-            saveMessageLikeStatus(historyMessageId, { liked: false, disliked: false });
-            unlikeBtn.innerHTML = thumbDownIcon;
-            showToast("Tidak suka dibatalkan.");
-          } else {
-            saveMessageLikeStatus(historyMessageId, { liked: false, disliked: true });
-            unlikeBtn.innerHTML = thumbDownFilledIcon;
-            likeBtn.innerHTML = thumbUpIcon;
-            showToast("Anda tidak menyukai pesan ini.");
-          }
-        };
+      Object.assign(likeBtn.style, {
+        position: "absolute",
+        bottom: "4px",
+        left: "84px",
+        marginTop: "4px",
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        padding: "0",
+        userSelect: "none",
+        width: "24px",
+        height: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      });
+      Object.assign(unlikeBtn.style, {
+        position: "absolute",
+        bottom: "4px",
+        left: "112px",
+        marginTop: "4px",
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        padding: "0",
+        userSelect: "none",
+        width: "24px",
+        height: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      });
 
-        messageEl.appendChild(likeBtn);
-        messageEl.appendChild(unlikeBtn);
-        // --- Akhir Penambahan Tombol Suka/Tidak Suka ---
+      const messageStatus = getMessageLikeStatus(messageId);
+      if (messageStatus.liked) {
+        likeBtn.innerHTML = thumbUpFilledIcon;
+      } else {
+        likeBtn.innerHTML = thumbUpIcon;
       }
+      if (messageStatus.disliked) {
+        unlikeBtn.innerHTML = thumbDownFilledIcon;
+      } else {
+        unlikeBtn.innerHTML = thumbDownIcon;
+      }
+
+      likeBtn.onclick = () => {
+        const currentStatus = getMessageLikeStatus(messageId);
+        if (currentStatus.liked) {
+          saveMessageLikeStatus(messageId, { liked: false, disliked: false });
+          likeBtn.innerHTML = thumbUpIcon;
+          showToast("Suka dibatalkan.");
+        } else {
+          saveMessageLikeStatus(messageId, { liked: true, disliked: false });
+          likeBtn.innerHTML = thumbUpFilledIcon;
+          unlikeBtn.innerHTML = thumbDownIcon;
+          showToast("Anda menyukai pesan ini!");
+        }
+      };
+      unlikeBtn.onclick = () => {
+        const currentStatus = getMessageLikeStatus(messageId);
+        if (currentStatus.disliked) {
+          saveMessageLikeStatus(messageId, { liked: false, disliked: false });
+          unlikeBtn.innerHTML = thumbDownIcon;
+          showToast("Tidak suka dibatalkan.");
+        } else {
+          saveMessageLikeStatus(messageId, { liked: false, disliked: true });
+          unlikeBtn.innerHTML = thumbDownFilledIcon;
+          likeBtn.innerHTML = thumbUpIcon;
+          showToast("Anda tidak menyukai pesan ini.");
+        }
+      };
+      messageEl.appendChild(likeBtn);
+      messageEl.appendChild(unlikeBtn);
+
+      if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+      checkChatEmpty();
     }
   }
 
@@ -1418,133 +1517,94 @@ function highlightCode(code) {
 }
 
 async function typeText(element, rawText, delay = 10, onFinish = () => {}) {
-  element.innerHTML = "";
-  const codeRegex = /```(.*?)\n([\s\S]*?)```/g;
+  element.innerHTML = ""; // Bersihkan konten awal
+
+  let currentTextIndex = 0;
+  const segments = []; // Akan menyimpan { type: 'text' | 'code' | 'table', content: '...' }
+
+  // Regex untuk menangkap blok kode (```) dan blok tabel Markdown
+  // Grup 1: Tangkapan penuh blok kode (```...```)
+  // Grup 2: Tangkapan penuh blok tabel (|...|)
+  const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[-:\| ]+\|\s*\r?\n(?:^\|.*\|\s*\r?\n)*)/gm;
+
   let lastIndex = 0;
-  const parts = [];
   let match;
-  while ((match = codeRegex.exec(rawText)) !== null) {
+
+  // Tahap 1: Ekstrak semua blok kode dan tabel dari teks penuh
+  // Loop ini akan mengidentifikasi semua blok kode atau tabel dalam `rawText`
+  while ((match = blockRegex.exec(rawText)) !== null) {
+    // Tambahkan teks biasa sebelum blok ini (jika ada)
     if (match.index > lastIndex) {
-      parts.push({ type: "text", content: rawText.slice(lastIndex, match.index) });
+      segments.push({ type: "text", content: rawText.substring(lastIndex, match.index) });
     }
-    parts.push({
-      type: "code",
-      filename: match[1].trim() || "code",
-      code: match[2],
-    });
-    lastIndex = codeRegex.lastIndex;
+
+    if (match[1]) {
+      // Ini adalah blok kode (cocok dengan grup pertama dari blockRegex)
+      const codeMatch = match[1];
+      const filenameMatch = codeMatch.match(/```(.*?)\n/);
+      const filename = filenameMatch ? filenameMatch[1].trim() : "code";
+      const codeContent = codeMatch
+        .replace(/```(.*?)\n/, "")
+        .replace(/```$/, "")
+        .trim();
+      segments.push({ type: "code", filename: filename, code: codeContent });
+    } else if (match[2]) {
+      // Ini adalah blok tabel (cocok dengan grup kedua dari blockRegex)
+      segments.push({ type: "table", content: match[2] });
+    }
+    lastIndex = blockRegex.lastIndex;
   }
+
+  // Tambahkan sisa teks setelah blok terakhir
   if (lastIndex < rawText.length) {
-    parts.push({ type: "text", content: rawText.slice(lastIndex) });
+    segments.push({ type: "text", content: rawText.substring(lastIndex) });
   }
 
-  for (const part of parts) {
-    if (part.type === "text") {
-      const parsedHtml = parseMarkdown(part.content);
+  // Tahap 2: Animasikan atau tampilkan setiap segmen
+  // Loop ini akan memproses setiap segmen yang sudah diidentifikasi
+  for (const segment of segments) {
+    if (segment.type === "text") {
+      // Untuk teks biasa (non-blok), animasikan karakter per karakter.
+      // Konten akan ditulis mentah terlebih dahulu, kemudian di-parse Markdown
+      // setelah segmen selesai diketik. Ini akan membuat format inline
+      // (bold, italic) muncul secara "tiba-tiba" setelah segmen teks selesai.
+
+      const tempSpan = document.createElement("span");
+      element.appendChild(tempSpan);
+      for (const char of segment.content) {
+        tempSpan.textContent += char; // Menggunakan textContent untuk mencegah penulisan HTML mentah
+        if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+        await new Promise((r) => setTimeout(r, delay));
+      }
+      // Setelah semua karakter diketik untuk segmen ini, parse dan ganti kontennya.
+      tempSpan.outerHTML = parseMarkdown(segment.content); // Ganti span dengan HTML yang sudah diparse
+    } else if (segment.type === "code") {
+      // Untuk blok kode, render seluruh HTML-nya sekaligus tanpa animasi karakter
+      const codeContent = escapeHtml(segment.content); // Pastikan escapeHtml di sini
+      const filename = escapeHtml(segment.filename); // Pastikan escapeHtml di sini
+
+      const codeHtml = `
+                <div class="code-wrapper" style="background-color:#1e1e1e;font-family:'Source Code Pro',monospace;font-size:0.9em;color:#d4d4d4;position:relative;margin:8px 0;border-radius:8px;overflow:hidden;">
+                    <div style="display:flex;align-items:center;padding:8px;border-bottom:1px solid #333;background-color:#252526;">
+                        <span style="color:#ccc;font-weight:600;"><span class="math-inline">\{filename\}</span\>
+<button style\="background\:transparent;border\:none;cursor\:pointer;color\:\#ccc;padding\:0;user\-select\:none;height\:24px;width\:24px;display\:flex;align\-items\:center;justify\-content\:center;margin\-left\:auto;" onclick\="navigator\.clipboard\.writeText\(decodeURIComponent\('</span>{encodeURIComponent(segment.content)}')).then(() => showToast('Kode tersalin!'))">
+                            <img src="images/copy.png" alt="Copy" width="16" height="16" />
+                        </button>
+                    </div>
+                    <pre style="background-color:transparent;margin:0;padding-top:8px;overflow-x:auto;color:#d4d4d4;font-family:'Source Code Pro',monospace;font-size:0.9em;white-space:pre-wrap;word-wrap:break-word;"><code style="white-space:pre-wrap;word-wrap:break-word;">${codeContent}</code></pre>
+                </div>
+            `;
       const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = parsedHtml;
-
-      const typeNodeInElement = async (node, parentElement) => {
-        if (node.nodeType === Node.TEXT_NODE) {
-          for (const char of node.textContent) {
-            parentElement.innerHTML += char;
-            if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
-            await new Promise((r) => setTimeout(r, delay));
-          }
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-          const newElem = document.createElement(node.tagName);
-          for (let i = 0; i < node.attributes.length; i++) {
-            const attr = node.attributes[i];
-            newElem.setAttribute(attr.name, attr.value);
-          }
-          parentElement.appendChild(newElem);
-          for (const childNode of Array.from(node.childNodes)) {
-            await typeNodeInElement(childNode, newElem);
-          }
-        }
-      };
-
-      for (const node of Array.from(tempDiv.childNodes)) {
-        await typeNodeInElement(node, element);
-      }
-    } else if (part.type === "code") {
-      const wrapper = document.createElement("div");
-      wrapper.className = "code-wrapper";
-      Object.assign(wrapper.style, {
-        backgroundColor: "#1e1e1e",
-        fontFamily: "'Source Code Pro', monospace",
-        fontSize: "0.9em",
-        color: "#d4d4d4",
-        position: "relative",
-        borderRadius: "8px",
-        margin: "8px 0",
-      });
-
-      const header = document.createElement("div");
-      Object.assign(header.style, {
-        display: "flex",
-        alignItems: "center",
-        padding: "8px",
-        gap: "2px",
-        paddingBottom: "8px",
-        borderBottom: "1px solid #333",
-        backgroundColor: "#1e1e1e",
-      });
-
-      const label = document.createElement("span");
-      label.textContent = part.filename;
-      Object.assign(label.style, { color: "#ccc", fontWeight: "600", userSelect: "none" });
-
-      const copyBtn = document.createElement("button");
-      copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
-      Object.assign(copyBtn.style, {
-        background: "transparent",
-        border: "none",
-        cursor: "pointer",
-        color: "#ccc",
-        padding: "0",
-        userSelect: "none",
-        height: "24px",
-        width: "24px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        marginLeft: "auto",
-        transition: "color 0.3s",
-      });
-      copyBtn.onclick = () => {
-        navigator.clipboard.writeText(part.code).then(() => showToast("Kode tersalin!"));
-      };
-
-      header.appendChild(label);
-      header.appendChild(copyBtn);
-
-      const pre = document.createElement("pre");
-      Object.assign(pre.style, {
-        backgroundColor: "transparent",
-        margin: "0",
-        paddingTop: "8px",
-        overflowX: "auto",
-        color: "#d4d4d4",
-        fontFamily: "'Source Code Pro', monospace",
-        fontSize: "0.9em",
-        whiteSpace: "pre-wrap",
-        wordWrap: "break-word",
-      });
-
-      const codeEl = document.createElement("code");
-      pre.appendChild(codeEl);
-      wrapper.appendChild(header);
-      wrapper.appendChild(pre);
-      element.appendChild(wrapper);
-
-      for (const char of part.code) {
-        codeEl.textContent += char;
-        if (autoScrollEnabled) {
-          chatBox.scrollTop = chatBox.scrollHeight;
-        }
-        await new Promise((r) => setTimeout(r, 5));
-      }
+      tempDiv.innerHTML = codeHtml;
+      element.appendChild(tempDiv.firstChild);
+      if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+    } else if (segment.type === "table") {
+      // Untuk blok tabel, render seluruh HTML-nya sekaligus tanpa animasi karakter
+      const tableHtml = parseMarkdownTable(segment.content); // Memanggil fungsi khusus untuk tabel
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = tableHtml;
+      element.appendChild(tempDiv.firstChild); // Tambahkan elemen tabel HTML
+      if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
     }
   }
 
@@ -1613,22 +1673,93 @@ function escapeHtml(text) {
 
 function parseMarkdown(text) {
   if (!text) return "";
-  return text
-    .replace(/```filename:(.+?)\n([\s\S]*?)```/g, (match, filename, code) => {
-      const escapedCode = escapeHtml(code);
-      return `<div class="code-wrapper" data-filename="${filename.trim()}"><pre><code>${escapedCode}</code></pre></div>`;
-    })
-    .replace(/```([\s\S]*?)```/g, (match, code) => {
-      const escapedCode = escapeHtml(code);
-      return `<div class="code-wrapper"><pre><code>${escapedCode}</code></pre></div>`;
-    })
-    .replace(/### (.*?)(\n|$)/g, '<strong style="font-size:18px;display:block;">$1</strong>\n')
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/_(.*?)_/g, "<em>$1</em>")
-    .replace(/`([^`]+)`/g, (m, inlineCode) => `<code class="md-inline-code">${escapeHtml(inlineCode)}</code>`)
-    .replace(/\n/g, "<br>")
-    .replace(/---/g, '<hr style="border: 1px solid #ccc;"/>');
+
+  // Escape HTML karakter sekali di awal untuk mencegah injeksi
+  let html = escapeHtml(text);
+
+  // 1. Tangani format teks inline (bold, italic, inline code) dan header
+  // Header
+  html = html.replace(/### (.*?)(\n|$)/g, '<strong style="font-size:18px;display:block;">$1</strong>\n');
+  // Bold
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
+  // Italic
+  html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+  html = html.replace(/_(.*?)_/g, "<em>$1</em>");
+  // Inline Code
+  html = html.replace(/`([^`]+)`/g, (m, inlineCode) => `<code class="md-inline-code" style="background-color:#333;color:#66d9ef;padding:2px 4px;border-radius:4px;">${escapeHtml(inlineCode)}</code>`);
+  // Horizontal rule
+  html = html.replace(/---/g, '<hr style="border: 1px solid #ccc;"/>');
+  // Newlines to <br> (harus terakhir untuk formatting inline)
+  html = html.replace(/\n/g, "<br>");
+
+  return html;
 }
+// --- AKHIR FUNGSI parseMarkdown yang fokus pada Inline Markdown ---
+
+// --- FUNGSI BARU: parseMarkdownTable (khusus untuk konversi tabel) ---
+function parseMarkdownTable(tableMarkdownText) {
+  if (!tableMarkdownText) return "";
+
+  const lines = tableMarkdownText
+    .trim()
+    .split("\n")
+    .filter((line) => line.trim() !== ""); // Filter out empty lines
+
+  if (lines.length < 2) return escapeHtml(tableMarkdownText); // Not a valid table (minimal header + separator)
+
+  const headerLine = lines[0];
+  const separatorLine = lines[1];
+  const dataLines = lines.slice(2);
+
+  // Parse header
+  const headers = headerLine
+    .split("|")
+    .map((h) => h.trim())
+    .filter((h) => h !== "");
+
+  // Determine column alignment from separator line
+  const alignments = separatorLine
+    .split("|")
+    .map((s) => {
+      s = s.trim();
+      if (s.startsWith(":") && s.endsWith(":")) return "center"; // :--:
+      if (s.endsWith(":")) return "right"; // ---:
+      if (s.startsWith(":")) return "left"; // :---
+      return "left"; // default ---
+    })
+    .filter((s) => s !== ""); // Filter out empty strings from initial split
+
+  let tableHtml = '<div style="overflow-x:auto; max-width: 100%;"><table style="width:100%;border-collapse:collapse;margin:10px 0;table-layout:fixed;"><thead><tr style="background-color:#3a3a3a;">';
+  headers.forEach((header, i) => {
+    const textAlign = alignments[i] || "left";
+    // HTML escape header content directly
+    tableHtml += `<th style="padding:8px;border:1px solid #555;text-align:${textAlign};color:#fff;box-sizing:border-box; word-break: break-word; overflow-wrap: break-word;">${escapeHtml(header)}</th>`;
+  });
+  tableHtml += "</tr></thead><tbody>";
+
+  // Parse data rows
+  dataLines.forEach((line) => {
+    const cells = line
+      .split("|")
+      .map((c) => c.trim())
+      .filter((c) => c !== "");
+    if (cells.length === headers.length) {
+      // Pastikan jumlah sel sesuai dengan jumlah header
+      tableHtml += '<tr style="background-color:#2a2a2a;">';
+      cells.forEach((cell, i) => {
+        const textAlign = alignments[i] || "left";
+        // HTML escape cell content directly
+        tableHtml += `<td style="padding:8px;border:1px solid #555;color:#ddd;text-align:${textAlign};box-sizing:border-box; word-break: break-word; overflow-wrap: break-word;">${escapeHtml(cell)}</td>`;
+      });
+      tableHtml += "</tr>";
+    }
+  });
+
+  tableHtml += "</tbody></table></div>";
+  return tableHtml;
+}
+// --- AKHIR FUNGSI parseMarkdown BARU UNTUK TABEL YANG LEBIH BAIK ---
 
 function copyTextFromButton(button) {
   const messageEl = button.previousElementSibling;

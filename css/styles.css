@@ -415,6 +415,72 @@ body {
   box-sizing: border-box;
 }
 
+/* Di file CSS Anda */
+.message-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+
+.message-content th,
+.message-content td {
+  padding: 8px;
+  border: 1px solid #555;
+  text-align: left;
+  color: #ddd; /* Warna teks */
+}
+
+.message-content thead tr {
+  background-color: #3a3a3a; /* Warna latar belakang header tabel */
+  color: #fff;
+}
+
+.message-content tbody tr {
+  background-color: #2a2a2a; /* Warna latar belakang baris data */
+}
+
+.message-content pre {
+  background-color: #1e1e1e;
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.9em;
+  color: #d4d4d4;
+  padding: 12px;
+  overflow-x: auto;
+  border-radius: 8px;
+  margin: 8px 0;
+}
+
+.message-content .code-wrapper {
+  position: relative;
+  overflow: hidden; /* Penting untuk menyembunyikan scrollbar di dalam code-wrapper jika tidak diinginkan */
+  border-radius: 8px;
+}
+
+.message-content .code-wrapper .code-toolbar {
+  /* Gaya untuk toolbar copy di blok kode */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  background-color: #252526;
+  border-bottom: 1px solid #333;
+}
+
+.message-content .code-wrapper .code-toolbar .code-label {
+  color: #ccc;
+  font-weight: 600;
+  user-select: none;
+}
+
+.message-content .md-inline-code {
+  background-color: #333;
+  color: #66d9ef;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: "Source Code Pro", monospace;
+  font-size: 0.9em;
+}
+
 .code-wrapper {
   background-color: #1e1e1e;
   border-radius: 10px;
