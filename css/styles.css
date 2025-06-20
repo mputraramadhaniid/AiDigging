@@ -384,8 +384,12 @@ body {
 
 /* GANTI ATURAN LAMA DENGAN YANG INI */
 .message-container.user .message {
-  background-color: #2d2d2d; /* Background diubah menjadi abu-abu */
+  padding-top: 8px;
+  padding-left: 15px;
+  padding-right: 15px;
+  background-color: #424141; /* Background diubah menjadi abu-abu */
   color: #ffffff; /* Warna teks diubah menjadi putih agar terbaca */
+  border-radius: 20px 5px 20px 20px;
 }
 
 .message-container.bot {
@@ -605,8 +609,8 @@ code {
   flex-direction: column;
   width: 94%;
   max-width: 700px;
-  padding: 4px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 4px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
   background: #212121;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -617,7 +621,7 @@ code {
 .input-container textarea {
   flex: 1;
   width: 100%;
-  padding: 10px 16px;
+  padding: 4px 16px;
   font-size: 16px;
   font-family: "Roboto", Arial, sans-serif;
   color: #eee;
@@ -648,11 +652,11 @@ code {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding-left: 6px;
+  padding-left: 0px;
 }
 
 .input-bawah-send button {
-  margin-right: 8px; /* Ganti dari margin-left ke margin-right */
+  margin-right: 6px; /* Ganti dari margin-left ke margin-right */
   margin-bottom: 6px;
   background-color: #ffffff;
   border: none;
@@ -679,6 +683,7 @@ code {
   align-items: center;
   justify-content: flex-start; /* Tengah dalam tombol */
   flex-shrink: 0;
+  filter: brightness(0) invert(1);
 }
 
 /* Styling untuk Preview Gambar
