@@ -745,7 +745,7 @@ function addBotActionButtons(messageEl, text, messageId) {
   // Definisikan semua ikon yang akan digunakan
   const icons = {
     copy: `<img src="images/copy.png" alt="Copy" width="16" height="16" />`,
-    copied: `<img src="images/copied.png" alt="Copied" width="16" height="16" />`,
+    copied: `<img src="images/copy.png" alt="Copied" width="16" height="16" />`,
     speak: `<img src="images/speaker.png" alt="Speak" width="20" height="20" />`,
     speaking: `<img src="images/aksispeaker.png" alt="Speaking" width="20" height="20" />`,
     share: `<img src="images/share.png" alt="Share" width="20" height="20" />`,
