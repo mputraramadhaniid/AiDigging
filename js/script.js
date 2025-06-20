@@ -6,6 +6,7 @@ const clearChatBtnn = document.getElementById("clearChatBtnn");
 const clearChatBtnnn = document.getElementById("clearChatBtnnn");
 const leftMenuBtn = document.getElementById("leftMenuBtn");
 const sidebar = document.getElementById("sidebar");
+const sidebars = document.getElementById("sidebar");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 const emptyMessage = document.getElementById("emptyMessage");
 const pusatbantuan = document.getElementById("pusatbantuan");
@@ -19,6 +20,9 @@ const chatContainer = document.querySelector("section.chat-container");
 const uploadBtn = document.getElementById("uploadbtn");
 const sidebarToggleBtn = document.getElementById("sidebarToggle");
 const openSidebarBtn = document.getElementById("openSidebarBtn");
+const tombolTutup = document.getElementById("nutupsidebar");
+const tombolBuka = document.getElementById("bukasidebar");
+const tombolTutupmobile = document.getElementById("nutupsidebar");
 
 let messages = [];
 let isLoading = false;
@@ -37,6 +41,34 @@ const OFFICIAL_WEBSITE_URL = "https://ai-digging.vercel.app/"; // Ganti dengan U
 if (window.pdfjsLib) {
   pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`;
 }
+
+// Anda perlu mendefinisikan variabel ini sebelumnya
+// const tombolTutup = document.getElementById('ID_TOMBOL_TUTUP');
+// const tombolBuka = document.getElementById('ID_TOMBOL_BUKA');
+// const sidebars = document.getElementById('ID_SIDEBAR');
+
+// Tentukan lebar minimum untuk mode desktop (dalam piksel)
+const desktopBreakpoint = 768;
+
+// 3. Tambahkan "event listener" yang akan menjalankan fungsi saat tombol diklik
+tombolTutup.addEventListener("click", () => {
+  // Periksa apakah lebar jendela browser saat ini lebih besar atau sama dengan breakpoint desktop
+  if (window.innerWidth >= desktopBreakpoint) {
+    // 4. Jika ya (mode desktop), jalankan aksi untuk menyembunyikan sidebar
+    sidebars.style.display = "none";
+    tombolBuka.style.display = "block";
+  }
+  // Jika tidak (mode mobile), tidak ada aksi yang dijalankan
+});
+
+tombolBuka.addEventListener("click", () => {
+  // Periksa juga di sini untuk konsistensi
+  if (window.innerWidth >= desktopBreakpoint) {
+    // 4. Jika ya (mode desktop), jalankan aksi untuk menampilkan sidebar
+    sidebars.style.display = "block";
+    tombolBuka.style.display = "none";
+  }
+});
 
 function updateChatBoxPadding() {
   if (!chatBox || !inputContainer) return;
@@ -58,6 +90,11 @@ pusatbantuan.addEventListener("click", () => {
 });
 
 leftMenuBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  sidebarOverlay.classList.toggle("active");
+});
+
+tombolTutupmobile.addEventListener("click", () => {
   sidebar.classList.toggle("active");
   sidebarOverlay.classList.toggle("active");
 });
