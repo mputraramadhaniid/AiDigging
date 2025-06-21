@@ -1659,6 +1659,7 @@ code.inline-code {
 
   .input-container {
     padding: 4px 6px;
+    margin-bottom: 20px;
   }
 
   .input-container textarea {
