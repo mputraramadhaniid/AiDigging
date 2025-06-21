@@ -879,7 +879,18 @@ function addBotActionButtons(messageEl, text, messageId) {
       window.speechSynthesis.cancel();
       return;
     }
-    const utterance = new SpeechSynthesisUtterance(text);
+
+    // --- BARIS TAMBAHAN: Hapus simbol dari teks ---
+    // Ganti semua karakter yang bukan huruf, angka, atau spasi dengan spasi tunggal,
+    // lalu rapikan spasi berlebih.
+    const cleanedText = text
+      .replace(/[^a-zA-Z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    // Gunakan teks yang sudah dibersihkan
+    const utterance = new SpeechSynthesisUtterance(cleanedText);
+
     utterance.lang = "id-ID";
     utterance.onstart = () => (speakBtn.innerHTML = icons.speaking);
     utterance.onend = () => (speakBtn.innerHTML = icons.speak);
@@ -890,7 +901,7 @@ function addBotActionButtons(messageEl, text, messageId) {
     window.speechSynthesis.speak(utterance);
   };
   buttonContainer.appendChild(speakBtn);
-
+  
   // --- Tombol Share ---
   const shareBtn = document.createElement("button");
   shareBtn.title = "Bagikan";
