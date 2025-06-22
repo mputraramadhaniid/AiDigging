@@ -1225,122 +1225,254 @@ function addBotActionButtons(messageEl, text, messageId) {
  * @param {function} onFinish - Callback yang dijalankan setelah rendering selesai.
  */
 async function renderMessageContent(element, rawText, isAnimated = false, onFinish = () => {}) {
-  element.innerHTML = ""; // Selalu bersihkan elemen target
-  const delay = isAnimated ? 10 : 0; // Atur jeda animasi
+  // Selalu bersihkan elemen target sebelum merender konten baru
+  element.innerHTML = "";
 
-  const parts = [];
-  const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;
-  let lastIndex = 0;
-  let match;
+  // Atur jeda animasi. Mengurangi delay untuk pengalaman yang lebih cepat.
+  const animationDelay = isAnimated ? 5 : 0; // Ubah dari 10ms ke 5ms
 
-  // 1. Parsing teks mentah menjadi segmen-segmen (teks, kode, tabel)
-  while ((match = blockRegex.exec(rawText)) !== null) {
-    if (match.index > lastIndex) parts.push({ type: "text", content: rawText.slice(lastIndex, match.index) });
-    if (match[1]) {
-      const codeBlock = match[1];
-      const filenameMatch = codeBlock.match(/```(.*?)\n/);
-      const language = filenameMatch ? filenameMatch[1].trim().toLowerCase() : "code";
-      parts.push({
-        type: "code",
-        filename: language,
-        code: codeBlock
-          .replace(/```(.*?)\n/, "")
-          .replace(/```$/, "")
-          .trim(),
-      });
-    } else if (match[2]) {
-      parts.push({ type: "table", content: match[2] });
+  /**
+   * Mengurai teks mentah menjadi segmen-segmen (teks, blok kode, tabel).
+   * @param {string} text - Teks mentah untuk diurai.
+   * @returns {Array<Object>} - Array objek segmen.
+   */
+  const parseContentIntoSegments = (text) => {
+    const segments = [];
+    // Regex untuk menangkap blok kode (```) atau tabel markdown
+    const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = blockRegex.exec(text)) !== null) {
+      // Tambahkan segmen teks sebelum blok yang ditemukan
+      if (match.index > lastIndex) {
+        segments.push({ type: "text", content: text.slice(lastIndex, match.index) });
+      }
+
+      // Jika ini adalah blok kode (match[1])
+      if (match[1]) {
+        const codeBlock = match[1];
+        const filenameMatch = codeBlock.match(/```(.*?)\n/);
+        // Ekstrak bahasa/filename, default ke 'code' jika tidak ada
+        const language = filenameMatch ? filenameMatch[1].trim().toLowerCase() : "code";
+        const codeContent = codeBlock
+          .replace(/```(.*?)\n/, "") // Hapus baris pembuka ```language
+          .replace(/```$/, "") // Hapus baris penutup ```
+          .trim();
+        segments.push({ type: "code", language, content: codeContent });
+      }
+      // Jika ini adalah tabel (match[2])
+      else if (match[2]) {
+        segments.push({ type: "table", content: match[2] });
+      }
+      lastIndex = blockRegex.lastIndex;
     }
-    lastIndex = blockRegex.lastIndex;
-  }
-  if (lastIndex < rawText.length) parts.push({ type: "text", content: rawText.slice(lastIndex) });
 
-  // 2. Fungsi rekursif untuk animasi teks (hanya digunakan jika isAnimated=true)
-  const animateNode = async (node, parentElement) => {
+    // Tambahkan sisa teks setelah blok terakhir (jika ada)
+    if (lastIndex < text.length) {
+      segments.push({ type: "text", content: text.slice(lastIndex) });
+    }
+    return segments;
+  };
+
+  /**
+   * Fungsi rekursif untuk menganimasikan penambahan node ke DOM.
+   * Digunakan untuk efek ketik pada teks biasa.
+   * @param {Node} node - Node DOM yang akan dianimasikan.
+   * @param {HTMLElement} parentElement - Elemen induk tempat node akan ditambahkan.
+   */
+  const animateTextNodeContent = async (node, parentElement) => {
     for (const childNode of Array.from(node.childNodes)) {
       if (childNode.nodeType === Node.TEXT_NODE) {
+        // Animasikan teks per karakter
         for (const char of childNode.textContent) {
-          parentElement.innerHTML += char === "\n" ? "<br>" : escapeHtml(char);
-          if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
-          if (isAnimated) await new Promise((r) => setTimeout(r, delay));
+          parentElement.appendChild(document.createTextNode(char));
+          // Pastikan chatBox dan autoScrollEnabled didefinisikan secara global
+          if (typeof autoScrollEnabled !== "undefined" && autoScrollEnabled && typeof chatBox !== "undefined") {
+            chatBox.scrollTop = chatBox.scrollHeight;
+          }
+          if (isAnimated) {
+            await new Promise((resolve) => setTimeout(resolve, animationDelay));
+          }
         }
       } else if (childNode.nodeType === Node.ELEMENT_NODE) {
-        const newElem = document.createElement(childNode.tagName);
-        parentElement.appendChild(newElem);
-        await animateNode(childNode, newElem);
+        // Buat elemen baru dan animasikan kontennya secara rekursif
+        const newElement = document.createElement(childNode.tagName);
+        // Salin semua atribut dari node asli ke elemen baru (penting untuk styling markdown)
+        Array.from(childNode.attributes).forEach((attr) => {
+          newElement.setAttribute(attr.name, attr.value);
+        });
+        parentElement.appendChild(newElement);
+        await animateTextNodeContent(childNode, newElement);
       }
     }
   };
 
-  // 3. Merender setiap segmen
-  for (const part of parts) {
-    if (part.type === "text") {
-      const sourceContainer = document.createElement("div");
-      sourceContainer.innerHTML = parseMarkdown(part.content);
-      await animateNode(sourceContainer, element);
-    } else if (part.type === "table") {
-      element.insertAdjacentHTML("beforeend", parseMarkdownTable(part.content));
-    } else if (part.type === "code") {
-      const lang = part.filename;
-      if (lang === "mermaid") {
-        const mermaidDiv = document.createElement("div");
-        mermaidDiv.className = "mermaid";
-        mermaidDiv.textContent = part.code;
-        element.appendChild(mermaidDiv);
-      } else if (lang === "diagram" || lang === "flowchart") {
-        const pre = document.createElement("pre");
-        pre.className = "text-diagram";
-        pre.textContent = part.code;
-        element.appendChild(pre);
-      } else {
-        // Render blok kode standar
-        const wrapper = document.createElement("div");
-        wrapper.className = "code-wrapper";
-        Object.assign(wrapper.style, { backgroundColor: "#1e1e1e", fontFamily: "'Source Code Pro', monospace", margin: "8px 0", borderRadius: "8px", overflow: "hidden" });
+  /**
+   * Merender blok kode dengan header, tombol salin, dan highlight syntax.
+   * @param {HTMLElement} parentElement - Elemen tempat blok kode akan ditambahkan.
+   * @param {Object} codeSegment - Objek segmen kode { type, language, content }.
+   */
+  const renderCodeBlock = async (parentElement, codeSegment) => {
+    const { language, content } = codeSegment;
 
-        const header = document.createElement("div");
-        Object.assign(header.style, { display: "flex", alignItems: "center", padding: "8px", borderBottom: "1px solid #333", backgroundColor: "#252526" });
+    // Penanganan khusus untuk diagram Mermaid dan text-based
+    if (language === "mermaid") {
+      const mermaidDiv = document.createElement("div");
+      mermaidDiv.className = "mermaid";
+      mermaidDiv.textContent = content;
+      parentElement.appendChild(mermaidDiv);
+      // Di sini atau setelah semua render selesai, Anda mungkin perlu memanggil `mermaid.init()`
+      // atau `mermaid.run()` untuk merender diagram.
+    } else if (language === "diagram" || language === "flowchart") {
+      const pre = document.createElement("pre");
+      pre.className = "text-diagram"; // Gunakan class untuk styling
+      pre.textContent = content;
+      parentElement.appendChild(pre);
+    } else {
+      // Rendering blok kode standar
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-wrapper"; // Class untuk styling CSS
+      // Hindari inline style yang berlebihan. Pindahkan ke CSS eksternal.
+      // Contoh inline style sementara untuk demonstrasi:
+      Object.assign(wrapper.style, {
+        backgroundColor: "#1e1e1e",
+        fontFamily: "'Source Code Pro', monospace",
+        margin: "16px 0", // Spasi vertikal lebih baik
+        borderRadius: "8px",
+        overflow: "hidden",
+        border: "1px solid #333", // Batas untuk tampilan lebih jelas
+        boxShadow: "0 4px 8px rgba(0,0,0,0.2)", // Sedikit bayangan
+      });
 
-        const label = document.createElement("span");
-        label.textContent = lang;
-        Object.assign(label.style, { color: "#ccc", fontWeight: "600" });
+      const header = document.createElement("div");
+      header.className = "code-header"; // Class untuk styling CSS
+      Object.assign(header.style, {
+        display: "flex",
+        alignItems: "center",
+        padding: "8px 12px", // Padding header
+        borderBottom: "1px solid #333",
+        backgroundColor: "#252526",
+        color: "#ccc",
+        fontWeight: "600",
+        fontSize: "0.9em",
+      });
 
-        const copyBtn = document.createElement("button");
-        copyBtn.title = "Salin kode";
-        copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
-        Object.assign(copyBtn.style, { background: "transparent", border: "none", cursor: "pointer", marginLeft: "auto" });
-        copyBtn.onclick = () => {
-          navigator.clipboard.writeText(part.code).then(() => showToast("Kode tersalin!"));
-        };
+      const label = document.createElement("span");
+      label.textContent = language.toUpperCase(); // Membuat label bahasa lebih menonjol
+      label.className = "code-language-label"; // Class untuk styling CSS
 
-        header.append(label, copyBtn);
+      const copyBtn = document.createElement("button");
+      copyBtn.title = "Salin kode";
+      copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+      copyBtn.className = "copy-code-btn"; // Class untuk styling CSS
+      Object.assign(copyBtn.style, {
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        marginLeft: "auto",
+        padding: "4px",
+        borderRadius: "4px",
+        transition: "background-color 0.2s ease", // Efek hover
+      });
+      copyBtn.onmouseover = () => (copyBtn.style.backgroundColor = "#444");
+      copyBtn.onmouseout = () => (copyBtn.style.backgroundColor = "transparent");
 
-        const pre = document.createElement("pre");
-        Object.assign(pre.style, { margin: "0", padding: "12px", overflowX: "auto", whiteSpace: "pre-wrap", wordWrap: "break-word" });
+      copyBtn.onclick = () => {
+        navigator.clipboard
+          .writeText(content)
+          .then(() => {
+            // Pastikan showToast didefinisikan di global scope
+            if (typeof showToast !== "undefined") {
+              showToast("Kode tersalin!");
+            }
+          })
+          .catch((err) => console.error("Gagal menyalin kode:", err));
+      };
 
-        const codeEl = document.createElement("code");
-        codeEl.className = `language-${lang}`; // Untuk library highlighting jika ada
-        pre.appendChild(codeEl);
-        wrapper.append(header, pre);
-        element.appendChild(wrapper);
+      header.append(label, copyBtn);
 
-        // Animasikan atau tampilkan langsung isi kode
-        if (isAnimated) {
-          for (const char of part.code) {
-            codeEl.textContent += char;
-            if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
-            await new Promise((r) => setTimeout(r, 5));
+      const pre = document.createElement("pre");
+      pre.className = "code-content-pre"; // Class untuk styling CSS
+      Object.assign(pre.style, {
+        margin: "0",
+        padding: "12px 16px", // Padding konten kode
+        overflowX: "auto",
+        whiteSpace: "pre-wrap",
+        wordWrap: "break-word",
+        color: "#f8f8f2", // Warna teks kode (sesuai tema gelap)
+        fontSize: "0.9em",
+        lineHeight: "1.5",
+      });
+
+      const codeEl = document.createElement("code");
+      codeEl.className = `language-${language}`; // Untuk library highlighting syntax seperti Prism.js
+      pre.appendChild(codeEl);
+      wrapper.append(header, pre);
+      parentElement.appendChild(wrapper);
+
+      // Animasikan atau tampilkan langsung isi kode
+      if (isAnimated) {
+        for (const char of content) {
+          codeEl.textContent += char;
+          if (typeof autoScrollEnabled !== "undefined" && autoScrollEnabled && typeof chatBox !== "undefined") {
+            chatBox.scrollTop = chatBox.scrollHeight;
           }
-        } else {
-          codeEl.textContent = part.code;
+          await new Promise((resolve) => setTimeout(resolve, 2)); // Animasi kode lebih cepat
         }
+      } else {
+        codeEl.textContent = content;
+      }
+
+      // Panggil highlighter syntax jika ada (misal: Prism.js)
+      // Ini harus dipanggil SETELAH elemen kode ditambahkan ke DOM dan kontennya diisi
+      if (typeof Prism !== "undefined") {
+        Prism.highlightElement(codeEl);
       }
     }
-    if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+  };
+
+  // 1. Parsing teks mentah menjadi segmen-segmen (teks, kode, tabel)
+  const segments = parseContentIntoSegments(rawText);
+
+  // 2. Merender setiap segmen
+  for (const segment of segments) {
+    if (segment.type === "text") {
+      // Pastikan parseMarkdown didefinisikan sebagai fungsi eksternal
+      if (typeof parseMarkdown === "function") {
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = parseMarkdown(segment.content);
+        await animateTextNodeContent(tempDiv, element);
+      } else {
+        // Fallback jika parseMarkdown tidak tersedia
+        const textNode = document.createElement("p"); // Gunakan <p> untuk paragraf teks
+        textNode.textContent = segment.content;
+        element.appendChild(textNode);
+      }
+    } else if (segment.type === "table") {
+      // Pastikan parseMarkdownTable didefinisikan sebagai fungsi eksternal
+      if (typeof parseMarkdownTable === "function") {
+        element.insertAdjacentHTML("beforeend", parseMarkdownTable(segment.content));
+      } else {
+        // Fallback jika parseMarkdownTable tidak tersedia
+        const pre = document.createElement("pre");
+        pre.textContent = segment.content;
+        element.appendChild(pre);
+      }
+    } else if (segment.type === "code") {
+      await renderCodeBlock(element, segment);
+    }
+
+    // Scroll setelah setiap segmen dirender, jika auto-scroll diaktifkan
+    if (typeof autoScrollEnabled !== "undefined" && autoScrollEnabled && typeof chatBox !== "undefined") {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
   }
 
-  // 4. Jalankan callback setelah semua selesai
-  if (onFinish) onFinish();
+  // 3. Jalankan callback setelah semua rendering selesai
+  if (onFinish) {
+    onFinish();
+  }
 }
 
 // =================================================================================
@@ -1485,7 +1617,7 @@ function appendMessage(sender, text, username, profileUrl, files = [], isHistory
   }
 
   if (sender === "user") {
-    textContentDiv.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
+    textContentDiv.innerHTML = escapeHtml(text).replace(/\n/g, "");
   } else {
     const onRenderFinish = () => {
       addBotActionButtons(messageEl, text, messageId);
@@ -1705,61 +1837,78 @@ function escapeHtml(text) {
 function parseMarkdown(text) {
   if (!text) return "";
 
-  // IMPORTANT: Do NOT escapeHtml the whole text here if renderMessageContent
-  // is already handling it or if you want raw HTML for specific markdown tags.
-  // The previous escapeHtml was applied to the *entire* rawText, which would
-  // double-escape or prevent markdown from rendering.
-  // Instead, escape text within specific markdown conversions if needed,
-  // or rely on the `animateNode` to handle character by character.
+  // Penting: Pastikan teks input TIDAK di-HTML-escape sepenuhnya di sini
+  // karena `renderMessageContent` atau `animateTextNodeContent` akan menangani
+  // escaping karakter per karakter saat animasi, atau Anda ingin tag HTML yang
+  // dihasilkan oleh parser markdown ini (seperti <strong>, <a>) tetap utuh.
 
-  let html = text; // Start with raw text
+  let html = text; // Mulai dengan teks mentah
 
-  // Headers - These should be handled by your text rendering or `parseMarkdown`
-  // Ensure they don't break subsequent inline parsing.
-  // Using <h3> instead of <strong> to give proper semantic meaning
+  // 1. Tangani Block-level Elements (Header, List, Horizontal Rule) terlebih dahulu
+  // Ini penting agar regex untuk inline tidak salah menginterpretasikan baris-baris ini.
+
+  // Horizontal rule
+  html = html.replace(/---/g, '<hr class="md-hr"/>'); // Tambahkan kelas untuk styling
+
+  // Headers (perhatikan urutan: H3 dulu, baru H2, H1)
   html = html.replace(/^###\s*(.*?)(\n|$)/gm, "<h3>$1</h3>");
   html = html.replace(/^##\s*(.*?)(\n|$)/gm, "<h2>$1</h2>");
   html = html.replace(/^#\s*(.*?)(\n|$)/gm, "<h1>$1</h1>");
 
+  // Lists (basic - unordered)
+  // Ini akan mengidentifikasi item list dan membungkusnya dalam <li>
+  // Kemudian, kelompokkan <li> yang berurutan ke dalam <ul>
+  html = html.replace(/^\s*([*-+])\s+(.*)/gm, "<li>$2</li>"); // Ganti bullet point dengan <li>
+  // Regex untuk membungkus <li> dalam <ul>. Ini cukup kompleks.
+  // Untuk kasus sederhana, kita bisa asumsikan <li> berada di blok yang sama.
+  // Pendekatan yang lebih robust:
+  html = html.replace(/((?:<li>.*?<\/li>\s*)+)/gs, "<ul>$1</ul>");
+  // `gs` flags: g for global (semua kecocokan), s for dotAll ('.' mencocokkan newline)
+
+  // 2. Tangani Inline Elements
   // Bold
   html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
   // Italic
   html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
   html = html.replace(/_(.*?)_/g, "<em>$1</em>");
-  // Strikethrough (optional, if you want it)
+  // Strikethrough
   html = html.replace(/~~(.*?)~~/g, "<del>$1</del>");
 
-  // Inline Code (assuming ` are escaped already if text is pre-escaped)
-  // If you need to ensure HTML within inline code is escaped, apply escapeHtml here:
-  // html = html.replace(/`([^`]+)`/g, (match, inlineCode) => `<code class="md-inline-code">${escapeHtml(inlineCode)}</code>`);
-  // If you expect `code` to be raw text already HTML escaped by `animateNode` or similar:
+  // Inline Code (pastikan konten di dalamnya tidak di-escape HTML oleh parser ini)
+  // `code` adalah salah satu yang harus dihindari dari escapeHtml di sini
   html = html.replace(/`([^`]+)`/g, `<code class="md-inline-code">$1</code>`);
 
-  // Links (basic) - improve this with proper regex for URL and text
+  // Links (dasar)
   html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
 
-  // Lists (basic - unordered)
-  html = html.replace(/^\s*[-*+]\s+(.*)(\n|$)/gm, "<li>$1</li>");
-  if (html.includes("<li>")) {
-    // Wrap all <li> elements that are not already inside a ul/ol (simplistic check)
-    // This is tricky without a full parser. A simpler way is to replace newlines
-    // AFTER list items are processed.
-    html = html.replace(/(^<li>.*<\/li>(\n|$)[\s\S]*?)(?!^<li>)/gm, "<ul>$1</ul>\n");
-    // This regex is very simplistic and might not capture all list scenarios
-    // properly if there are multiple paragraphs between list items.
+  // 3. Tangani Paragraf dan Line Breaks
+  // Ini adalah bagian kunci untuk mengontrol jarak.
+
+  // Ganti SEMUA single newline yang TIDAK mengikuti tag block-level dengan <br>
+  // Ini akan memastikan paragraf tidak dipisah oleh <br> dan hanya baris baru 'lembut' yang menggunakannya.
+  // Penting: Ini dilakukan setelah block-level elements diubah.
+  // Regex ini mencoba menghindari penambahan <br> di dalam tag blok atau setelah tag penutup blok.
+  // Ini adalah tantangan umum di parser markdown sederhana.
+
+  // Langkah pertama: Ganti semua double newline (yang menandakan paragraf baru) dengan placeholder unik
+  // Lalu ganti semua single newline dengan <br> (kecuali yang di dalam kode block, tapi itu sudah ditangani oleh renderCodeBlock)
+  // Kemudian ganti placeholder kembali ke </p><p>
+  html = html.replace(/\n\n/g, "__PARAGRAPH_BREAK__"); // Ganti paragraf dengan placeholder
+  html = html.replace(/\n/g, "<br>"); // Ganti baris baru tunggal dengan <br>
+  html = html.replace(/__PARAGRAPH_BREAK__/g, "</p><p>"); // Kembalikan placeholder ke tag paragraf
+
+  // 4. Bungkus seluruh konten dengan tag <p> jika belum ada tag block-level
+  // Ini memastikan semua teks ada di dalam setidaknya satu paragraf.
+  // Kita perlu memastikan tidak membungkus tag block-level yang sudah ada (h1, h2, ul, hr, dll.)
+  // Cek apakah ada tag block-level di awal teks. Jika tidak, bungkus.
+  if (!/^\s*<(h[1-6]|ul|ol|table|div|hr|pre|p)\b/i.test(html.trim())) {
+    html = `<p>${html}</p>`;
   }
 
-  // Horizontal rule
-  html = html.replace(/---/g, '<hr class="md-hr"/>'); // Add class for styling
-
-  // Newlines to <br> (This should typically be done last for inline formatting)
-  // But for list items and headers, you might want to manage block display with CSS
-  // rather than <br> for every newline.
-  // For general text paragraphs, replacing double newlines with <p> is better.
-  html = html.replace(/\n\n/g, "</p><p>"); // Convert paragraphs
-  html = html.replace(/\n/g, "<br>"); // Convert single newlines within paragraphs
-  html = `<p>${html}</p>`; // Wrap everything in a paragraph initially, then replace
+  // Hapus paragraf kosong yang mungkin muncul karena penggantian
+  html = html.replace(/<p><\/p>/g, "");
+  html = html.replace(/<p>\s*<br>\s*<\/p>/g, ""); // Hapus p yang hanya berisi br
 
   return html;
 }
