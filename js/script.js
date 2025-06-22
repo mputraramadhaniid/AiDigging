@@ -534,9 +534,107 @@ chatBox.addEventListener("scroll", () => {
 });
 
 // --- LOGIKA UTAMA PENGIRIMAN FORM ---
+// ... (Your existing code above) ...
+
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   let userText = chatInput.value.trim();
+
+  // --- KONDISI KHUSUS: Respon untuk "Berikan aku aplikasi cerito ke bae" ---
+  if (userText.toLowerCase() === "berikan aku aplikasi cerito ke bae") {
+    // 1. Tambahkan pesan pengguna ke chatBox
+    appendMessage("user", userText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", [], false);
+    messages.push({ role: "user", content: userText, files: [] }); // Simpan di riwayat
+
+    // 2. Tampilkan pesan loading bot
+    isLoading = true;
+    appendLoadingMessage();
+
+    // 3. Simulasikan jeda waktu untuk "memproses"
+    await new Promise((resolve) => setTimeout(resolve, 1500)); // Jeda 1.5 detik
+
+    // 4. Hapus pesan loading
+    removeLoadingMessage();
+
+    // 5. Siapkan balasan bot dan detail unduhan
+    const botReplyText = `Tentu, ini aplikasi "Cerito Ke Bae" yang bisa kamu unduh:
+
+**Nama File:** CeritoKeBae.apk
+**Ukuran:** 12 MB
+**Status:** Terverifikasi
+`;
+    const downloadFileName = "CeritoKeBae.apk";
+    const downloadFileUrl = "https://example.com/CeritoKeBae.apk"; // Ganti dengan URL unduhan APK yang sebenarnya!
+    const downloadLogoUrl = "https://firebasestorage.googleapis.com/v0/b/website-putra.appspot.com/o/icons8-download-96.png?alt=media&token=c26ee380-f3ec-45f9-960e-81bc69e0624b"; // **Diperbaiki: Menggunakan path "src/images/download.png"**
+
+    // 6. Tambahkan pesan bot utama
+    appendMessage("bot", botReplyText, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
+
+    // 7. Dapatkan elemen pesan bot terakhir yang baru saja ditambahkan
+    const lastBotMessageElement = chatBox.lastElementChild.querySelector(".bot-message");
+
+    // 8. Tambahkan elemen unduhan ke pesan bot
+    if (lastBotMessageElement) {
+      const downloadContainer = document.createElement("div");
+      downloadContainer.className = "download-link-container";
+      Object.assign(downloadContainer.style, {
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        marginTop: "10px",
+        backgroundColor: "#2e2e2e",
+        padding: "10px",
+        borderRadius: "8px",
+        width: "50%",
+      });
+
+      const fileNameEl = document.createElement("span");
+      fileNameEl.textContent = downloadFileName;
+      Object.assign(fileNameEl.style, { color: "#fff", flexGrow: "1", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" });
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = downloadFileUrl;
+      downloadLink.download = downloadFileName;
+      downloadLink.title = `Unduh ${downloadFileName}`;
+      Object.assign(downloadLink.style, {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minWidth: "40px",
+        minHeight: "40px",
+        textDecoration: "none",
+      });
+
+      const downloadIcon = document.createElement("img");
+      downloadIcon.src = downloadLogoUrl;
+      downloadIcon.alt = "Download Icon";
+      Object.assign(downloadIcon.style, { width: "24px", height: "24px" });
+
+      downloadLink.appendChild(downloadIcon);
+      downloadContainer.appendChild(fileNameEl);
+      downloadContainer.appendChild(downloadLink);
+
+      lastBotMessageElement.appendChild(downloadContainer);
+    }
+
+    // 9. Simpan balasan bot di riwayat
+    messages.push({ role: "assistant", content: botReplyText, files: [] });
+    saveMessagesToStorage();
+
+    // 10. Bersihkan input dan reset status
+    chatInput.value = "";
+    chatInput.style.height = "auto";
+    chatInput.blur();
+    preview.innerHTML = "";
+    selectedFiles = [];
+    updateFileInput();
+    isLoading = false;
+    chatInput.disabled = false;
+
+    // Hentikan eksekusi lebih lanjut (tidak kirim ke API)
+    return;
+  }
+  // --- AKHIR KONDISI KHUSUS ---
 
   // Deteksi URL di dalam teks input
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -556,27 +654,23 @@ chatForm.addEventListener("submit", async (e) => {
     }
   }
 
-  // --- Bagian ini diubah untuk memisahkan konten ke AI ---
-  const currentUserParts = [];
-
-  // Tambahkan teks pengguna ke parts jika ada
-  if (userText) {
-    currentUserParts.push({ text: userText });
-  }
-
   // Siapkan filesForDisplay untuk menampilkan pratinjau di gelembung chat
   const filesForDisplay = selectedFiles.map((f) => ({
-    id: f.id, // Penting untuk identifikasi unik
+    id: f.id,
     name: f.name,
     type: f.type,
     dataURL: f.dataURL,
     originalUrl: f.originalUrl,
     isUrl: f.isUrl,
-    // extractedText TIDAK perlu di sini untuk DISPLAY, tapi penting untuk AI
-    extractedText: f.extractedText, // Simpan extractedText di sini untuk tujuan pengiriman ke API
+    extractedText: f.extractedText,
   }));
 
   // Tambahkan file gambar ke currentUserParts sebagai inline_data
+  const currentUserParts = [];
+  if (userText) {
+    currentUserParts.push({ text: userText });
+  }
+
   selectedFiles
     .filter((f) => f.type.startsWith("image/") && f.dataURL)
     .forEach((file) => {
@@ -592,15 +686,12 @@ chatForm.addEventListener("submit", async (e) => {
     .filter((f) => f.extractedText)
     .forEach((file) => {
       if (file.type === "video/youtube" && file.originalUrl) {
-        // Untuk YouTube, kirim URLnya ke AI
         currentUserParts.push({ text: `URL Video YouTube untuk dianalisis: ${file.originalUrl}` });
       } else if (file.extractedText) {
-        // Untuk dokumen/HTML, kirim teks ekstraknya
         currentUserParts.push({ text: `Konten dari ${file.isUrl ? "URL" : "file"} "${file.name || file.originalUrl}":\n${file.extractedText}` });
       }
     });
 
-  // Final check before sending to API
   if (currentUserParts.length === 0) {
     showToast("Tidak ada konten yang dapat dikirim ke AI. Pastikan pesan Anda tidak kosong atau konten file/URL berhasil diekstrak.");
     removeLoadingMessage();
@@ -609,16 +700,12 @@ chatForm.addEventListener("submit", async (e) => {
     return;
   }
 
-  // Gunakan userText ASLI (tanpa tambahan konten file) untuk tampilan di gelembung chat.
-  // FilesForDisplay akan menampilkan pratinjau visual.
   appendMessage("user", userText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", filesForDisplay, false);
 
-  // Untuk riwayat, simpan userText dan filesForDisplay
-  // Penting: extractedText juga disimpan di filesForDisplay agar bisa diakses saat load history
   messages.push({
     role: "user",
-    content: userText, // Teks ini yang akan ditampilkan kembali
-    files: filesForDisplay, // Pratinjau file ini yang akan ditampilkan kembali (termasuk extractedText)
+    content: userText,
+    files: filesForDisplay,
   });
   saveMessagesToStorage();
 
@@ -626,7 +713,7 @@ chatForm.addEventListener("submit", async (e) => {
   chatInput.style.height = "auto";
   chatInput.blur();
   preview.innerHTML = "";
-  selectedFiles = []; // Reset selectedFiles setelah dikirim
+  selectedFiles = [];
   updateFileInput();
 
   removeLoadingMessage();
@@ -634,16 +721,12 @@ chatForm.addEventListener("submit", async (e) => {
   appendLoadingMessage();
 
   try {
-    // Saat membangun historyContents untuk API, ambil extractedText dari selectedFiles
-    // yang ada di message object.
     const historyContents = messages.slice(0, -1).map((msg) => {
       const historyParts = [];
       if (msg.content) {
-        // Ini adalah teks pesan yang terlihat oleh pengguna
         historyParts.push({ text: msg.content });
       }
       if (msg.files && msg.files.length > 0) {
-        // Tambahkan gambar dari history
         msg.files
           .filter((f) => f.dataURL && f.type.startsWith("image/"))
           .forEach((file) => {
@@ -653,7 +736,6 @@ chatForm.addEventListener("submit", async (e) => {
               inline_data: { mime_type: mimeType, data: base64Data },
             });
           });
-        // Tambahkan konten ekstrak dari file lain yang *sebelumnya* diekstrak
         msg.files
           .filter((f) => f.extractedText)
           .forEach((file) => {
@@ -670,7 +752,6 @@ chatForm.addEventListener("submit", async (e) => {
       };
     });
 
-    // Gabungkan riwayat dengan pesan pengguna saat ini
     const finalContents = [...historyContents, { role: "user", parts: currentUserParts }];
 
     const requestBody = {
@@ -700,7 +781,7 @@ chatForm.addEventListener("submit", async (e) => {
     removeLoadingMessage();
     appendMessage("bot", botReply, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
 
-    messages.push({ role: "assistant", content: botReply, files: [] }); // Bot tidak punya file yang dilampirkan
+    messages.push({ role: "assistant", content: botReply, files: [] });
     saveMessagesToStorage();
   } catch (err) {
     console.error("API Error:", err);
@@ -712,6 +793,8 @@ chatForm.addEventListener("submit", async (e) => {
     chatInput.disabled = false;
   }
 });
+
+// ... (Your existing code below) ...
 
 function saveMessagesToStorage() {
   try {
@@ -901,7 +984,7 @@ function addBotActionButtons(messageEl, text, messageId) {
     window.speechSynthesis.speak(utterance);
   };
   buttonContainer.appendChild(speakBtn);
-  
+
   // --- Tombol Share ---
   const shareBtn = document.createElement("button");
   shareBtn.title = "Bagikan";
@@ -1440,34 +1523,79 @@ function removeLoadingMessage() {
 
 function escapeHtml(text) {
   if (!text) return "";
-  // Perbaikan: gunakan ekspresi reguler global untuk mengganti semua instance
-  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  let div = document.createElement("div");
+  div.appendChild(document.createTextNode(text));
+  return div.innerHTML;
 }
 
 function parseMarkdown(text) {
   if (!text) return "";
 
-  // Escape HTML karakter sekali di awal untuk mencegah injeksi
-  let html = escapeHtml(text);
+  // IMPORTANT: Do NOT escapeHtml the whole text here if renderMessageContent
+  // is already handling it or if you want raw HTML for specific markdown tags.
+  // The previous escapeHtml was applied to the *entire* rawText, which would
+  // double-escape or prevent markdown from rendering.
+  // Instead, escape text within specific markdown conversions if needed,
+  // or rely on the `animateNode` to handle character by character.
 
-  // 1. Tangani format teks inline (bold, italic, inline code) dan header
-  // Header
-  html = html.replace(/### (.*?)(\n|$)/g, '<strong style="font-size:18px;display:block;">$1</strong>\n');
+  let html = text; // Start with raw text
+
+  // Headers - These should be handled by your text rendering or `parseMarkdown`
+  // Ensure they don't break subsequent inline parsing.
+  // Using <h3> instead of <strong> to give proper semantic meaning
+  html = html.replace(/^###\s*(.*?)(\n|$)/gm, "<h3>$1</h3>");
+  html = html.replace(/^##\s*(.*?)(\n|$)/gm, "<h2>$1</h2>");
+  html = html.replace(/^#\s*(.*?)(\n|$)/gm, "<h1>$1</h1>");
+
   // Bold
   html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
   // Italic
   html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
   html = html.replace(/_(.*?)_/g, "<em>$1</em>");
-  // Inline Code
-  html = html.replace(/`([^`]+)`/g, (m, inlineCode) => `<code class="md-inline-code" style="background-color:#333;color:#66d9ef;padding:2px 4px;border-radius:4px;">${escapeHtml(inlineCode)}</code>`);
+  // Strikethrough (optional, if you want it)
+  html = html.replace(/~~(.*?)~~/g, "<del>$1</del>");
+
+  // Inline Code (assuming ` are escaped already if text is pre-escaped)
+  // If you need to ensure HTML within inline code is escaped, apply escapeHtml here:
+  // html = html.replace(/`([^`]+)`/g, (match, inlineCode) => `<code class="md-inline-code">${escapeHtml(inlineCode)}</code>`);
+  // If you expect `code` to be raw text already HTML escaped by `animateNode` or similar:
+  html = html.replace(/`([^`]+)`/g, `<code class="md-inline-code">$1</code>`);
+
+  // Links (basic) - improve this with proper regex for URL and text
+  html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+  // Lists (basic - unordered)
+  html = html.replace(/^\s*[-*+]\s+(.*)(\n|$)/gm, "<li>$1</li>");
+  if (html.includes("<li>")) {
+    // Wrap all <li> elements that are not already inside a ul/ol (simplistic check)
+    // This is tricky without a full parser. A simpler way is to replace newlines
+    // AFTER list items are processed.
+    html = html.replace(/(^<li>.*<\/li>(\n|$)[\s\S]*?)(?!^<li>)/gm, "<ul>$1</ul>\n");
+    // This regex is very simplistic and might not capture all list scenarios
+    // properly if there are multiple paragraphs between list items.
+  }
+
   // Horizontal rule
-  html = html.replace(/---/g, '<hr style="border: 1px solid #ccc;"/>');
-  // Newlines to <br> (harus terakhir untuk formatting inline)
-  html = html.replace(/\n/g, "<br>");
+  html = html.replace(/---/g, '<hr class="md-hr"/>'); // Add class for styling
+
+  // Newlines to <br> (This should typically be done last for inline formatting)
+  // But for list items and headers, you might want to manage block display with CSS
+  // rather than <br> for every newline.
+  // For general text paragraphs, replacing double newlines with <p> is better.
+  html = html.replace(/\n\n/g, "</p><p>"); // Convert paragraphs
+  html = html.replace(/\n/g, "<br>"); // Convert single newlines within paragraphs
+  html = `<p>${html}</p>`; // Wrap everything in a paragraph initially, then replace
 
   return html;
 }
+
+// Ensure your CSS has styles for these new classes:
+// .md-inline-code
+// .md-hr
+// h1, h2, h3 within .message-content
+// ul, li within .message-content (for lists)
+// a within .message-content
 // --- AKHIR FUNGSI parseMarkdown yang fokus pada Inline Markdown ---
 
 // --- FUNGSI BARU: parseMarkdownTable (khusus untuk konversi tabel) ---
