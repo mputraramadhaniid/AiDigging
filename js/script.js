@@ -536,27 +536,213 @@ chatBox.addEventListener("scroll", () => {
 // --- LOGIKA UTAMA PENGIRIMAN FORM ---
 // ... (Your existing code above) ...
 
+// ... (Your existing code above, including the helper functions like escapeHtml, parseMarkdown, etc.) ...
+
+// ... (Kode Anda yang ada di atas, termasuk semua variabel global dan fungsi pembantu) ...
+
 chatForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  let userText = chatInput.value.trim();
+  e.preventDefault(); // Mencegah refresh halaman
+  let userText = chatInput.value.trim(); // Ambil teks input pengguna, hapus spasi di awal/akhir
+  const lowerCaseUserText = userText.toLowerCase(); // Konversi ke huruf kecil untuk pencocokan
 
-  // --- KONDISI KHUSUS: Respon untuk "Berikan aku aplikasi cerito ke bae" ---
-  if (userText.toLowerCase() === "berikan aku aplikasi cerito ke bae") {
-    // 1. Tambahkan pesan pengguna ke chatBox
+  // --- Identity Question Detection (Paling Prioritas dan Analitis) ---
+  let isIdentityQuestion = false;
+
+  // Normalisasi input pengguna menjadi array kata
+  const userWords = lowerCaseUserText
+    .split(/\s+/) // Pisahkan berdasarkan spasi
+    .filter((word) => word.length > 0) // Hapus string kosong
+    .map((word) => word.replace(/[^\w\s]/gi, "")); // Hapus tanda baca
+
+  // Kategori kata kunci untuk berbagai niat identitas
+  const questionStarters = ["who", "what", "where", "how", "why", "siapa", "apa", "bagaimana", "mengapa"];
+  const botReferences = ["you", "kamu", "bot", "ai", "robot", "chatbot", "diri", "yourself", "dia", "mereka"]; // Ditambah "dia", "mereka" untuk pertanyaan tidak langsung
+  const creatorTerms = ["made", "created", "built", "developer", "creator", "pencipta", "pembuat", "menciptakan", "dibuat", "bangun", "mengembangkan", "by", "oleh"]; // Ditambah "by", "oleh"
+  const identityTerms = ["identity", "identitas", "origin", "asal", "nature", "jenis", "tipe", "purpose", "tujuan", "siapa", "apa"]; // Ditambah "siapa", "apa"
+  const natureTerms = ["human", "ai", "artificial intelligence", "robot", "chatbot", "program", "model", "manusia", "cerdas"]; // Ditambah "manusia", "cerdas"
+
+  // 1. Cek frasa spesifik secara keseluruhan (dengan batas kata)
+  const specificIdentityPhrases = [
+    // --- English Exact/Common Phrases ---
+    "who made you",
+    "who created you",
+    "who built you",
+    "who is your creator",
+    "who developed you",
+    "by whom were you created",
+    "who are you really",
+    "what is your identity",
+    "tell me about your creator",
+    "what kind of ai are you",
+    "are you human",
+    "are you an ai",
+    "are you a robot",
+    "are you a chatbot",
+    "your creator",
+    "your developer",
+    "your origin",
+    "your source",
+    "made by",
+    "created by",
+    "built by",
+    "what are you made of",
+    "where were you made",
+    "who is behind you",
+    "what is your purpose",
+    "what do you do", // Bisa juga terkait identitas
+    "where did you come from",
+    "what are you built for",
+    // --- Indonesian Exact/Common Phrases ---
+    "siapa yang buat kamu",
+    "siapa yang menciptakan kamu",
+    "siapa pembuat kamu",
+    "siapa pencipta kamu",
+    "siapa kamu",
+    "kamu siapa",
+    "asal usul kamu",
+    "identitas kamu",
+    "mengenai dirimu",
+    "kamu buatan siapa",
+    "kamu dibuat oleh siapa",
+    "siapa yang membuatmu",
+    "apa tujuanmu",
+    "jenis bot apa kamu",
+    "kamu itu siapa",
+    "asalmu dari mana",
+    "pengembang kamu siapa",
+    "di buat oleh",
+    "dibuat oleh",
+    "oleh siapa",
+    "pembuatnya",
+    "penciptanya",
+    "dibikin siapa",
+    "kamu siapa aslinya",
+    "kamu itu dibuat oleh siapa",
+    "kamu dibuat dari apa",
+    "siapa di balik kamu",
+    "apa fungsi kamu",
+    "apa kegunaanmu",
+    "kamu berasal dari mana",
+    // --- Other Languages ---
+    "кто тебя создал",
+    "wer hat dich erschaffen",
+    "qui t'a créé",
+    "chi ti ha creato",
+    "quién te creó",
+    "quem te criou",
+    "あなたを作ったのは誰ですか",
+    "誰創造了你",
+    "谁创造了你",
+    "너를 누가 만들었니",
+    "คุณเป็นใคร",
+    "bạn là ai",
+    "നിങ്ങൾ ആരാണ്",
+    "क्या तुम कौन हो",
+  ];
+
+  for (const phrase of specificIdentityPhrases) {
+    // Escape karakter khusus regex jika ada dalam frasa
+    const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(`\\b${escapedPhrase}\\b`, "i");
+    if (regex.test(lowerCaseUserText)) {
+      isIdentityQuestion = true;
+      break;
+    }
+  }
+
+  // 2. Analisis per kata jika frasa spesifik tidak cocok.
+  // Ini mencari kombinasi kata-kata yang sangat indikatif dan niat tersembunyi.
+  if (!isIdentityQuestion) {
+    const hasQuestion = userWords.some((word) => questionStarters.includes(word));
+    const hasBotRef = userWords.some((word) => botReferences.includes(word));
+    const hasCreator = userWords.some((word) => creatorTerms.includes(word));
+    const hasIdentity = userWords.some((word) => identityTerms.includes(word));
+    const hasNature = userWords.some((word) => natureTerms.includes(word));
+
+    // Logika kombinasi:
+    // a. Pertanyaan umum tentang identitas (e.g., "who are you", "siapa kamu")
+    if (userWords.includes("who") && userWords.includes("are") && userWords.includes("you")) {
+      isIdentityQuestion = true;
+    } else if (userWords.includes("siapa") && userWords.includes("kamu")) {
+      isIdentityQuestion = true;
+    }
+    // b. Pertanyaan tentang asal/pembuat (e.g., "who made you", "dibuat oleh")
+    else if (hasQuestion && hasCreator && hasBotRef) {
+      isIdentityQuestion = true;
+    }
+    // c. Pertanyaan tentang sifat/tipe (e.g., "are you human?", "kamu ai?")
+    else if (userWords.includes("are") && hasBotRef && hasNature) {
+      isIdentityQuestion = true;
+    } else if (hasBotRef && hasNature && (userWords.includes("adalah") || userWords.includes("is") || userWords.includes("merupakan"))) {
+      isIdentityQuestion = true;
+    }
+    // d. Pertanyaan tujuan (e.g., "what is your purpose", "apa tujuanmu")
+    else if (hasQuestion && userWords.some((word) => ["purpose", "tujuan", "fungsi", "kegunaan"].includes(word)) && hasBotRef) {
+      isIdentityQuestion = true;
+    }
+    // e. Frasa seperti "tell me about" + referensi bot
+    else if (userWords.includes("tell") && userWords.includes("me") && userWords.includes("about") && hasBotRef) {
+      isIdentityQuestion = true;
+    }
+    // f. Deteksi sangat singkat (e.g., "pembuatnya?", "oleh siapa?")
+    // Ini adalah heuristik yang agak agresif, gunakan dengan hati-hati.
+    // Jika input hanya terdiri dari 1-3 kata dan mengandung kata kunci pembuat/identitas kuat.
+    else if (userWords.length > 0 && userWords.length <= 3 && (userWords.some((word) => creatorTerms.includes(word)) || userWords.some((word) => identityTerms.includes(word)))) {
+      // Exclude generic short questions like "who?", "what?" if they don't imply identity.
+      if (
+        !(
+          (userWords.length === 1 && (userWords.includes("who") || userWords.includes("siapa") || userWords.includes("what") || userWords.includes("apa"))) ||
+          (userWords.length === 2 && (userWords.includes("who") || userWords.includes("siapa")) && (userWords.includes("is") || userWords.includes("itu")))
+        )
+      ) {
+        isIdentityQuestion = true;
+      }
+    }
+  }
+
+  // --- EKSEKUSI RESPON IDENTITAS BOT (Jika isIdentityQuestion TRUE) ---
+  if (isIdentityQuestion) {
+    // Tambahkan pesan pengguna ke chatBox
     appendMessage("user", userText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", [], false);
-    messages.push({ role: "user", content: userText, files: [] }); // Simpan di riwayat
+    messages.push({ role: "user", content: userText, files: [] });
+    saveMessagesToStorage(); // Simpan pesan pengguna ke localStorage
 
-    // 2. Tampilkan pesan loading bot
+    isLoading = true;
+    appendLoadingMessage(); // Tampilkan indikator loading
+    await new Promise((resolve) => setTimeout(resolve, 1500)); // Simulasikan jeda waktu
+    removeLoadingMessage(); // Hapus indikator loading
+
+    const botIdentityReply = "I cannot provide further information about your question. Please provide another question!";
+    appendMessage("bot", botIdentityReply, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
+    messages.push({ role: "assistant", content: botIdentityReply, files: [] });
+    saveMessagesToStorage(); // Simpan balasan bot ke localStorage
+
+    // Bersihkan input dan reset status UI
+    chatInput.value = "";
+    chatInput.style.height = "auto";
+    chatInput.blur();
+    preview.innerHTML = "";
+    selectedFiles = [];
+    updateFileInput();
+    isLoading = false;
+    chatInput.disabled = false;
+
+    return; // SANGAT PENTING: Hentikan eksekusi di sini agar tidak memanggil API!
+  }
+
+  // --- EKSEKUSI RESPON APLIKASI "CERITO KE BAE" (Jika tidak ada kondisi di atas yang cocok) ---
+  // Pastikan ini datang SETELAH deteksi identitas, jika ada kemungkinan tumpang tindih
+  if (lowerCaseUserText === "berikan aku aplikasi cerito ke bae") {
+    // Tambahkan pesan pengguna ke chatBox
+    appendMessage("user", userText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", [], false);
+    messages.push({ role: "user", content: userText, files: [] });
+    saveMessagesToStorage();
+
     isLoading = true;
     appendLoadingMessage();
-
-    // 3. Simulasikan jeda waktu untuk "memproses"
-    await new Promise((resolve) => setTimeout(resolve, 1500)); // Jeda 1.5 detik
-
-    // 4. Hapus pesan loading
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     removeLoadingMessage();
 
-    // 5. Siapkan balasan bot dan detail unduhan
     const botReplyText = `Tentu, ini aplikasi "Cerito Ke Bae" yang bisa kamu unduh:
 
 **Nama File:** CeritoKeBae.apk
@@ -565,15 +751,11 @@ chatForm.addEventListener("submit", async (e) => {
 `;
     const downloadFileName = "CeritoKeBae.apk";
     const downloadFileUrl = "https://example.com/CeritoKeBae.apk"; // Ganti dengan URL unduhan APK yang sebenarnya!
-    const downloadLogoUrl = "https://firebasestorage.googleapis.com/v0/b/website-putra.appspot.com/o/icons8-download-96.png?alt=media&token=c26ee380-f3ec-45f9-960e-81bc69e0624b"; // **Diperbaiki: Menggunakan path "src/images/download.png"**
+    const downloadLogoUrl = "https://firebasestorage.googleapis.com/v0/b/website-putra.appspot.com/o/icons8-download-96.png?alt=media&token=c26ee380-f3ec-45f9-960e-81bc69e0624b";
 
-    // 6. Tambahkan pesan bot utama
     appendMessage("bot", botReplyText, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
 
-    // 7. Dapatkan elemen pesan bot terakhir yang baru saja ditambahkan
     const lastBotMessageElement = chatBox.lastElementChild.querySelector(".bot-message");
-
-    // 8. Tambahkan elemen unduhan ke pesan bot
     if (lastBotMessageElement) {
       const downloadContainer = document.createElement("div");
       downloadContainer.className = "download-link-container";
@@ -616,12 +798,9 @@ chatForm.addEventListener("submit", async (e) => {
 
       lastBotMessageElement.appendChild(downloadContainer);
     }
-
-    // 9. Simpan balasan bot di riwayat
     messages.push({ role: "assistant", content: botReplyText, files: [] });
     saveMessagesToStorage();
 
-    // 10. Bersihkan input dan reset status
     chatInput.value = "";
     chatInput.style.height = "auto";
     chatInput.blur();
@@ -630,11 +809,10 @@ chatForm.addEventListener("submit", async (e) => {
     updateFileInput();
     isLoading = false;
     chatInput.disabled = false;
-
-    // Hentikan eksekusi lebih lanjut (tidak kirim ke API)
     return;
   }
-  // --- AKHIR KONDISI KHUSUS ---
+
+  // --- LOGIKA UTAMA: Kirim ke API AI Digging (jika tidak ada kondisi khusus di atas yang cocok) ---
 
   // Deteksi URL di dalam teks input
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -648,13 +826,11 @@ chatForm.addEventListener("submit", async (e) => {
   // Jika ada URL di input, tambahkan ke selectedFiles secara otomatis
   if (foundUrls && foundUrls.length > 0) {
     for (const url of foundUrls) {
-      // Hapus URL dari userText agar tidak dikirim dua kali dalam teks utama
       userText = userText.replace(url, "").trim();
-      await addUrlToPreview(url); // Tunggu sampai URL diproses
+      await addUrlToPreview(url);
     }
   }
 
-  // Siapkan filesForDisplay untuk menampilkan pratinjau di gelembung chat
   const filesForDisplay = selectedFiles.map((f) => ({
     id: f.id,
     name: f.name,
@@ -665,7 +841,6 @@ chatForm.addEventListener("submit", async (e) => {
     extractedText: f.extractedText,
   }));
 
-  // Tambahkan file gambar ke currentUserParts sebagai inline_data
   const currentUserParts = [];
   if (userText) {
     currentUserParts.push({ text: userText });
@@ -681,7 +856,6 @@ chatForm.addEventListener("submit", async (e) => {
       });
     });
 
-  // Tambahkan teks ekstrak dari dokumen/PDF/HTML atau URL YouTube sebagai bagian teks terpisah untuk AI
   selectedFiles
     .filter((f) => f.extractedText)
     .forEach((file) => {
