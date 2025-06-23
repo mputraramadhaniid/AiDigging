@@ -113,13 +113,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const googleProvider = new firebase.auth.GoogleAuthProvider();
 
   // ===================================================================
-  // BAGIAN 2: MENGAMBIL ELEMEN DARI HTML (DOM)
+  // BAGIAN 2: MENGAMBIL ELEMEN DARI HTML (DOM) -- DIPERBAIKI
   // ===================================================================
   const welcomeBackOverlay = document.getElementById("welcomeBackOverlay");
   const signInBtn = document.getElementById("signInBtn");
   const signUpFreeBtn = document.getElementById("signUpFreeBtn");
   const stayLoggedOutBtn = document.getElementById("stayLoggedOutBtn");
 
+  // Elemen profil untuk DESKTOP (di sidebar)
+  const userProfileSection = document.getElementById("userProfileSection");
+  const userProfilePic = document.getElementById("userProfilePic");
+  const userProfileName = document.getElementById("userProfileName");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  // Elemen profil untuk MOBILE (di navbar atas) -- BAGIAN PENTING YANG HILANG
+  const mobileProfileBtn = document.getElementById("mobileProfileBtn");
+  const mobileProfilePic = document.getElementById("mobileProfilePic");
+
+  // Elemen untuk interaksi sidebar (dibutuhkan oleh tombol mobile)
+  const sidebar = document.getElementById("sidebar");
+  const sidebarOverlay = document.getElementById("sidebarOverlay");
+  const leftMenuBtn = document.getElementById("leftMenuBtn"); // Tombol hamburger utama
+  
   // ===================================================================
   // BAGIAN 3: FUNGSI-FUNGSI OTENTIKASI
   // ===================================================================
@@ -137,19 +152,11 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // ===================================================================
-  // BAGIAN 4: LOGIKA UTAMA APLIKASI SETELAH STATUS AUTH DIKETAHUI
+  // BAGIAN 4: LOGIKA UTAMA APLIKASI (Tidak diubah)
   // ===================================================================
-
-  /**
-   * Fungsi ini akan menjalankan semua logika yang dibutuhkan
-   * saat halaman dimuat dan pengguna SUDAH LOGIN.
-   */
   function initializePageForLoggedInUser(user) {
     console.log("Inisialisasi halaman untuk pengguna:", user.displayName);
-
-    // Logika aplikasi Anda yang lain (memuat chat, dll.)
     if (typeof loadAllChatSessions === "function") loadAllChatSessions();
-
     if (typeof currentChatId !== "undefined" && currentChatId && typeof chatSessions !== "undefined" && chatSessions.some((s) => s.id === currentChatId)) {
       if (typeof loadChatSession === "function") loadChatSession(currentChatId);
     } else {
@@ -158,43 +165,68 @@ document.addEventListener("DOMContentLoaded", () => {
         createNewChatSession();
       }
     }
-
     if (typeof renderChatHistoryList === "function") renderChatHistoryList();
     if (typeof updateChatBoxPadding === "function") updateChatBoxPadding();
   }
 
   // ===================================================================
-  // BAGIAN 5: PENGECEKAN STATUS LOGIN (TITIK MASUK UTAMA)
+  // BAGIAN 5: PENGECEKAN STATUS LOGIN (TITIK MASUK UTAMA) -- DIPERBAIKI
   // ===================================================================
-
   console.log("Menunggu status otentikasi dari Firebase...");
 
-  // === BAGIAN 5: PENGECEKAN STATUS LOGIN (TITIK MASUK UTAMA) ===
   auth.onAuthStateChanged((user) => {
     if (user) {
       // ---- PENGGUNA SUDAH LOGIN ----
       console.log("Status: Pengguna sudah login.", user.displayName);
+      const photoURL = user.photoURL || 'images/default-avatar.png';
+      const displayName = user.displayName || 'Pengguna';
 
-      // -- PERBARUI BAGIAN INI --
+      // 1. Update profil di sidebar (untuk DESKTOP)
       if (userProfileSection) {
-        userProfileSection.style.display = "flex"; // Tampilkan bagian profil
-        userProfileName.textContent = user.displayName || "Pengguna";
-        // Gunakan foto Google, jika tidak ada, gunakan default
-        userProfilePic.src = user.photoURL || "images/default-avatar.png";
+        userProfileSection.style.display = 'flex';
+        userProfileName.textContent = displayName;
+        userProfilePic.src = photoURL;
       }
-      // -- AKHIR PERBARUAN --
-
+      
+      // 2. Update profil di navbar atas (untuk MOBILE)
+      if (mobileProfileBtn) {
+        mobileProfileBtn.style.display = 'block';
+        mobileProfilePic.src = photoURL;
+        
+        // Sembunyikan tombol hamburger utama jika profil sudah muncul
+        if(leftMenuBtn) leftMenuBtn.style.display = 'none';
+        
+        // Fungsikan tombol profil mobile untuk membuka sidebar
+        mobileProfileBtn.onclick = () => {
+          if (sidebar) sidebar.classList.add('active'); // Gunakan class 'active' atau yg sesuai
+          if (sidebarOverlay) sidebarOverlay.classList.add('visible'); // Gunakan class 'visible' atau yg sesuai
+        };
+      }
+      
+      // 3. Sembunyikan dialog selamat datang
+      if (welcomeBackOverlay) {
+        welcomeBackOverlay.classList.remove("visible");
+      }
+      
       initializePageForLoggedInUser(user);
+
     } else {
       // ---- PENGGUNA BELUM LOGIN ----
-      console.log("Status: Tidak ada pengguna yang login. Menampilkan dialog.");
-
-      // -- PERBARUI BAGIAN INI --
+      console.log("Status: Tidak ada pengguna yang login.");
+      
+      // 1. Sembunyikan profil di sidebar (untuk DESKTOP)
       if (userProfileSection) {
-        userProfileSection.style.display = "none"; // Sembunyikan bagian profil
+        userProfileSection.style.display = 'none';
       }
-      // -- AKHIR PERBARUAN --
 
+      // 2. Sembunyikan profil di navbar atas (untuk MOBILE)
+      if (mobileProfileBtn) {
+        mobileProfileBtn.style.display = 'none';
+        // Tampilkan lagi tombol hamburger utama
+        if(leftMenuBtn) leftMenuBtn.style.display = 'block';
+      }
+
+      // 3. Tampilkan dialog selamat datang
       if (welcomeBackOverlay) {
         welcomeBackOverlay.classList.add("visible");
       }
@@ -202,11 +234,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ===================================================================
-  // BAGIAN 6: EVENT LISTENERS
+  // BAGIAN 6: EVENT LISTENERS -- DIPERBAIKI
   // ===================================================================
 
   if (signInBtn) signInBtn.addEventListener("click", signInWithGoogle);
   if (signUpFreeBtn) signUpFreeBtn.addEventListener("click", signInWithGoogle);
+  
+  // Pastikan listener ini ada dan benar
   if (logoutBtn) logoutBtn.addEventListener("click", signOutUser);
 
   if (stayLoggedOutBtn) {
@@ -217,7 +251,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
 pricing.addEventListener("click", () => {
   window.location.href = "pricing.html";
 });
