@@ -2140,4 +2140,8 @@ code.inline-code {
   .profile-menu-item .material-icons {
     font-size: 20px;
   }
+
+  .mobile-profile-btn {
+    display: block !important; /* Tambahkan !important HANYA UNTUK TES */
+  }
 }
