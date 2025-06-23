@@ -1526,9 +1526,9 @@ code {
   display: none; /* Sembunyi secara default, ditampilkan oleh JS saat login */
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   margin-top: auto; /* Mendorong elemen ini ke bawah */
-  border-top: 1px solid #e0e0e0;
+  border-top: 0px solid #e0e0e0;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -2036,5 +2036,14 @@ code.inline-code {
 
   .user-profile-section {
     display: block !important; /* Tambahkan !important HANYA UNTUK TES */
+  }
+
+  .profile-name {
+    flex-grow: 1; /* Mengisi ruang agar ikon titik tiga terdorong ke kanan */
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
