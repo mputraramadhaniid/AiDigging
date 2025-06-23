@@ -104,7 +104,7 @@
           <span>Kebijakan & Privasi</span>
         </button>
 
-        <h3 class="sidebar-heading" style="margin-top: 14px; margin-bottom: 0px;">Terbaru</h3>
+        <h3 class="sidebar-heading" style="margin-top: 14px; margin-bottom: 0px">Terbaru</h3>
         <div class="chat-history-list" id="chatHistoryList"></div>
       </aside>
 
@@ -179,6 +179,22 @@
       </section>
     </div>
 
+    <div id="welcomeBackOverlay" class="welcome-back-overlay dialog-overlay">
+      <div class="welcome-back-box">
+        <div class="welcome-back-header">
+          <h2>Selamat datang kembali!</h2>
+          <p>Masuk untuk melanjutkan percakapan Anda dan membuka semua fitur.</p>
+        </div>
+        <div class="welcome-back-actions">
+          <button id="signInBtn" class="btn-primary-dark">Masuk</button>
+
+          <button id="signUpFreeBtn" class="btn-secondary-dark">Daftar gratis</button>
+
+          <button id="stayLoggedOutBtn" class="btn-text-dark">Tetap keluar</button>
+        </div>
+      </div>
+    </div>
+
     <div class="dialog-overlay hidden" id="customDialogOverlay">
       <div class="dialog-box">
         <h3 class="dialog-title" id="dialogTitle">Konfirmasi Tindakan</h3>
@@ -189,6 +205,9 @@
         </div>
       </div>
     </div>
-    <script src="js/script.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="js/scripts.js"></script>
   </body>
 </html>
