@@ -1521,6 +1521,7 @@ code {
 
 /* Kontainer utama untuk bagian profil di footer sidebar */
 .user-profile-section {
+  flex-shrink: 0;
   position: relative; /* Diperlukan agar menu-hover bisa diposisikan */
   display: none; /* Sembunyi secara default, ditampilkan oleh JS saat login */
   align-items: center;
