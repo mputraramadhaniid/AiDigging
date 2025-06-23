@@ -149,6 +149,18 @@ body {
   transform: scale(1.02); /* Sedikit membesar saat hover */
 }
 
+#sidebar {
+  /* TIGA SYARAT UTAMA ADA DI SINI */
+  display: flex;
+  flex-direction: column;
+  /* atau 100% */
+
+  /* Properti lain untuk styling */
+  width: 260px;
+  padding: 8px;
+  background-color: #181818;
+}
+
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -1153,13 +1165,21 @@ code {
   }
 }
 
-/* Style untuk Riwayat Chat di Sidebar */
+/* 2. Atur Elemen yang Bisa Tumbuh (Riwayat Chat) */
 .chat-history-list {
-  flex-grow: 1; /* <-- CUKUP INI untuk membuatnya mengisi ruang sisa */
-  overflow-y: auto; /* Agar bisa di-scroll jika isinya panjang */
+  flex-grow: 1; /* Ambil semua ruang vertikal yang tersisa */
+  overflow-y: auto; /* Buat HANYA area ini yang bisa di-scroll */
+  min-height: 0; /* Perbaikan penting untuk flexbox agar tidak meluber */
+
+  /* Properti Anda yang lain */
   margin-top: 10px;
   padding-right: 5px;
-  min-height: 0;
+}
+
+.sidebar-header,
+.sidebar-action-btn,
+.sidebar-heading {
+  flex-shrink: 0;
 }
 .sidebar-chat-item {
   width: 100%;
@@ -1258,12 +1278,14 @@ code {
 .sidebar {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
+  height: 100dvh;
   padding: 4px 12px 4px 12px;
   background-color: #181818; /* Diubah menjadi hitam solid */
   /* backdrop-filter dan -webkit-backdrop-filter dihapus karena tidak lagi transparan */
   border-right: 0px solid #535353;
   width: 280px;
+  overflow: hidden;
 }
 
 /* --- Gaya Baru untuk Isi Sidebar --- */
