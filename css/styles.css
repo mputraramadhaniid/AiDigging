@@ -2141,6 +2141,97 @@ code.inline-code {
     font-size: 20px;
   }
 
+  /* Kontainer utama untuk bagian profil di footer sidebar */
+  .user-profile-section {
+    flex-shrink: 0;
+    position: relative; /* Diperlukan agar menu-hover bisa diposisikan */
+    display: none; /* Sembunyi secara default, ditampilkan oleh JS saat login */
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    margin-top: auto; /* Mendorong elemen ini ke bawah */
+    border-top: 0px solid #e0e0e0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .user-profile-section:hover {
+    background-color: #292929;
+  }
+
+  /* Foto profil pengguna */
+  .profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  /* Nama pengguna */
+  .profile-name {
+    flex-grow: 1; /* Mengisi ruang agar ikon titik tiga terdorong ke kanan */
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Ikon titik tiga */
+  .profile-options-icon {
+    color: #5f6368;
+  }
+
+  /* Menu yang muncul saat hover */
+  .profile-menu {
+    position: absolute;
+    bottom: calc(100% + 8px); /* Muncul di atas elemen profil */
+    left: 8px;
+    width: calc(100% - 16px);
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 8px 0;
+    z-index: 1000;
+
+    /* Sembunyikan secara default untuk animasi */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  }
+
+  /* Tampilkan menu saat .user-profile-section di-hover */
+  .user-profile-section:hover .profile-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* Item di dalam menu (tombol pengaturan & logout) */
+  .profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #3c4043;
+    text-decoration: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .profile-menu-item:hover {
+    background-color: #f1f3f4;
+  }
+
+  .profile-menu-item .material-icons {
+    font-size: 20px;
+  }
+
   .mobile-profile-btn {
     display: block !important; /* Tambahkan !important HANYA UNTUK TES */
   }
