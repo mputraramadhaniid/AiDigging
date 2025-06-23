@@ -149,18 +149,6 @@ body {
   transform: scale(1.02); /* Sedikit membesar saat hover */
 }
 
-#sidebar {
-  /* TIGA SYARAT UTAMA ADA DI SINI */
-  display: flex;
-  flex-direction: column;
-  /* atau 100% */
-
-  /* Properti lain untuk styling */
-  width: 260px;
-  padding: 8px;
-  background-color: #181818;
-}
-
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -1270,7 +1258,7 @@ code {
 .sidebar {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   padding: 4px 12px 4px 12px;
   background-color: #181818; /* Diubah menjadi hitam solid */
   /* backdrop-filter dan -webkit-backdrop-filter dihapus karena tidak lagi transparan */
