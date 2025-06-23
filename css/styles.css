@@ -2208,6 +2208,25 @@ code.inline-code {
     transform: translateY(0);
   }
 
+  /* Menu yang muncul (styling dasar) */
+  .profile-menu {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 8px;
+    width: calc(100% - 16px);
+    background-color: #3c3c3c; /* Warna lebih gelap agar kontras */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    padding: 8px 0;
+    z-index: 1000;
+
+    /* Sembunyikan secara default untuk animasi */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  }
+
   /* Item di dalam menu (tombol pengaturan & logout) */
   .profile-menu-item {
     display: flex;
@@ -2215,21 +2234,41 @@ code.inline-code {
     gap: 12px;
     padding: 10px 16px;
     font-size: 14px;
-    color: #3c4043;
+    color: #e0e0e0; /* Teks terang */
     text-decoration: none;
     border: none;
     background: none;
     width: 100%;
     text-align: left;
     cursor: pointer;
+    transition: background-color 0.2s;
   }
 
   .profile-menu-item:hover {
-    background-color: #f1f3f4;
+    background-color: #505050;
   }
 
   .profile-menu-item .material-icons {
     font-size: 20px;
+    color: #c7c7c7;
+  }
+
+  /* ============================================= */
+  /* KONDISI UNTUK MENAMPILKAN MENU */
+  /* ============================================= */
+
+  /* 1. Tampilkan menu saat di-HOVER (untuk pengguna DESKTOP) */
+  .user-profile-section:hover .profile-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  /* 2. Tampilkan menu saat memiliki class .visible (untuk KLIK di mobile/desktop) */
+  .profile-menu.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
   }
 
   .mobile-profile-btn {
