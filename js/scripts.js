@@ -89,7 +89,9 @@ menufiturawal.style.display = "none";
 menufiturkedua.style.display = "none";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // === Konfigurasi Firebase Anda ===
+  // ===================================================================
+  // BAGIAN 1: KONFIGURASI DAN INISIALISASI FIREBASE
+  // ===================================================================
   const firebaseConfig = {
     apiKey: "AIzaSyDBjiZV69xqzCS8pcvclAVJ4RQ4TxvYzos",
     authDomain: "website-putra.firebaseapp.com",
@@ -101,111 +103,95 @@ document.addEventListener("DOMContentLoaded", () => {
     measurementId: "G-7P4RNX03CZ",
   };
 
-  // === Inisialisasi Firebase (BARU) ===
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-  // === Elemen Dialog ===
+  // ===================================================================
+  // BAGIAN 2: MENGAMBIL ELEMEN DARI HTML (DOM)
+  // ===================================================================
   const welcomeBackOverlay = document.getElementById("welcomeBackOverlay");
   const signInBtn = document.getElementById("signInBtn");
   const signUpFreeBtn = document.getElementById("signUpFreeBtn");
   const stayLoggedOutBtn = document.getElementById("stayLoggedOutBtn");
-  const loginRegisterOverlay = document.getElementById("loginRegisterOverlay");
-  const loginTab = document.getElementById("loginTab");
-  const registerTab = document.getElementById("registerTab");
-  const loginForm = document.getElementById("loginForm");
-  const registerForm = document.getElementById("registerForm");
-  const closeLoginRegisterBtn = document.getElementById("closeLoginRegisterBtn");
-
-  // === Fungsi untuk Login/Register dengan Google (BARU) ===
+  
+  // ===================================================================
+  // BAGIAN 3: FUNGSI-FUNGSI OTENTIKASI
+  // ===================================================================
   const signInWithGoogle = () => {
-    auth
-      .signInWithPopup(googleProvider)
-      .then((result) => {
-        // Login/Register berhasil.
-        const user = result.user;
-        console.log("Login berhasil!", user);
-        alert(`Selamat datang, ${user.displayName}!`);
-
-        // Sembunyikan dialog setelah login berhasil
-        if (welcomeBackOverlay) {
-          welcomeBackOverlay.classList.remove("visible");
-        }
-
-        // Di sini Anda bisa menambahkan logika lain, misalnya:
-        // - Menyimpan data pengguna ke database
-        // - Mengarahkan ke halaman profil
-        // - Memperbarui UI untuk menampilkan status login
-      })
+    auth.signInWithPopup(googleProvider)
       .catch((error) => {
-        // Terjadi error.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error("Error saat login dengan Google:", errorCode, errorMessage);
-        alert(`Gagal login: ${errorMessage}`);
+        console.error("Error saat login dengan Google:", error.code, error.message);
+        alert(`Gagal login: ${error.message}`);
       });
   };
 
-  // 1. Muat semua sesi chat dari local storage
-  if (typeof loadAllChatSessions === "function") loadAllChatSessions();
+  // ===================================================================
+  // BAGIAN 4: LOGIKA UTAMA APLIKASI SETELAH STATUS AUTH DIKETAHUI
+  // ===================================================================
+  
+  /**
+   * Fungsi ini akan menjalankan semua logika yang dibutuhkan
+   * saat halaman dimuat dan pengguna SUDAH LOGIN.
+   */
+  function initializePageForLoggedInUser(user) {
+    console.log("Inisialisasi halaman untuk pengguna:", user.displayName);
+    
+    // Logika aplikasi Anda yang lain (memuat chat, dll.)
+    if (typeof loadAllChatSessions === "function") loadAllChatSessions();
 
-  // 2. Tampilkan dialog "Selamat Datang" setiap kali halaman dimuat.
-  if (welcomeBackOverlay) {
-    welcomeBackOverlay.classList.add("visible");
-  } else {
-    console.warn('Elemen dialog "welcomeBackOverlay" tidak ditemukan.');
+    if (typeof currentChatId !== "undefined" && currentChatId && typeof chatSessions !== "undefined" && chatSessions.some((s) => s.id === currentChatId)) {
+      if (typeof loadChatSession === "function") loadChatSession(currentChatId);
+    } else {
+      if (typeof createNewChatSession === "function") {
+        allowWelcomeAnimation = true;
+        createNewChatSession();
+      }
+    }
+
+    if (typeof renderChatHistoryList === "function") renderChatHistoryList();
+    if (typeof updateChatBoxPadding === "function") updateChatBoxPadding();
   }
 
-  // 3. Tentukan chat mana yang akan ditampilkan
-  if (typeof currentChatId !== "undefined" && currentChatId && typeof chatSessions !== "undefined" && chatSessions.some((s) => s.id === currentChatId)) {
-    if (typeof loadChatSession === "function") loadChatSession(currentChatId);
-  } else {
-    if (typeof createNewChatSession === "function") {
-      allowWelcomeAnimation = true;
-      createNewChatSession();
+
+  // ===================================================================
+  // BAGIAN 5: PENGECEKAN STATUS LOGIN (TITIK MASUK UTAMA)
+  // ===================================================================
+  
+  console.log("Menunggu status otentikasi dari Firebase...");
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      // ---- PENGGUNA SUDAH LOGIN ----
+      // Dialog sudah tersembunyi dari CSS, jadi tidak perlu melakukan apa-apa.
+      console.log("Status: Pengguna sudah login.");
+      // Jalankan semua fungsi yang dibutuhkan untuk halaman ini
+      initializePageForLoggedInUser(user);
+    } else {
+      // ---- PENGGUNA BELUM LOGIN ----
+      console.log("Status: Tidak ada pengguna yang login. Menampilkan dialog.");
+      // Perintahkan dialog untuk muncul dengan menambahkan kelas .visible
+      if (welcomeBackOverlay) {
+        welcomeBackOverlay.classList.add("visible");
+      }
     }
+  });
+
+  // ===================================================================
+  // BAGIAN 6: EVENT LISTENERS
+  // ===================================================================
+  
+  if (signInBtn) signInBtn.addEventListener("click", signInWithGoogle);
+  if (signUpFreeBtn) signUpFreeBtn.addEventListener("click", signInWithGoogle);
+
+  if (stayLoggedOutBtn) {
+    stayLoggedOutBtn.addEventListener("click", () => {
+      if (welcomeBackOverlay) {
+        welcomeBackOverlay.classList.remove("visible");
+      }
+    });
   }
-
-  // 4. Render riwayat chat di sidebar
-  if (typeof renderChatHistoryList === "function") renderChatHistoryList();
-  if (typeof updateChatBoxPadding === "function") updateChatBoxPadding();
-
-  // === Event Listener untuk Tombol-tombol Dialog ===
-
-  // Tombol Masuk (signInBtn) - Diarahkan ke Google Sign-In
-  signInBtn.addEventListener("click", () => {
-    console.log("Tombol Masuk Diklik! Mengarahkan ke Google Sign-In...");
-    signInWithGoogle(); // Panggil fungsi login Google
-  });
-
-  // Tombol Daftar (signUpFreeBtn) - Diarahkan ke Google Sign-In
-  signUpFreeBtn.addEventListener("click", () => {
-    console.log("Tombol Daftar Diklik! Mengarahkan ke Google Sign-In...");
-    signInWithGoogle(); // Panggil fungsi login Google
-  });
-
-  // Tombol "Tetap Keluar" (stayLoggedOutBtn)
-  stayLoggedOutBtn.addEventListener("click", () => {
-    console.log("Tombol Tetap Keluar Diklik!");
-    if (welcomeBackOverlay) {
-      welcomeBackOverlay.classList.remove("visible");
-    }
-  });
-
-  // Event listener untuk menutup dialog dengan klik di luar area box
-  welcomeBackOverlay.addEventListener("click", (event) => {
-    if (event.target === welcomeBackOverlay) {
-      welcomeBackOverlay.classList.remove("visible");
-    }
-  });
-
-  // === Logika untuk Dialog Login/Register Utama (tidak diubah) ===
-  closeLoginRegisterBtn.addEventListener("click", () => {
-    if (loginRegisterOverlay) loginRegisterOverlay.classList.remove("visible");
-  });
 });
-
 pricing.addEventListener("click", () => {
   window.location.href = "pricing.html";
 });
