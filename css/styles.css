@@ -1945,21 +1945,29 @@ code.inline-code {
   /* Sidebar geser dan overlay */
   /* Letakkan atau perbarui kode ini di dalam blok @media (max-width: 768px) { ... } */
 
+  /* Ganti aturan .sidebar Anda di dalam @media (max-width: 768px) dengan ini */
   .sidebar {
-    position: fixed; /* 1. Membuatnya "melayang" dan posisinya tetap */
-    top: 0; /* 2. Menempel di paling atas layar */
+    /* Aturan yang sudah ada untuk posisi & animasi */
+    position: fixed;
+    top: 0;
     left: 0;
-    width: 250px;
-    height: 100vh; /* 3. Tingginya 100% dari layar */
-    z-index: 2000; /* 4. Lapisan paling depan, menimpa elemen lain */
-
-    /* Properti untuk menyembunyikan dan transisi */
+    z-index: 2000;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
+    width: 280px; /* Lebar bisa disesuaikan */
 
-    /* Styling Anda yang lain */
-    padding: 8px;
+    /* ================================================= */
+    /* === INI ADALAH KUNCI YANG HILANG (TAMBAHKAN) === */
+    display: flex;
+    flex-direction: column;
+    /* ================================================= */
+
+    /* Aturan tinggi & styling */
+    height: 100dvh; /* Gunakan dvh untuk mobile */
     background-color: #121212;
+    padding: 8px;
+    box-sizing: border-box; /* Penting! */
+    overflow: hidden; /* Mencegah scrollbar ganda */
   }
 
   .sidebar.active {
@@ -2034,16 +2042,47 @@ code.inline-code {
     background-color: #ffffff;
   }
 
+  /* Kontainer utama untuk bagian profil di footer sidebar */
+  /* ======================================================= */
+  /* === PERBAIKAN LAYOUT PROFIL PENGGUNA (HORIZONTAL) === */
+  /* ======================================================= */
+
+  /* Pastikan kode untuk profil Anda seperti ini (kode Anda sudah bagus) */
   .user-profile-section {
-    display: block !important; /* Tambahkan !important HANYA UNTUK TES */
+    display: flex;
+    flex-direction: row; /* !important tidak diperlukan jika struktur benar */
+    align-items: center;
+    gap: 12px;
+    padding: 12px 10px;
+    border-top: 1px solid #3a3a3a;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .profile-pic {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
   }
 
   .profile-name {
-    flex-grow: 1; /* Mengisi ruang agar ikon titik tiga terdorong ke kanan */
-    font-size: 10px;
+    flex-grow: 1;
+    font-size: 14px;
     font-weight: 500;
+    color: #e8eaed;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .profile-options-icon {
+    color: #bdc1c6;
+    flex-shrink: 0;
+    padding: 4px;
   }
 }
