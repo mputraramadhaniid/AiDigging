@@ -2021,4 +2021,8 @@ code.inline-code {
   .input-container button:hover {
     background-color: #ffffff;
   }
+
+  .user-profile-section {
+    display: block !important; /* Tambahkan !important HANYA UNTUK TES */
+  }
 }
