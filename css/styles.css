@@ -1977,29 +1977,6 @@ code.inline-code {
     pointer-events: all; /* Agar bisa diklik untuk menutup sidebar */
   }
 
-  .profile {
-    padding: 0px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .profile-image-sidebar {
-    display: flex;
-    align-items: flex-start;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .profile-name {
-    font-size: 16px;
-    margin-left: 4px;
-    font-weight: 600;
-    color: #ffffff;
-  }
-
   .chat-container {
     height: calc(100vh - 50px);
   }
@@ -2010,11 +1987,6 @@ code.inline-code {
     -webkit-overflow-scrolling: touch;
     padding: 15px 10px;
     box-sizing: border-box;
-  }
-
-  .profile-image {
-    width: 36px;
-    height: 36px;
   }
 
   .message-content {
