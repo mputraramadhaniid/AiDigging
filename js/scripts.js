@@ -26,7 +26,12 @@ const openSidebarBtn = document.getElementById("openSidebarBtn"); // Not found i
 const tombolTutup = document.getElementById("nutupsidebar"); // For desktop sidebar close
 const tombolBuka = document.getElementById("bukasidebar"); // For desktop sidebar open
 const tombolTutupmobile = document.getElementById("nutupsidebar"); // Duplicate ID, ensure this references the correct 'nutupsidebar'
-
+// -- TAMBAHKAN INI --
+const userProfileSection = document.getElementById("userProfileSection");
+const userProfilePic = document.getElementById("userProfilePic");
+const userProfileName = document.getElementById("userProfileName");
+const logoutBtn = document.getElementById("logoutBtn");
+// -- AKHIR TAMBAHAN --
 const chatHistoryList = document.getElementById("chatHistoryList"); // NEW: Element to display chat history
 
 let messages = []; // Current chat messages
@@ -114,29 +119,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const signInBtn = document.getElementById("signInBtn");
   const signUpFreeBtn = document.getElementById("signUpFreeBtn");
   const stayLoggedOutBtn = document.getElementById("stayLoggedOutBtn");
-  
+
   // ===================================================================
   // BAGIAN 3: FUNGSI-FUNGSI OTENTIKASI
   // ===================================================================
   const signInWithGoogle = () => {
-    auth.signInWithPopup(googleProvider)
-      .catch((error) => {
-        console.error("Error saat login dengan Google:", error.code, error.message);
-        alert(`Gagal login: ${error.message}`);
-      });
+    auth.signInWithPopup(googleProvider).catch((error) => {
+      console.error("Error saat login dengan Google:", error.code, error.message);
+      alert(`Gagal login: ${error.message}`);
+    });
+  };
+
+  const signOutUser = () => {
+    auth.signOut().catch((error) => {
+      console.error("Error saat logout:", error);
+    });
   };
 
   // ===================================================================
   // BAGIAN 4: LOGIKA UTAMA APLIKASI SETELAH STATUS AUTH DIKETAHUI
   // ===================================================================
-  
+
   /**
    * Fungsi ini akan menjalankan semua logika yang dibutuhkan
    * saat halaman dimuat dan pengguna SUDAH LOGIN.
    */
   function initializePageForLoggedInUser(user) {
     console.log("Inisialisasi halaman untuk pengguna:", user.displayName);
-    
+
     // Logika aplikasi Anda yang lain (memuat chat, dll.)
     if (typeof loadAllChatSessions === "function") loadAllChatSessions();
 
@@ -153,24 +163,38 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof updateChatBoxPadding === "function") updateChatBoxPadding();
   }
 
-
   // ===================================================================
   // BAGIAN 5: PENGECEKAN STATUS LOGIN (TITIK MASUK UTAMA)
   // ===================================================================
-  
+
   console.log("Menunggu status otentikasi dari Firebase...");
 
+  // === BAGIAN 5: PENGECEKAN STATUS LOGIN (TITIK MASUK UTAMA) ===
   auth.onAuthStateChanged((user) => {
     if (user) {
       // ---- PENGGUNA SUDAH LOGIN ----
-      // Dialog sudah tersembunyi dari CSS, jadi tidak perlu melakukan apa-apa.
-      console.log("Status: Pengguna sudah login.");
-      // Jalankan semua fungsi yang dibutuhkan untuk halaman ini
+      console.log("Status: Pengguna sudah login.", user.displayName);
+
+      // -- PERBARUI BAGIAN INI --
+      if (userProfileSection) {
+        userProfileSection.style.display = "flex"; // Tampilkan bagian profil
+        userProfileName.textContent = user.displayName || "Pengguna";
+        // Gunakan foto Google, jika tidak ada, gunakan default
+        userProfilePic.src = user.photoURL || "images/default-avatar.png";
+      }
+      // -- AKHIR PERBARUAN --
+
       initializePageForLoggedInUser(user);
     } else {
       // ---- PENGGUNA BELUM LOGIN ----
       console.log("Status: Tidak ada pengguna yang login. Menampilkan dialog.");
-      // Perintahkan dialog untuk muncul dengan menambahkan kelas .visible
+
+      // -- PERBARUI BAGIAN INI --
+      if (userProfileSection) {
+        userProfileSection.style.display = "none"; // Sembunyikan bagian profil
+      }
+      // -- AKHIR PERBARUAN --
+
       if (welcomeBackOverlay) {
         welcomeBackOverlay.classList.add("visible");
       }
@@ -180,9 +204,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===================================================================
   // BAGIAN 6: EVENT LISTENERS
   // ===================================================================
-  
+
   if (signInBtn) signInBtn.addEventListener("click", signInWithGoogle);
   if (signUpFreeBtn) signUpFreeBtn.addEventListener("click", signInWithGoogle);
+  if (logoutBtn) logoutBtn.addEventListener("click", signOutUser);
 
   if (stayLoggedOutBtn) {
     stayLoggedOutBtn.addEventListener("click", () => {
@@ -192,6 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 pricing.addEventListener("click", () => {
   window.location.href = "pricing.html";
 });
