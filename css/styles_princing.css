@@ -1,0 +1,205 @@
+/* ========================================= */
+/* ===         STYLING PRICING PAGE      === */
+/* ========================================= */
+
+/* 1. Variabel & Pengaturan Dasar */
+:root {
+    --bg-dark: #121212;
+    --card-bg: #212121;
+    --card-border: #424242;
+    --text-primary: #FFFFFF;
+    --text-secondary: #B0B0B0;
+    --green-accent: #107bb9;
+    --green-accent-dark: #055e96;
+    --green-bg-popular: #06354e;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* 2. Header & Toggle */
+.pricing-page {
+    width: 100%;
+    max-width: 1100px;
+    text-align: center;
+}
+
+.pricing-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.plan-toggle {
+    display: inline-flex;
+    background-color: #333;
+    border-radius: 99px;
+    padding: 0.25rem;
+    margin-bottom: 3rem;
+}
+
+.plan-toggle button {
+    background-color: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.5rem 1.5rem;
+    border-radius: 99px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.plan-toggle button.active {
+    background-color: var(--text-primary);
+    color: #000000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* 3. Kontainer Kartu Harga */
+.pricing-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+/* 4. Styling Kartu Individual */
+.pricing-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Untuk badge "Populer" */
+}
+
+/* Card yang Populer */
+.pricing-card--popular {
+    background-color: var(--green-bg-popular);
+    border-color: var(--green-accent);
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+.card-badge {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background-color: var(--green-accent);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.card-header .plan-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.card-header .price {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem 0;
+}
+
+.card-header .price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+.card-header .description {
+    color: var(--text-secondary);
+    min-height: 40px;
+}
+
+.card-cta {
+    width: 100%;
+    padding: 1rem 0;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.cta-primary {
+    background-color: var(--green-accent);
+    color: white;
+}
+.cta-primary:hover {
+    background-color: var(--green-accent-dark);
+}
+
+.cta-secondary {
+    background-color: white;
+    color: black;
+}
+.cta-secondary:hover {
+    background-color: #f0f0f0;
+}
+
+.cta-disabled {
+    background-color: #333;
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    flex-grow: 1; /* Mendorong footer kartu ke bawah */
+}
+
+.features-list li {
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0px;
+    font-size: 0.9rem;
+}
+
+.features-list .material-icons {
+    color: var(--green-accent);
+    font-size: 20px;
+}
+
+.card-footer {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+.card-footer a {
+    color: white;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+/* 5. Tampilan Responsif untuk Mobile */
+@media (max-width: 992px) {
+    .pricing-container {
+        grid-template-columns: 1fr;
+    }
+    .pricing-card--popular {
+        transform: scale(1); /* Non-aktifkan efek zoom di mobile */
+    }
+}
