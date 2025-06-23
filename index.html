@@ -23,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="[https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js](https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js)"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -36,12 +36,12 @@
       defer
       src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
       onload="renderMathInElement(document.body, {
-          delimiters: [
-            {left: '$$', right: '$$', display: true},
-            {left: '\\[', right: '\\]', display: true},
-            {left: '\\(', right: '\\)', display: false}
-          ]
-        });"
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '\\[', right: '\\]', display: true},
+              {left: '\\(', right: '\\)', display: false}
+            ]
+          });"
     ></script>
   </head>
   <body class="fade-in">
@@ -76,29 +76,36 @@
           </button>
         </div>
 
-        <button class="sidebar-action-btn" id="clearChatBtnnn">
-          <img src="images/icons_write.png" alt="trash" class="trash" title="Delete chat" style="height: 20px; width: 20px; filter: brightness(0) invert(1)" />
+        <button class="sidebar-action-btn" id="newChatBtn" style="margin: 0px">
+          <img src="images/icons_write.png" alt="New Chat" class="trash" title="New Chat" style="height: 18px; margin-left: 2px; width: 18px; filter: brightness(0) invert(1)" />
           <span>Chat Baru</span>
         </button>
 
-        <button class="sidebar-action-btn">
+        <button class="sidebar-action-btn" id="jelajahideveloper" style="margin: 0px">
           <span class="material-icons" style="font-size: 20px">apps</span>
           <span>Jelajahi Developer</span>
         </button>
 
-        <h3 class="sidebar-heading">Terbaru</h3>
-
-        <div class="sidebar-footer">
-          <button class="help-center-btn" id="pusatbantuan" type="button">
-            <span class="material-icons">settings</span>
-            <span>Setelan & bantuan</span>
-          </button>
-
-          <div class="profile" style="display: none">
-            <img src="https://i.pravatar.cc/40" alt="Profile Image" class="profile-image-sidebar" />
-            <span class="profile-name">Profile</span>
+        <button class="sidebar-action-btn" id="pricing" style="margin: 0px">
+          <span class="material-icons" style="font-size: 20px">auto_awesome</span>
+          <div style="display: flex; flex-direction: column">
+            <span>Tingkatkan paket Anda</span>
+            <span class="sidebar-footer-text" style="margin-top: 2px; color: rgb(125, 125, 125)">Lebih banyak akses model...</span>
           </div>
-        </div>
+        </button>
+
+        <button class="sidebar-action-btn" id="speakdigging" style="margin-top: 12px; margin-bottom: 0px">
+          <span class="material-icons" style="font-size: 20px">play_circle_outline</span>
+          <span>Speak Digging</span>
+        </button>
+
+        <button class="sidebar-action-btn" id="kebijakanprivasi" style="margin: 0px; margin-bottom: 8px">
+          <span class="material-icons" style="font-size: 20px">verified_user</span>
+          <span>Kebijakan & Privasi</span>
+        </button>
+
+        <h3 class="sidebar-heading" style="margin-top: 14px; margin-bottom: 0px;">Terbaru</h3>
+        <div class="chat-history-list" id="chatHistoryList"></div>
       </aside>
 
       <div class="sidebar-overlay" id="sidebarOverlay"></div>
