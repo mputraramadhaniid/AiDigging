@@ -1,1 +1,2801 @@
-const S3=f;(function(X,A){const S2=f,q=X();while(!![]){try{const u=-parseInt(S2(0x3a0))/(0x95f+-0x527*0x1+0x1*-0x437)+parseInt(S2(0x3ca))/(0x1709+-0x95f+-0xda8)+parseInt(S2(0x37b))/(0xa9c+0x7a3+-0x123c)+-parseInt(S2(0x1df))/(-0x21f7+0x1*0x15a9+0xc52)*(-parseInt(S2(0x221))/(0x20b6+0x11*0x13+-0x21f4))+parseInt(S2(0x34f))/(0x2*0xa18+-0x1c51*-0x1+-0x307b)*(-parseInt(S2(0x2d0))/(0x26aa*-0x1+-0x3*-0x9bb+0x980))+parseInt(S2(0x50a))/(-0x1176+0x1e16*-0x1+0x2f94)+parseInt(S2(0x44e))/(-0x2135*-0x1+-0x3a1+-0x1d8b)*(-parseInt(S2(0x30a))/(-0x4b*-0xe+0x95e+-0xd6e));if(u===A)break;else q['push'](q['shift']());}catch(N){q['push'](q['shift']());}}}(S,-0x599e+-0x4f*-0x8ec+-0x169*-0xfd));const chatBox=document['getElementById'](S3(0x25f)),chatForm=document[S3(0x514)](S3(0x451)),chatInput=document[S3(0x514)](S3(0x2fc)),clearChatBtn=document[S3(0x514)](S3(0x249)),clearChatBtnn=document[S3(0x514)](S3(0x3d1)),newChatBtn=document[S3(0x514)](S3(0x369)),leftMenuBtn=document[S3(0x514)](S3(0x504)),sidebar=document[S3(0x514)]('sidebar'),sidebars=document[S3(0x514)](S3(0x260)),sidebarOverlay=document[S3(0x514)]('sidebarOverlay'),emptyMessage=document[S3(0x514)](S3(0x2f3)),pricing=document[S3(0x514)](S3(0x293)),jelajahideveloper=document[S3(0x514)](S3(0x470)),speakdigging=document[S3(0x514)]('speakdigging'),kebijakanprivasi=document[S3(0x514)](S3(0x457)),inputContainer=document['querySelector'](S3(0x295)),menufitur1=document['getElementById'](S3(0x240)),menufiturawal=document['getElementById'](S3(0x3a9)),menufiturkedua=document[S3(0x514)]('menufiturkedua'),fileInput=document[S3(0x514)]('fileInput'),preview=document['getElementById'](S3(0x29f)),chatContainer=document['querySelector'](S3(0x1ba)),uploadBtn=document[S3(0x514)](S3(0x3ef)),sidebarToggleBtn=document[S3(0x514)](S3(0x3da)),openSidebarBtn=document[S3(0x514)](S3(0x436)),tombolTutup=document[S3(0x514)](S3(0x351)),tombolBuka=document[S3(0x514)](S3(0x4d4)),tombolTutupmobile=document[S3(0x514)](S3(0x351)),userProfileSection=document[S3(0x514)](S3(0x258)),userProfilePic=document[S3(0x514)](S3(0x476)),userProfileName=document[S3(0x514)](S3(0x3d6)),logoutBtn=document[S3(0x514)](S3(0x4c3)),profileMenu=document[S3(0x514)](S3(0x37e)),profileOptionsBtn=document[S3(0x514)](S3(0x43c)),chatHistoryList=document[S3(0x514)]('chatHistoryList');let messages=[],isLoading=![],autoScrollEnabled=!![],selectedFiles=[],allowWelcomeAnimation=![],typewriterTimeoutId=null,chatSessions=[],currentChatId=null;const PROXY_SERVER_URL='https://ai-digging.vercel.app/',OFFICIAL_WEBSITE_URL=S3(0x45c);window[S3(0x427)]&&(pdfjsLib[S3(0x42f)]['workerSrc']=S3(0x2a0));const desktopBreakpoint=-0x2*0x57b+-0x19f2+-0x1*-0x27e8;tombolTutup[S3(0x508)](S3(0x324),()=>{const S4=S3,A={};A[S4(0x2db)]=S4(0x496),A['YCuuM']=S4(0x433);const q=A;window['innerWidth']>=desktopBreakpoint&&(sidebars['style'][S4(0x317)]=q[S4(0x2db)],tombolBuka[S4(0x404)][S4(0x317)]=q['YCuuM']);}),tombolBuka[S3(0x508)]('click',()=>{const S5=S3,A={};A[S5(0x501)]=function(u,N){return u>=N;},A[S5(0x4e0)]=S5(0x496);const q=A;q[S5(0x501)](window[S5(0x32e)],desktopBreakpoint)&&(sidebars[S5(0x404)][S5(0x317)]='block',tombolBuka['style'][S5(0x317)]=q[S5(0x4e0)]);});function updateChatBoxPadding(){const S6=S3,A={};A['UXYdm']=function(I,z){return I||z;},A[S6(0x208)]=function(I,z){return I+z;};const q=A;if(q[S6(0x495)](!chatBox,!inputContainer))return;const u=inputContainer[S6(0x3f6)],N=-0x3*-0x3a+-0x368*0xb+0x1*0x24d9;chatBox['style']['paddingBottom']=q['YbVKB'](u,N)+'px';}if(inputContainer){const observer=new ResizeObserver(updateChatBoxPadding);observer[S3(0x51e)](inputContainer);}menufiturawal[S3(0x404)]['display']=S3(0x496),menufiturkedua[S3(0x404)]['display']=S3(0x496),document['addEventListener'](S3(0x268),()=>{const S7=S3,A={'bxJny':S7(0x3fe),'ClLBE':S7(0x380),'DGUfx':function(d,c){return d===c;},'MnFvZ':S7(0x459),'FgXXC':function(d){return d();},'AFzkm':function(d,c){return d!==c;},'GftjW':S7(0x4a3),'ymbUf':function(d,c){return d(c);},'ZYiKf':S7(0x1a8),'pooIH':function(d,c){return d===c;},'KMOLY':function(d,c){return d(c);},'nslmV':S7(0x496),'TUryI':'block','goxSI':'visible','HGKSn':'active','WqXLf':function(d){return d();},'OUpkT':function(d){return d();},'MulQB':S7(0x51a),'TfBDT':S7(0x4fb),'gNpKO':S7(0x47b),'fOVQj':S7(0x52e),'alFch':S7(0x408),'SSyRi':S7(0x341),'buDCO':S7(0x3b5),'scRbz':S7(0x31a),'nLYTc':S7(0x258),'ctNJA':'userProfilePic','VkoVw':S7(0x3d6),'BqYpk':S7(0x43c),'nDyJR':S7(0x37e),'aTtRZ':S7(0x4c3),'HNEpv':S7(0x190),'OOEng':S7(0x504),'rKDnm':S7(0x351),'tIYKY':S7(0x247),'gMeSl':S7(0x324)};allowWelcomeAnimation=!![],A[S7(0x297)](createNewChatSession);const q={};q[S7(0x197)]=A[S7(0x33f)],q[S7(0x50c)]=A['TfBDT'],q[S7(0x1db)]=S7(0x24a),q['projectId']=A['gNpKO'],q[S7(0x307)]=A[S7(0x312)],q[S7(0x4a5)]='118694699779',q['appId']=A[S7(0x2c2)],q[S7(0x4c7)]=A[S7(0x4dd)];const u=q;firebase['initializeApp'](u);const N=firebase['auth'](),I=new firebase[(S7(0x46c))][(S7(0x422))](),z=document[S7(0x514)]('welcomeBackOverlay'),b=document[S7(0x514)](A[S7(0x305)]),Q=document['getElementById']('signUpFreeBtn'),m=document[S7(0x514)](A[S7(0x4ca)]),D=document[S7(0x514)](A['nLYTc']),C=document[S7(0x514)](A[S7(0x4e6)]),n=document[S7(0x514)](A['VkoVw']),B=document['getElementById'](A[S7(0x517)]),U=document[S7(0x514)](A[S7(0x331)]),k=document[S7(0x514)](A[S7(0x1d9)]),o=document[S7(0x514)]('mobileProfileBtn'),s=document[S7(0x514)](S7(0x47e)),p=document[S7(0x514)](S7(0x260)),j=document[S7(0x514)](A['HNEpv']),w=document[S7(0x514)](A['OOEng']),E=document[S7(0x514)](A[S7(0x3f2)]),R=()=>{const S8=S7,d={};d[S8(0x1c5)]=A['bxJny'];const c=d;N[S8(0x199)](I)[S8(0x211)](M=>{const S9=S8;console[S9(0x43b)](c[S9(0x1c5)],M[S9(0x527)],M[S9(0x2e3)]),alert(S9(0x4ed)+M[S9(0x2e3)]);});},G=()=>{const SS=S7;N[SS(0x1c4)]()[SS(0x211)](d=>{const Sf=SS;console[Sf(0x43b)](A[Sf(0x20e)],d);});};function O(d){const SX=S7,c=SX(0x360)[SX(0x541)]('|');let M=0x2*0x10a8+-0x1c3*-0x16+-0x4812;while(!![]){switch(c[M++]){case'0':if(A['DGUfx'](typeof loadAllChatSessions,A[SX(0x340)]))A[SX(0x460)](loadAllChatSessions);continue;case'1':if(A['AFzkm'](typeof currentChatId,A[SX(0x3b7)])&&currentChatId&&typeof chatSessions!==A[SX(0x3b7)]&&chatSessions[SX(0x204)](v=>v['id']===currentChatId)){if(A[SX(0x46a)](typeof loadChatSession,A[SX(0x340)]))A[SX(0x4b8)](loadChatSession,currentChatId);}else A[SX(0x46a)](typeof createNewChatSession,A[SX(0x340)])&&(allowWelcomeAnimation=!![],A[SX(0x460)](createNewChatSession));continue;case'2':if(A[SX(0x46a)](typeof renderChatHistoryList,'function'))renderChatHistoryList();continue;case'3':console[SX(0x2e1)](A[SX(0x26a)],d[SX(0x2c1)]);continue;case'4':if(A[SX(0x362)](typeof updateChatBoxPadding,A[SX(0x340)]))updateChatBoxPadding();continue;}break;}}console['log'](A['tIYKY']),N[S7(0x40a)](d=>{const SA=S7;if(d){const c=d['photoURL']||'images/default-avatar.png',M=d[SA(0x2c1)]||SA(0x346);D&&(D[SA(0x404)][SA(0x317)]=SA(0x323),n[SA(0x3b6)]=M,C[SA(0x52b)]=c);if(o){o[SA(0x404)][SA(0x317)]=SA(0x433),s[SA(0x52b)]=c;if(w)w[SA(0x404)][SA(0x317)]=SA(0x496);}if(z)z[SA(0x523)][SA(0x2d7)](SA(0x34c));A[SA(0x1d8)](O,d);}else{if(D)D['style']['display']=A['nslmV'];if(o)o[SA(0x404)][SA(0x317)]=A[SA(0x4da)];if(w)w[SA(0x404)][SA(0x317)]=A[SA(0x392)];if(z)z['classList'][SA(0x2b0)](A[SA(0x52f)]);}});if(b)b[S7(0x508)](A[S7(0x2fa)],R);if(Q)Q[S7(0x508)](A[S7(0x2fa)],R);m&&m['addEventListener'](A[S7(0x2fa)],()=>{const Sq=S7;if(z)z[Sq(0x523)][Sq(0x2d7)](A[Sq(0x52f)]);});function T(){const Su=S7;if(p)p[Su(0x523)][Su(0x2b0)](A[Su(0x3a4)]);if(j)j['classList'][Su(0x2b0)](Su(0x355));}function H(){const SN=S7;if(p)p['classList'][SN(0x2d7)](A['HGKSn']);if(j)j[SN(0x523)][SN(0x2d7)](A['HGKSn']);}if(w)w['addEventListener'](A[S7(0x2fa)],T);if(o)o[S7(0x508)](A[S7(0x2fa)],T);if(E)E[S7(0x508)](A[S7(0x2fa)],H);if(j)j[S7(0x508)](A[S7(0x2fa)],H);B&&B[S7(0x508)](A[S7(0x2fa)],d=>{const SI=S7;d[SI(0x530)]();if(U)U['classList'][SI(0x3d0)]('visible');}),document[S7(0x508)](A[S7(0x2fa)],d=>{const Sz=S7;U&&U[Sz(0x523)][Sz(0x396)](A[Sz(0x52f)])&&(D&&!D[Sz(0x396)](d[Sz(0x1a6)])&&U['classList']['remove'](A[Sz(0x52f)]));}),k&&k[S7(0x508)]('click',d=>{const Sb=S7;d[Sb(0x530)](),A['WqXLf'](G);});}),pricing[S3(0x508)](S3(0x324),()=>{const SQ=S3,A={};A['PwEXx']=SQ(0x47c);const q=A;window[SQ(0x4b2)][SQ(0x230)]=q[SQ(0x28c)];}),jelajahideveloper['addEventListener'](S3(0x324),()=>{const Sm=S3,X={'WEbwL':function(A,q){return A(q);},'DKKaV':'Fitur\x20ini\x20segera\x20hadir'};X[Sm(0x506)](showToast,X[Sm(0x3cf)]);}),speakdigging[S3(0x508)]('click',()=>{const SD=S3,A={};A[SD(0x19e)]=SD(0x251);const q=A;showToast(q[SD(0x19e)]);}),kebijakanprivasi[S3(0x508)](S3(0x324),()=>{const SC=S3,X={'Okidn':function(A,q){return A(q);}};X[SC(0x236)](showToast,SC(0x251));}),leftMenuBtn[S3(0x508)](S3(0x324),()=>{const Sn=S3,A={};A['vlBpp']=Sn(0x355);const q=A;sidebar[Sn(0x523)]['toggle'](q[Sn(0x1d1)]),sidebarOverlay['classList']['toggle'](q[Sn(0x1d1)]);}),tombolTutupmobile[S3(0x508)](S3(0x324),()=>{const SB=S3,A={};A[SB(0x469)]=SB(0x355);const q=A;sidebar[SB(0x523)]['toggle'](q[SB(0x469)]),sidebarOverlay[SB(0x523)][SB(0x3d0)](q[SB(0x469)]);}),sidebarOverlay[S3(0x508)](S3(0x324),()=>{const SU=S3,A={};A[SU(0x343)]=SU(0x355);const q=A;sidebar[SU(0x523)][SU(0x2d7)](q[SU(0x343)]),sidebarOverlay[SU(0x523)][SU(0x2d7)](q['cokge']);}),window[S3(0x508)](S3(0x1f3),()=>{const Sk=S3,A={};A[Sk(0x3f4)]=Sk(0x2d4);const q=A,u=document[Sk(0x3b3)](q[Sk(0x3f4)]);u&&u[Sk(0x316)](0xe7d+-0x5cf*0x6+0x191*0xd,u[Sk(0x43d)]);});function generateUniqueId(){const So=S3;return So(0x518)+Date[So(0x22e)]()+'-'+Math[So(0x3c8)]()[So(0x217)](0x1*-0x551+0xd79+-0x4c*0x1b)[So(0x373)](0x8*0x3b9+0x223f+-0x4005,-0x4*0x96f+-0x4*-0x996+-0x93*0x1);}function clearChatMessages(){const Ss=S3,A={};A[Ss(0x3eb)]='.message-container';const q=A;if(!chatBox)return;const u=chatBox[Ss(0x3e5)](q[Ss(0x3eb)]);u['forEach'](N=>N[Ss(0x2d7)]());}function createNewChatSession(X=!![]){const Sp=S3,A={'vgQtd':function(u){return u();},'CawaL':'align-top'},q=generateUniqueId();messages=[],currentChatId=q,A['vgQtd'](clearChatMessages),chatBox[Sp(0x523)][Sp(0x2d7)](A[Sp(0x218)]),initializeChatDisplay(),X&&A['vgQtd'](renderChatHistoryList);}function saveAllChatSessions(){const Sj=S3,A={};A['TbaYN']=Sj(0x4be),A[Sj(0x1b7)]=Sj(0x37a);const q=A;try{localStorage[Sj(0x2be)](q[Sj(0x4f4)],JSON[Sj(0x486)](chatSessions));}catch(u){console['error'](q[Sj(0x1b7)],u);}}function loadAllChatSessions(){const Sw=S3,A={};A[Sw(0x3c6)]=Sw(0x4be),A[Sw(0x374)]=function(u,N){return u>N;},A[Sw(0x30c)]=Sw(0x3cd);const q=A;try{const u=localStorage[Sw(0x481)](q[Sw(0x3c6)]);u?(chatSessions=JSON['parse'](u),chatSessions['forEach'](N=>{const SE=Sw;(!N['messages']||!Array[SE(0x49f)](N[SE(0x322)]))&&(N[SE(0x322)]=[]);}),chatSessions[Sw(0x315)]((N,I)=>I[Sw(0x3a2)]-N['createdAt'])):chatSessions=[],q['YRggs'](chatSessions[Sw(0x498)],-0xc49+-0x1*-0x4ea+-0x6f*-0x11)?currentChatId=chatSessions[-0x695+0x11c7+-0x2*0x599]['id']:createNewChatSession(![]);}catch(N){console[Sw(0x43b)](q[Sw(0x30c)],N),chatSessions=[],createNewChatSession(![]);}}function loadChatSession(X){const SR=S3,A={'pPFOR':function(u,N){return u===N;},'CgTBY':SR(0x2aa),'JVujE':SR(0x1ed),'cNxpm':SR(0x2b4),'rMDZR':'AI\x20Digging','DMNmg':SR(0x412),'gmEqD':function(u){return u();},'tGlSo':function(u){return u();},'osvqr':function(u,N){return u<N;},'PHUWD':'active','RAHkX':SR(0x32d)},q=chatSessions['find'](u=>u['id']===X);q?(currentChatId=X,messages=q[SR(0x322)],A[SR(0x1e9)](clearChatMessages),messages[SR(0x192)](u=>{const SG=SR,N=A[SG(0x3ff)](u['role'],A[SG(0x379)])?A[SG(0x379)]:A[SG(0x1cc)],I=N===A[SG(0x379)]?A[SG(0x1ab)]:A[SG(0x4f1)],z=A[SG(0x3ff)](N,A[SG(0x379)])?'https://cdn-icons-png.flaticon.com/512/1077/1077114.png':A[SG(0x524)];appendMessage(N,u[SG(0x4d8)],I,z,u[SG(0x399)]||[],!![],u['id']);}),chatBox['scrollTop']=chatBox['scrollHeight'],A[SR(0x3a1)](initializeChatDisplay),A[SR(0x1a3)](window['innerWidth'],desktopBreakpoint)&&(sidebar[SR(0x523)]['remove'](A[SR(0x447)]),sidebarOverlay['classList'][SR(0x2d7)](A['PHUWD'])),renderChatHistoryList()):(console['error'](A['RAHkX'],X),A[SR(0x1e9)](createNewChatSession));}function updateCurrentChatTitle(X){const SO=S3,A={'VveuJ':function(u,N){return u===N;},'ArsUK':'Percakapan\x20Baru','WnZdi':function(u,N){return u+N;},'moiqz':function(u){return u();}},q=chatSessions[SO(0x40b)](u=>u['id']===currentChatId);q&&(A[SO(0x535)](q['title'],A[SO(0x238)])||!q[SO(0x23c)])&&(q[SO(0x23c)]=A[SO(0x353)](X[SO(0x4c1)](-0xc44+0x8a4+0x3a0,0x1933+0x24c+0x1b4d*-0x1),X[SO(0x498)]>-0x232c+-0x363+0x26c1*0x1?'...':''),saveAllChatSessions(),A[SO(0x4a0)](renderChatHistoryList));}function renderChatHistoryList(){const ST=S3,X={'xUXeP':ST(0x2b2),'VyWAJ':function(A,q){return A(q);},'GPKHg':ST(0x3c0),'PSLSq':'active','RGOsE':ST(0x478),'JLvei':function(A,q){return A(q);},'ldGHK':function(A,q){return A===q;}};chatHistoryList['innerHTML']='';if(X[ST(0x214)](chatSessions[ST(0x498)],0x22c5+0xdec+-0x30b1)){chatHistoryList[ST(0x48a)]=ST(0x1c3);return;}chatSessions['forEach'](A=>{const Sd=ST,q={'HPOce':function(I,z){const SH=f;return X[SH(0x24e)](I,z);}},u=document['createElement'](X[Sd(0x46e)]);u[Sd(0x4b9)]=Sd(0x395)+(A['id']===currentChatId?X['PSLSq']:''),u[Sd(0x492)](X['RGOsE'],A['id']),u[Sd(0x48a)]=Sd(0x3be)+X[Sd(0x2a9)](escapeHtml,A['title'])+Sd(0x21a)+A['id']+'\x22\x20title=\x22Hapus\x20chat\x20ini\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22material-icons\x22>delete</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</button>\x0a\x20\x20\x20\x20',u['addEventListener'](Sd(0x324),I=>{const Sc=Sd;!I[Sc(0x1a6)][Sc(0x464)](X[Sc(0x449)])&&loadChatSession(A['id']);});const N=u[Sd(0x3b3)](X[Sd(0x449)]);N['addEventListener'](Sd(0x324),async I=>{const SM=Sd;I[SM(0x530)](),await q['HPOce'](deleteChatSession,A['id']);}),chatHistoryList[Sd(0x256)](u);});}async function deleteChatSession(X){const Sv=S3,A={'jGXqX':Sv(0x38c),'KdUrP':function(q){return q();},'HQSgE':function(q,u){return q(u);},'Oapps':function(q){return q();},'fLLVa':function(q,u,N){return q(u,N);},'TTuQm':Sv(0x51b),'BdqMl':'Deletion\x20cancelled\x20or\x20error:','DsFGL':Sv(0x4f7)};try{const q=A[Sv(0x2f0)][Sv(0x541)]('|');let u=-0x1*-0x9a3+0x15*-0xa4+0x3d1;while(!![]){switch(q[u++]){case'0':A[Sv(0x532)](renderChatHistoryList);continue;case'1':currentChatId===X&&(chatSessions[Sv(0x498)]>-0x295*0x5+0x13c5+-0x6dc?A[Sv(0x3e2)](loadChatSession,chatSessions[-0x1e99+0xfe9+0xeb0]['id']):A[Sv(0x1f6)](createNewChatSession));continue;case'2':chatSessions=chatSessions[Sv(0x471)](N=>N['id']!==X);continue;case'3':saveAllChatSessions();continue;case'4':await A[Sv(0x24d)](showConfirmationDialog,Sv(0x4b6),Sv(0x30e));continue;case'5':A['HQSgE'](showToast,A[Sv(0x3bd)]);continue;}break;}}catch(N){console[Sv(0x2e1)](A[Sv(0x50b)],N),showToast(A[Sv(0x3ec)]);}}function addLoadingAnimationStyles(){const SY=S3,A={};A[SY(0x3bf)]=SY(0x2a6),A[SY(0x3db)]=SY(0x404);const q=A;if(document[SY(0x514)](q['usbVj']))return;const u=document['createElement'](q['rtDGD']);u['id']=q[SY(0x3bf)],u[SY(0x3b6)]=SY(0x4eb),document[SY(0x36e)][SY(0x256)](u);}addLoadingAnimationStyles();function showFilePreview(A){const SK=S3,q={'YtnnL':function(N,I){return N>=I;},'zrPGa':function(N,I){return N(I);},'utBJh':function(N,I){return N+I;},'WjYdr':SK(0x493),'QSRXB':function(N){return N();}},u=0x2*-0x123b+0x6ad+0x1dd3;for(const N of A){if(q[SK(0x239)](selectedFiles[SK(0x498)],u)){q[SK(0x279)](showToast,'Maksimal\x20'+u+SK(0x385));break;}const I=q['utBJh'](q[SK(0x487)](q[SK(0x289)],Date[SK(0x22e)]()),'-')+Math[SK(0x3c8)]()['toString'](-0x13fa+-0xf*-0xb0+0x9ce)[SK(0x373)](-0x6c+0x1*0x4d2+-0x1*0x464,0x106*-0x1d+-0xbd7+0x298e),z={};z['id']=I,z[SK(0x48c)]=N,z[SK(0x2c7)]=N[SK(0x2c7)],z[SK(0x35e)]=N[SK(0x35e)],z[SK(0x1e2)]=null,z[SK(0x50d)]=null,z[SK(0x365)]=![];const b=z;createPreviewElement(b);if(!b[SK(0x2c7)][SK(0x2f5)](SK(0x44a)))q[SK(0x279)](extractFileContent,b);else{const Q=new FileReader();Q[SK(0x414)]=m=>{const SF=SK;b['dataURL']=m[SF(0x1a6)][SF(0x31e)];const D=preview[SF(0x3b3)](SF(0x1d5)+b['id']+SF(0x1dc));D&&(D[SF(0x52b)]=m[SF(0x1a6)][SF(0x31e)]);},Q[SK(0x448)](b['file']);}selectedFiles[SK(0x417)](b);}q[SK(0x1d6)](updateFileInput);}async function addUrlToPreview(q){const Sa=S3,u={'NZflO':function(D,C){return D(C);},'sfbiq':function(D,C){return D>=C;},'XGQYA':function(D,C){return D(C);},'UhcYy':Sa(0x4ad),'Pywrl':function(D,C){return D+C;},'EhCsr':Sa(0x493),'Kzftu':Sa(0x4ef),'lVngb':'application/octet-stream','NJWSY':Sa(0x44a),'AUdvJ':Sa(0x53d),'Qfkbl':Sa(0x19d),'QAmNA':Sa(0x241),'QzVmd':Sa(0x19a),'vYSUF':Sa(0x3ee),'tykVV':Sa(0x34d),'kUHJn':'text/html','UpeDJ':function(D,C){return D(C);},'fcqEK':function(D){return D();},'dMBXw':function(D,C){return D(C);},'XbGUR':function(D,C){return D===C;},'vbdJu':function(D,C){return D+C;},'MpjWP':function(D,C){return D(C);},'sIzav':function(D,C){return D===C;},'AhnsM':Sa(0x4c5),'XZlAv':function(D,C){return D(C);},'ASaTZ':Sa(0x278)},N=0x11a1*0x1+-0x1*0xff3+-0x1a4;if(u[Sa(0x507)](selectedFiles[Sa(0x498)],N)){u[Sa(0x44d)](showToast,'Maksimal\x20'+N+Sa(0x385));return;}try{new URL(q);}catch(D){showToast('URL\x20tidak\x20valid:\x20'+q),console[Sa(0x43b)](u[Sa(0x209)],q,D);return;}if(selectedFiles[Sa(0x204)](C=>C[Sa(0x365)]&&C['originalUrl']===q)){u[Sa(0x52c)](showToast,Sa(0x352)+q);return;}const I=u[Sa(0x4cc)](u['Pywrl'](u[Sa(0x4df)],Date[Sa(0x22e)]()),'-')+Math[Sa(0x3c8)]()['toString'](-0x1508+0x26d0+-0x1*0x11a4)[Sa(0x373)](-0x2*-0xd8f+0x19fd*0x1+-0x3519,-0x1f2c+0x2076+-0x1*0x141),z=q[Sa(0x4c1)](u[Sa(0x4cc)](q[Sa(0x1ac)]('/'),-0x1*-0xe2f+0x34f*-0x7+0x79*0x13))||u[Sa(0x2ad)];let b=u[Sa(0x361)];if(/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i[Sa(0x3e8)](q))b=u['NJWSY']+q['match'](/\.(jpg|jpeg|png|gif|webp)/i)[-0xfd6+-0x2051+-0x2*-0x1814][Sa(0x39d)](u['AUdvJ'],u['Qfkbl']);else{if(/\.pdf(\?.*)?$/i[Sa(0x3e8)](q))b=u[Sa(0x35f)];else{if(/\.(doc|docx)(\?.*)?$/i[Sa(0x3e8)](q))b=u['QzVmd'];else q[Sa(0x431)](Sa(0x474))||q[Sa(0x431)](u[Sa(0x2ed)])?b=u[Sa(0x3d4)]:b=u[Sa(0x4d9)];}}const Q={};Q['id']=I,Q[Sa(0x48c)]=null,Q[Sa(0x2c7)]=b,Q[Sa(0x35e)]=z,Q[Sa(0x1e2)]=null,Q[Sa(0x50d)]=null,Q[Sa(0x365)]=!![],Q['originalUrl']=q;const m=Q;u[Sa(0x193)](createPreviewElement,m),selectedFiles[Sa(0x417)](m),u['fcqEK'](updateFileInput),u[Sa(0x44d)](showToast,Sa(0x4ce)+q);try{const C=await u[Sa(0x52c)](fetch,PROXY_SERVER_URL+'?url='+u[Sa(0x419)](encodeURIComponent,q));if(!C['ok']){const n=await C['json']()[Sa(0x211)](()=>({'message':C['statusText']}));throw new Error('Failed\x20to\x20fetch\x20content\x20from\x20URL\x20('+C[Sa(0x450)]+'):\x20'+(n[Sa(0x2e3)]||C[Sa(0x4a6)]));}if(m[Sa(0x2c7)][Sa(0x2f5)](u['NJWSY'])){const B=await C[Sa(0x1b6)](),U=new FileReader();U[Sa(0x414)]=k=>{const Sh=Sa;m[Sh(0x1e2)]=k[Sh(0x1a6)][Sh(0x31e)];const o=preview['querySelector'](Sh(0x1d5)+m['id']+Sh(0x1dc));o&&(o[Sh(0x52b)]=k[Sh(0x1a6)]['result']),u[Sh(0x52c)](showToast,Sh(0x357)+m['name']);},U['readAsDataURL'](B);}else{if(u[Sa(0x2fd)](m[Sa(0x2c7)],u[Sa(0x35f)])&&window[Sa(0x427)]){const k=await C[Sa(0x44b)](),o={};o[Sa(0x3ac)]=k;const s=await pdfjsLib[Sa(0x4e8)](o)[Sa(0x29e)];let p='';for(let j=-0x22ff+-0x13c+0x243c;j<=s[Sa(0x3f3)];j++){const w=await s[Sa(0x3af)](j),E=await w[Sa(0x1e7)]();p+=u[Sa(0x232)](E[Sa(0x21d)][Sa(0x4f5)](R=>R[Sa(0x4e4)])[Sa(0x473)]('\x20'),'\x0a');}m['extractedText']=p[Sa(0x3ae)](),u[Sa(0x44d)](showToast,Sa(0x401));}else{if(m[Sa(0x2c7)]===u[Sa(0x3d4)])m['extractedText']=Sa(0x243)+q,u[Sa(0x526)](showToast,'Mendeteksi\x20URL\x20YouTube.\x20AI\x20akan\x20menerima\x20URL\x20video.');else{if(u[Sa(0x440)](m['type'],u['kUHJn'])){const R=await C['text'](),G=new DOMParser(),O=G['parseFromString'](R,u[Sa(0x4d9)]);let T='';const H=O['querySelector'](u['AhnsM']);H?T=H[Sa(0x3b6)]:T=O[Sa(0x27b)]['textContent']||O[Sa(0x285)][Sa(0x3b6)],m['extractedText']=T[Sa(0x39d)](/\s+/g,'\x20')[Sa(0x3ae)]()[Sa(0x4c1)](-0xd85+-0x1*0xb55+0x18da,0x73d+0x150b+-0x230*0x4),m['extractedText']?u[Sa(0x3cb)](showToast,Sa(0x231)+m[Sa(0x50d)][Sa(0x498)]+Sa(0x2ef)):u[Sa(0x3cb)](showToast,Sa(0x3e0));}else m[Sa(0x50d)]='[Konten\x20URL\x20tidak\x20dapat\x20diproses:\x20'+q+']',showToast(Sa(0x4a8)+m[Sa(0x2c7)]+'.\x20URL\x20akan\x20dikirim\x20sebagai\x20tautan.');}}}}catch(d){console[Sa(0x43b)](u['ASaTZ'],d),u[Sa(0x3cb)](showToast,Sa(0x4a7)+q+':\x20'+d['message']),m['extractedText']=Sa(0x3a3)+q+'.\x20'+d[Sa(0x2e3)]+']';}}function createPreviewElement(X){const SW=S3,A={'OGcmK':function(N){return N();},'XqStB':'data-file-id','hEAYf':SW(0x3c0),'NXQnG':SW(0x264),'MeKCd':'img','NMDHn':SW(0x34d),'JyWFn':SW(0x3d5),'dlmyK':SW(0x49d),'ApoOR':'material-icons','GMYeK':SW(0x43f),'tYsTI':function(N,I){return N===I;},'eDbuE':SW(0x32b),'onAuT':SW(0x2b8),'rHgHu':SW(0x416),'MYVaH':SW(0x227),'zUokR':'#1976D2','TuiCn':SW(0x4bf),'qVpbG':function(N,I){return N+I;},'aSaWT':'...'},q=document[SW(0x19c)](SW(0x2b3));q['className']='preview-item',q[SW(0x492)](A[SW(0x382)],X['id']),q[SW(0x23c)]=X[SW(0x35e)];const u=document[SW(0x19c)](A[SW(0x4ba)]);u[SW(0x2c7)]=SW(0x3c0),u[SW(0x4b9)]=A[SW(0x32a)],u['innerHTML']='×',u['onclick']=()=>{const SP=SW;q['remove'](),selectedFiles=selectedFiles[SP(0x471)](N=>N['id']!==X['id']),A[SP(0x2e0)](updateFileInput);};if(X[SW(0x2c7)][SW(0x2f5)](SW(0x44a))){const N=document['createElement'](A[SW(0x1bf)]);N[SW(0x2a3)]=X[SW(0x35e)],q[SW(0x256)](N);}else{if(X['type']===A[SW(0x3e1)]){q[SW(0x523)]['add'](A[SW(0x220)]);const I=document['createElement'](A[SW(0x1ec)]);I[SW(0x4b9)]=A['ApoOR'],I[SW(0x3b6)]='ondemand_video',q[SW(0x404)][SW(0x1aa)]='#FF0000';const z=document[SW(0x19c)](SW(0x49d));z[SW(0x4b9)]='preview-file-name',z['textContent']=A[SW(0x33b)],q['appendChild'](I),q[SW(0x256)](z);}else{q[SW(0x523)]['add'](A['JyWFn']);const b=document['createElement'](A[SW(0x1ec)]);b[SW(0x4b9)]='material-icons';if(A[SW(0x4ac)](X[SW(0x2c7)],'application/pdf'))b[SW(0x3b6)]=A[SW(0x2c5)],q[SW(0x404)]['backgroundColor']=A['onAuT'];else A[SW(0x4ac)](X[SW(0x2c7)],SW(0x1fd))?(b['textContent']='link',q[SW(0x404)][SW(0x1aa)]=A[SW(0x1e3)]):(b[SW(0x3b6)]=A[SW(0x3c4)],q['style'][SW(0x1aa)]=A[SW(0x194)]);const Q=document['createElement'](A['dlmyK']);Q[SW(0x4b9)]=A['TuiCn'],Q[SW(0x3b6)]=X['name'][SW(0x498)]>-0x215*-0x7+0x1c03+0x3*-0xe2d?A[SW(0x36f)](X['name']['substring'](0x15e5+0x18f*0xd+-0x2a28,0x153*0x18+0x5*-0x7c6+0x1*0x722),A[SW(0x21b)]):X['name'],q[SW(0x256)](b),q[SW(0x256)](Q);}}q[SW(0x256)](u),preview['appendChild'](q);}async function extractFileContent(X){const Sl=S3,A={'evswO':function(u,N){return u===N;},'NVMpr':Sl(0x241),'QCwmw':function(u,N){return u<=N;},'udnPb':function(u,N){return u+N;},'vzfzT':Sl(0x4e9),'mqXDP':function(u,N){return u(N);}},q=new FileReader();q[Sl(0x414)]=async u=>{const Si=Sl,N=u['target'][Si(0x31e)];let I='';try{if(A['evswO'](X[Si(0x2c7)],A['NVMpr'])&&window[Si(0x427)]){const z={};z[Si(0x3ac)]=N;const b=await pdfjsLib['getDocument'](z)[Si(0x29e)];for(let Q=-0x5*-0x5ce+0x2*0x581+0x1*-0x2807;A[Si(0x2ab)](Q,b[Si(0x3f3)]);Q++){const m=await b[Si(0x3af)](Q),D=await m[Si(0x1e7)]();I+=A[Si(0x2f6)](D['items'][Si(0x4f5)](C=>C['str'])[Si(0x473)]('\x20'),'\x0a');}}else{if((X[Si(0x35e)][Si(0x50e)](A['vzfzT'])||X[Si(0x35e)][Si(0x50e)](Si(0x4e7)))&&window[Si(0x4ae)]){const C={};C[Si(0x44b)]=N;const n=await mammoth[Si(0x375)](C);I=n[Si(0x20b)];}}X['extractedText']=I[Si(0x3ae)]();if(I)showToast(Si(0x2bf)+X[Si(0x35e)]+Si(0x304));}catch(B){console['error'](Si(0x519),B),A[Si(0x4af)](showToast,'Failed\x20to\x20process\x20file\x20'+X[Si(0x35e)]+'.'),X['extractedText']='[Error:\x20Failed\x20to\x20read\x20file\x20content\x20'+X[Si(0x35e)]+']';}},!X['type'][Sl(0x2f5)](Sl(0x44a))&&q['readAsArrayBuffer'](X['file']);}function updateFileInput(){const Sy=S3,X=selectedFiles[Sy(0x471)](q=>!q[Sy(0x365)]),A=new DataTransfer();X[Sy(0x192)](q=>A[Sy(0x21d)]['add'](q[Sy(0x48c)])),fileInput[Sy(0x399)]=A[Sy(0x399)],updateChatBoxPadding();}document[S3(0x514)](S3(0x1fe))[S3(0x508)](S3(0x324),function(){const SZ=S3;window[SZ(0x4b2)][SZ(0x230)]=SZ(0x2ec);}),uploadBtn['addEventListener'](S3(0x324),()=>fileInput[S3(0x324)]()),fileInput[S3(0x508)]('change',X=>{const Sg=S3,A={'bpSeF':function(q,u){return q(u);}};X[Sg(0x1a6)][Sg(0x399)][Sg(0x498)]>-0x859+-0x3*0x5f3+0x1df*0xe&&A[Sg(0x4bb)](showFilePreview,X[Sg(0x1a6)][Sg(0x399)]);}),chatContainer[S3(0x508)](S3(0x2c8),A=>{const Se=S3,q={};q[Se(0x2df)]=Se(0x42d);const u=q;A['preventDefault'](),chatContainer[Se(0x523)][Se(0x2b0)](u['VSFVR']);}),chatContainer[S3(0x508)](S3(0x1fb),A=>{const SL=S3,q={};q[SL(0x310)]=SL(0x42d);const u=q;A['preventDefault'](),chatContainer[SL(0x523)][SL(0x2d7)](u[SL(0x310)]);}),chatContainer[S3(0x508)]('drop',X=>{const SV=S3,A={'GVSbn':function(q,u){return q(u);}};X[SV(0x4f6)](),chatContainer[SV(0x523)][SV(0x2d7)](SV(0x42d)),X['dataTransfer'][SV(0x399)]['length']>0x223+-0xfa1+-0x16*-0x9d&&A['GVSbn'](showFilePreview,X[SV(0x445)][SV(0x399)]);});if(window[S3(0x488)]){const adjustLayout=()=>{const Sr=S3,X={'ccYgY':function(A,q,u){return A(q,u);}};if(!chatContainer)return;chatContainer[Sr(0x404)][Sr(0x42c)]=window[Sr(0x488)][Sr(0x42c)]+'px',chatBox&&X[Sr(0x3b9)](setTimeout,()=>{const St=Sr;chatBox[St(0x316)](-0x423+-0x660+0xa83,chatBox[St(0x43d)]);},0x1*-0x249e+-0x10bb*-0x2+0x35a);};window['visualViewport'][S3(0x508)](S3(0x1f3),adjustLayout),adjustLayout();}const text='Apakah\x20ada\x20yang\x20bisa\x20saya\x20bantu?';let index=-0x1*-0xbef+0x5*0x22d+-0xb68*0x2;function typeWriter(){const Sx=S3,X={'IwIcE':function(A,q,u){return A(q,u);},'Vyndg':Sx(0x323)};index===-0x1*-0x1bac+0x16e9+-0x3295*0x1&&(menufitur1[Sx(0x404)][Sx(0x317)]=Sx(0x323),emptyMessage[Sx(0x3b6)]=''),index<text[Sx(0x498)]?(emptyMessage[Sx(0x3b6)]+=text[Sx(0x2eb)](index),index++,typewriterTimeoutId=X[Sx(0x215)](setTimeout,typeWriter,0x262c+0x57d+-0x2b45)):(menufiturawal[Sx(0x404)][Sx(0x317)]=X[Sx(0x282)],menufiturkedua[Sx(0x404)]['display']=X[Sx(0x282)],typewriterTimeoutId=null);}function initializeChatDisplay(){const SJ=S3,A={};A[SJ(0x2cb)]=function(u,N){return u===N;},A[SJ(0x242)]=SJ(0x33d),A[SJ(0x3e7)]=SJ(0x496),A[SJ(0x3ba)]=SJ(0x323);const q=A;if(q[SJ(0x2cb)](messages[SJ(0x498)],0x22d*0x11+0xe34+-0x3331)){const u=q[SJ(0x242)]['split']('|');let N=-0x15b4*-0x1+0x5ee+-0x1ba2;while(!![]){switch(u[N++]){case'0':menufiturawal[SJ(0x404)]['display']=q[SJ(0x3e7)];continue;case'1':allowWelcomeAnimation&&(typeWriter(),allowWelcomeAnimation=![]);continue;case'2':menufiturkedua[SJ(0x404)][SJ(0x317)]=q[SJ(0x3e7)];continue;case'3':menufitur1[SJ(0x404)][SJ(0x317)]=q[SJ(0x3ba)];continue;case'4':emptyMessage[SJ(0x3b6)]='';continue;case'5':index=-0x480+-0x1ee*0x2+0x85c;continue;}break;}}else menufitur1[SJ(0x404)][SJ(0x317)]=q[SJ(0x3e7)],menufiturawal[SJ(0x404)]['display']=q[SJ(0x3e7)],menufiturkedua[SJ(0x404)]['display']=q['icAmC'];}function f(X,A){const q=S();return f=function(u,N){u=u-(-0x1d*0x13c+0x14a1*-0x1+0x1*0x39fd);let I=q[u];return I;},f(X,A);}chatInput[S3(0x508)](S3(0x4c8),()=>{const f0=S3;chatInput[f0(0x404)][f0(0x42c)]='auto';const X=-0x1498+0x7f8+0xd18*0x1;chatInput[f0(0x404)][f0(0x42c)]=Math[f0(0x330)](chatInput[f0(0x43d)],X)+'px';});function isMobileDevice(){const f1=S3,A={};A[f1(0x270)]=function(u,N){return u<=N;};const q=A;return q[f1(0x270)](window[f1(0x32e)],0x1b69+-0x3c4+0x421*-0x5);}chatInput[S3(0x508)]('keydown',X=>{const f2=S3,A={'WVdhc':function(q,u){return q===u;},'TCKnL':function(q){return q();}};A[f2(0x1f0)](X[f2(0x225)],'Enter')&&!A[f2(0x4d7)](isMobileDevice)&&!X[f2(0x4f3)]&&(X['preventDefault'](),chatForm[f2(0x438)]());});function stopWelcomeAnimation(){const f3=S3,X={'wVRJQ':function(q,u){return q(u);}};typewriterTimeoutId&&(X[f3(0x22a)](clearTimeout,typewriterTimeoutId),typewriterTimeoutId=null);const A=document[f3(0x514)]('menufitur1');A&&A[f3(0x523)]['add'](f3(0x466));}chatBox[S3(0x508)](S3(0x432),()=>{const f4=S3,A={};A[f4(0x44c)]=function(I,z){return I-z;},A[f4(0x452)]=function(I,z){return I<z;};const q=A,u=0x11d4+-0xdf9+-0x1*0x3b3,N=q[f4(0x44c)](q['nBmYZ'](chatBox[f4(0x43d)],chatBox[f4(0x418)]),chatBox[f4(0x4b4)]);autoScrollEnabled=q[f4(0x452)](N,u);}),newChatBtn['addEventListener']('click',()=>{allowWelcomeAnimation=!![],createNewChatSession();}),clearChatBtnn[S3(0x508)](S3(0x324),()=>{allowWelcomeAnimation=!![],createNewChatSession();}),clearChatBtn[S3(0x508)](S3(0x324),()=>{const f5=S3,X={'rqqIV':function(A){return A();}};allowWelcomeAnimation=!![],X[f5(0x38d)](createNewChatSession);});function makeLinksClickable(X){const f6=S3,A=/(https?:\/\/[^\s]+)/g,q=X[f6(0x39d)](A,u=>{const f7=f6;return f7(0x314)+u+f7(0x1e5)+u+f7(0x38a);});return q;}chatForm['addEventListener'](S3(0x455),async I=>{const f8=S3,z={'zkeyA':function(o,s){return o+s;},'MyTOm':function(o,s){return o===s;},'SZbJy':f8(0x34d),'JoYaT':f8(0x40d),'AaMpt':'file','Mmtpi':function(o,s){return o+s;},'uFANt':function(o,s){return o>s;},'NwTvP':f8(0x44a),'DEKuH':function(o){return o();},'WKsPu':f8(0x3d7),'ilbbP':function(o,s){return o===s;},'iulEx':function(o,s){return o&&s;},'HyuVB':function(o,s){return o(s);},'GomMi':f8(0x2c6),'ugtYL':function(o,s,p,j,w,E,R){return o(s,p,j,w,E,R);},'HqDlE':'You','FwfaM':f8(0x2aa),'CpLcR':function(o){return o();},'HpNQs':f8(0x196),'uLEge':f8(0x1ed),'uHlLO':f8(0x412),'DdStT':function(o,s){return o===s;},'bEmHJ':f8(0x459),'HJQSW':function(o,s,p,j){return o(s,p,j);},'dFELV':f8(0x213),'bHxKy':function(o){return o();},'eCrpD':function(o){return o();},'cQVqP':function(o,s){return o===s;},'ybYfj':'Mohon\x20masukkan\x20pesan,\x20URL,\x20atau\x20lampirkan\x20file.','ChbqW':function(o,s){return o(s);},'jlZcT':function(o,s){return o(s);},'pAAOI':f8(0x1a5),'JhzFG':function(o,s,p,j,w,E,R){return o(s,p,j,w,E,R);},'UJlcW':f8(0x462),'XqFiF':function(o){return o();},'aRTAR':function(o){return o();},'JHsWL':f8(0x2e5),'KolgR':function(o,s,p){return o(s,p);},'TTfFH':f8(0x245),'BBGgr':f8(0x413),'XwYLG':f8(0x384),'zchAZ':function(o,s,p,j,w,E){return o(s,p,j,w,E);},'gIMcm':f8(0x2fb),'ezHNF':function(o){return o();},'xvvdw':f8(0x4a2),'wOsQv':function(o){return o();},'QjjVH':'Terjadi\x20kesalahan\x20saat\x20menghubungi\x20server.','rbHwC':function(o,s,p,j,w){return o(s,p,j,w);},'aALDi':function(o){return o();},'urLec':f8(0x226)};I[f8(0x4f6)](),stopWelcomeAnimation();let b=chatInput[f8(0x20b)][f8(0x3ae)]();const Q=b['toLowerCase'](),m=z[f8(0x485)](messages[f8(0x498)],0xaff*0x2+0x1306+-0x2904);let D=![];if(!chatSessions[f8(0x204)](o=>o['id']===currentChatId)){const o={'id':currentChatId,'title':f8(0x49b),'messages':[],'createdAt':Date[f8(0x22e)]()};chatSessions[f8(0x202)](o),D=!![];}z[f8(0x49a)](m,b)&&z[f8(0x1ff)](updateCurrentChatTitle,b);if(Q===z[f8(0x30f)]){z[f8(0x383)](appendMessage,f8(0x2aa),b,z[f8(0x1cd)],f8(0x462),[],![]),messages[f8(0x417)]({'role':z[f8(0x3f7)],'content':b,'files':[],'id':generateUniqueId()});const s=chatSessions[f8(0x40b)](G=>G['id']===currentChatId);s&&(s[f8(0x322)]=[...messages],saveAllChatSessions());if(D)renderChatHistoryList();isLoading=!![],z[f8(0x303)](appendLoadingMessage),await new Promise(G=>setTimeout(G,-0x9c2+0x4*0x1cc+-0xd*-0xa6)),z['CpLcR'](removeLoadingMessage);const p='Tentu,\x20ini\x20aplikasi\x20\x22Cerito\x20Ke\x20Bae\x22\x20yang\x20bisa\x20kamu\x20unduh:\x0a**Nama\x20File:**\x20CeritoKeBae.apk\x0a**Ukuran:**\x2012\x20MB\x0a**Status:**\x20Terverifikasi\x0aLink:\x20https://www.upload-apk.com/ESajA0TNWoyLiGr',j=f8(0x356),w=f8(0x40c),E=z[f8(0x540)],R=z[f8(0x1ff)](makeLinksClickable,p);appendMessage(z[f8(0x200)],R,f8(0x2fb),z[f8(0x4de)]);z['DdStT'](typeof appendDownloadButton,z[f8(0x1f8)])&&z[f8(0x53e)](appendDownloadButton,j,w,E);messages[f8(0x417)]({'role':z[f8(0x2bc)],'content':p,'files':[],'id':z[f8(0x3c3)](generateUniqueId)});s&&(s[f8(0x322)]=[...messages],z[f8(0x536)](saveAllChatSessions));chatInput[f8(0x20b)]='',chatInput[f8(0x404)][f8(0x42c)]=f8(0x2e5),preview[f8(0x48a)]='',selectedFiles=[],updateFileInput(),isLoading=![],chatInput[f8(0x490)]=![];m&&chatBox['classList'][f8(0x2b0)](f8(0x226));return;}const C=/(https?:\/\/[^\s]+)/g,n=b[f8(0x1a0)](C);if(!b&&z[f8(0x246)](selectedFiles[f8(0x498)],-0xcc7*0x1+0xde9*-0x2+0x2899)&&!n||isLoading){showToast(z['ybYfj']);return;}if(n&&z[f8(0x3b8)](n[f8(0x498)],-0xaad+0x205a+-0x15ad))for(const G of n){b=b[f8(0x39d)](G,'')['trim'](),await z['ChbqW'](addUrlToPreview,G);}const B=selectedFiles['map'](O=>({'id':O['id'],'name':O[f8(0x35e)],'type':O[f8(0x2c7)],'dataURL':O[f8(0x1e2)],'originalUrl':O['originalUrl'],'isUrl':O[f8(0x365)],'extractedText':O[f8(0x50d)]})),U=[];if(b){const O={};O['text']=b,U[f8(0x417)](O);}selectedFiles['filter'](T=>T['type'][f8(0x2f5)](f8(0x44a))&&T[f8(0x1e2)])['forEach'](T=>{const f9=f8,H=T[f9(0x2c7)],d=T[f9(0x1e2)]['substring'](z[f9(0x52d)](T[f9(0x1e2)][f9(0x3b0)](','),0x21*-0x8f+-0x1*-0x23d5+-0x1165)),c={};c['mime_type']=H,c[f9(0x3ac)]=d;const M={};M['inline_data']=c,U['push'](M);}),selectedFiles[f8(0x471)](T=>T[f8(0x50d)])[f8(0x192)](T=>{const fS=f8;if(z[fS(0x40f)](T[fS(0x2c7)],z[fS(0x212)])&&T['originalUrl']){const H={};H[fS(0x1e6)]=fS(0x28f)+T[fS(0x1c8)],U[fS(0x417)](H);}else{if(T[fS(0x50d)]){const d={};d['text']='Konten\x20dari\x20'+(T[fS(0x365)]?z['JoYaT']:z[fS(0x3f1)])+'\x20\x22'+(T[fS(0x35e)]||T[fS(0x1c8)])+fS(0x51c)+T[fS(0x50d)],U['push'](d);}}});if(z[f8(0x246)](U[f8(0x498)],-0x2*-0x40e+-0x1a92+0x1276)){z[f8(0x26f)](showToast,z[f8(0x29b)]);return;}z[f8(0x2a2)](appendMessage,z['FwfaM'],b,z[f8(0x1cd)],z[f8(0x2e7)],B,![]),messages[f8(0x417)]({'role':z[f8(0x3f7)],'content':b,'files':B,'id':z[f8(0x3c3)](generateUniqueId)});const k=chatSessions[f8(0x40b)](T=>T['id']===currentChatId);k&&(k[f8(0x322)]=[...messages],z[f8(0x3e9)](saveAllChatSessions));if(D)z[f8(0x1c1)](renderChatHistoryList);chatInput[f8(0x20b)]='',chatInput[f8(0x404)][f8(0x42c)]=z[f8(0x237)];window['innerWidth']>=0x22c+0x1ea1+-0x1dcd?chatInput['focus']():chatInput[f8(0x348)]();preview[f8(0x48a)]='',selectedFiles=[],updateFileInput(),isLoading=!![],z[f8(0x3e9)](appendLoadingMessage);try{const T=messages[f8(0x280)](-0xb*0x1a6+-0xfe*0x1d+0x13c*0x26,-(0x153e+0x1*0xed5+-0x2412))[f8(0x4f5)](y=>{const fX=f8,Z={'VSNbV':function(V,r){const ff=f;return z[ff(0x4db)](V,r);},'EJfDe':z[fX(0x1ca)],'AAmOk':z[fX(0x3f1)]},g=[];if(y[fX(0x4d8)]){const V={};V[fX(0x1e6)]=y['content'],g[fX(0x417)](V);}y[fX(0x399)]&&y[fX(0x399)][fX(0x498)]>-0x1e9c+0xce+0x1dce&&y[fX(0x399)][fX(0x192)](r=>{const fA=fX;if(r[fA(0x2c7)]&&r[fA(0x2c7)][fA(0x2f5)]('image/')&&r['dataURL']){const t=r[fA(0x2c7)],x=r[fA(0x1e2)][fA(0x4c1)](Z[fA(0x489)](r[fA(0x1e2)]['indexOf'](','),0x13*-0x20b+-0x1*0xd69+-0x343b*-0x1)),J={};J[fA(0x28a)]=t,J[fA(0x3ac)]=x;const S0={};S0[fA(0x301)]=J,g['push'](S0);}else{if(r['extractedText']){const S1={};S1['text']=fA(0x4cb)+(r[fA(0x365)]?Z['EJfDe']:Z[fA(0x2f4)])+'\x20\x22'+(r['name']||r[fA(0x1c8)])+fA(0x51c)+r[fA(0x50d)],g['push'](S1);}}});const L={};return L['text']='',{'role':y['role'],'parts':z[fX(0x3b8)](g[fX(0x498)],0x1d*-0x8+0x1*-0x261f+-0x61*-0x67)?g:[L]};}),H={};H[f8(0x20c)]=z[f8(0x3f7)],H[f8(0x48d)]=U;const d=[...T,H],c={};c[f8(0x1e6)]=f8(0x3dc);const M={};M[f8(0x48d)]=[c];const v={};v[f8(0x34e)]=d,v[f8(0x349)]=M;const Y=v,K='AIzaSyBe6EkfS-eVWMOQalm2TpxL6ljGBC2z9dI',F=f8(0x46b)+K,a=await z['KolgR'](fetch,F,{'method':z[f8(0x533)],'headers':{'Content-Type':z['BBGgr']},'body':JSON[f8(0x486)](Y)});if(!a['ok']){const y=await a['json']();throw new Error(y[f8(0x43b)][f8(0x2e3)]||f8(0x1f4)+a[f8(0x450)]);}const h=await a[f8(0x53b)](),W=h['candidates']?.[0x71*0x22+0x21*0xb6+-0x2678]?.[f8(0x4d8)]?.[f8(0x48d)];let P='',l=[];W&&W[f8(0x498)]>-0x1bf4+-0x3e2+0x1fd6?(W[f8(0x192)](Z=>{const fq=f8;if(Z[fq(0x1e6)])P+=z[fq(0x4db)](Z[fq(0x1e6)][fq(0x3ae)](),'\x0a');else Z[fq(0x301)]&&Z['inline_data'][fq(0x28a)]['startsWith'](z[fq(0x2de)])&&l['push']({'id':z['DEKuH'](generateUniqueId),'name':z[fq(0x46f)],'type':Z[fq(0x301)][fq(0x28a)],'dataURL':fq(0x509)+Z['inline_data']['mime_type']+';base64,'+Z['inline_data']['data'],'isUrl':![],'extractedText':null});}),P=P[f8(0x3ae)]()):P=z[f8(0x539)];removeLoadingMessage(),z['zchAZ'](appendMessage,z[f8(0x200)],P,z[f8(0x274)],z[f8(0x4de)],l),messages['push']({'role':z['dFELV'],'content':P,'files':l,'id':generateUniqueId()});const i=chatSessions['find'](Z=>Z['id']===currentChatId);i&&(i[f8(0x322)]=[...messages],z[f8(0x411)](saveAllChatSessions));}catch(Z){console[f8(0x43b)](z[f8(0x3b1)],Z),z[f8(0x262)](removeLoadingMessage);const g=Z[f8(0x2e3)]||z[f8(0x409)];z[f8(0x525)](appendMessage,f8(0x1ed),g,z[f8(0x274)],z['uHlLO']),messages[f8(0x417)]({'role':z[f8(0x2bc)],'content':g,'files':[],'id':z[f8(0x3df)](generateUniqueId)});const L=chatSessions[f8(0x40b)](V=>V['id']===currentChatId);L&&(L[f8(0x322)]=[...messages],z['aALDi'](saveAllChatSessions));}finally{isLoading=![],chatInput[f8(0x490)]=![],m&&chatBox['classList'][f8(0x2b0)](z[f8(0x4ee)]);}});function saveMessagesToStorage(){}function loadMessagesFromStorage(){}async function clearChat(){const fu=S3,A={};A[fu(0x33e)]='clearChat()\x20is\x20deprecated.\x20Use\x20createNewChatSession()\x20or\x20deleteChatSession()\x20instead.';const q=A;console[fu(0x1f9)](q[fu(0x33e)]);}function showConfirmationDialog(X,A){const fN=S3,q={'yOWiq':fN(0x1bb),'lxMNn':function(Q){return Q();},'UaJDE':function(Q){return Q();},'uEFsD':fN(0x324),'qbkPg':fN(0x21e),'xniJF':fN(0x255),'AfSaK':fN(0x271),'gmTaN':fN(0x1b3)},u=document[fN(0x514)](q[fN(0x2d6)]),N=document['getElementById'](q['xniJF']),I=document['getElementById'](q['AfSaK']),z=document['getElementById']('dialogConfirmBtn'),b=document[fN(0x514)](q[fN(0x327)]);return N['textContent']=X,I[fN(0x3b6)]=A,u[fN(0x523)][fN(0x2d7)](fN(0x1bb)),new Promise((Q,m)=>{const fz=fN,D={'fJlbg':q['yOWiq'],'kpiNC':function(o){const fI=f;return q[fI(0x30d)](o);},'JPmEJ':function(o){return q['UaJDE'](o);},'TuqyI':q[fz(0x2f9)]},C=()=>{const fb=fz;u[fb(0x523)][fb(0x2b0)](D['fJlbg']),D['kpiNC'](B),D[fb(0x22f)](Q);},n=()=>{const fQ=fz;u[fQ(0x523)]['add'](q[fQ(0x22c)]),B(),q[fQ(0x30d)](m);},B=()=>{const fm=fz;z['removeEventListener'](fm(0x324),C),b[fm(0x33a)](D['TuqyI'],n);},U={};U[fz(0x3f9)]=!![],z[fz(0x508)](q['uEFsD'],C,U);const k={};k[fz(0x3f9)]=!![],b[fz(0x508)](q[fz(0x2f9)],n,k);});}function checkChatEmpty(){const fD=S3,A={};A['RkYQd']=function(N,I){return N>I;},A[fD(0x3a7)]=fD(0x496);const q=A,u=q[fD(0x347)](messages[fD(0x498)],-0x188c+0x218d*-0x1+0x3a19);u?menufitur1[fD(0x404)][fD(0x317)]=q['rjqVE']:menufitur1['style'][fD(0x317)]='flex';}function getMessageLikeStatus(A){const fC=S3,q=localStorage[fC(0x481)]('message_like_status_'+A),u={};return u['liked']=![],u['disliked']=![],q?JSON[fC(0x3d9)](q):u;}function saveMessageLikeStatus(X,A){const fn=S3;localStorage[fn(0x2be)]('message_like_status_'+X,JSON['stringify'](A));}function addBotActionButtons(q,u,N){const fB=S3,I={'bXUtn':function(o,s){return o(s);},'lWFTc':fB(0x1c7),'zOzPy':function(o,s){return o in s;},'Xepho':function(o,s){return o(s);},'KcJZN':fB(0x27d),'ZtZOY':'id-ID','gMSaO':fB(0x284),'adhjY':function(o,s){return o!==s;},'oLccG':fB(0x22d),'xSRlm':function(o,s,p){return o(s,p);},'XEZlB':function(o,s,p){return o(s,p);},'zGKJP':fB(0x386),'GNzvY':fB(0x496),'bqnQa':fB(0x4bd),'oTdfn':fB(0x4ec),'OnvhM':fB(0x32c),'WNppS':fB(0x2b3),'rYEtv':fB(0x26b),'ywsBS':fB(0x265),'nHNRT':'flex','PIfBS':fB(0x19f),'NDOpS':fB(0x3c0),'SaXFz':fB(0x1ea),'SYcup':fB(0x4ea),'FYuZq':fB(0x4a1),'WgEMk':function(o,s){return o(s);},'DcxKz':fB(0x4e1)};if(!u)return;const z={};z[fB(0x51f)]='<img\x20src=\x22images/copy.png\x22\x20alt=\x22Copy\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20/>',z[fB(0x3b4)]=fB(0x326),z[fB(0x515)]='<img\x20src=\x22images/speaker.png\x22\x20alt=\x22Speak\x22\x20width=\x2220\x22\x20height=\x2220\x22\x20/>',z[fB(0x376)]='<img\x20src=\x22images/aksispeaker.png\x22\x20alt=\x22Speaking\x22\x20width=\x2220\x22\x20height=\x2220\x22\x20/>',z[fB(0x277)]='<img\x20src=\x22images/share.png\x22\x20alt=\x22Share\x22\x20width=\x2220\x22\x20height=\x2220\x22\x20/>',z[fB(0x31d)]=fB(0x2b6),z[fB(0x39f)]=fB(0x1e8),z['unlike']=fB(0x467),z[fB(0x272)]=fB(0x397);const b=z,Q=document[fB(0x19c)](I['WNppS']);Q[fB(0x4b9)]=fB(0x27e);const m={};m['position']=I['rYEtv'],m[fB(0x1a1)]=I['oTdfn'],m[fB(0x2ea)]=I[fB(0x4cd)],m['display']=I[fB(0x458)],m['alignItems']=I[fB(0x367)],m['gap']=I[fB(0x491)],Object['assign'](Q['style'],m);const D=document[fB(0x19c)](fB(0x3c0));D[fB(0x23c)]=I[fB(0x4fe)],D[fB(0x48a)]=b[fB(0x51f)],D[fB(0x205)]=()=>{const fk=fB,o={'XWDLK':function(s,p,j){return s(p,j);},'xPotM':function(s,p){const fU=f;return I[fU(0x4f2)](s,p);},'NWclT':I['lWFTc']};navigator[fk(0x444)]['writeText'](u)['then'](()=>{const fo=fk;D['innerHTML']=b[fo(0x3b4)],o[fo(0x534)](setTimeout,()=>{const fs=fo;D[fs(0x48a)]=b[fs(0x51f)];},-0x24b8+0x1e8b+0xdfd*0x1),o[fo(0x2d3)](showToast,o[fo(0x516)]);});},Q[fB(0x256)](D);const C=document['createElement'](I[fB(0x512)]);C[fB(0x23c)]=I['SaXFz'],C[fB(0x48a)]=b['speak'],C['onclick']=()=>{const fp=fB;if(!I['zOzPy'](fp(0x28b),window)){I[fp(0x3c5)](showToast,I['KcJZN']);return;}if(window['speechSynthesis']['speaking']){window[fp(0x28b)]['cancel']();return;}const o=u['replace'](/[^a-zA-Z0-9\s]/g,'\x20')['replace'](/\s+/g,'\x20')[fp(0x3ae)](),s=new SpeechSynthesisUtterance(o);s[fp(0x4c4)]=I['ZtZOY'],s[fp(0x1bd)]=()=>C[fp(0x48a)]=b[fp(0x376)],s[fp(0x402)]=()=>C[fp(0x48a)]=b[fp(0x515)],s[fp(0x338)]=()=>{const fj=fp;C[fj(0x48a)]=b[fj(0x515)],showToast(fj(0x1a9));},window[fp(0x28b)]['speak'](s);},Q[fB(0x256)](C);const n=document[fB(0x19c)](I[fB(0x512)]);n[fB(0x23c)]=I[fB(0x358)],n[fB(0x48a)]=b[fB(0x277)],n[fB(0x205)]=async()=>{const fw=fB,o=u+fw(0x398)+OFFICIAL_WEBSITE_URL;if(navigator['share'])try{const s={};s[fw(0x23c)]=I['gMSaO'],s[fw(0x1e6)]=u,s[fw(0x300)]=OFFICIAL_WEBSITE_URL,await navigator[fw(0x277)](s);}catch(p){if(I['adhjY'](p[fw(0x35e)],I[fw(0x48b)]))console[fw(0x43b)](fw(0x21c),p);}else navigator[fw(0x444)][fw(0x216)](o)[fw(0x1b5)](()=>showToast(fw(0x511)));},Q[fB(0x256)](n);const B=document['createElement'](I[fB(0x512)]);B[fB(0x23c)]=I[fB(0x499)];const U=I[fB(0x472)](getMessageLikeStatus,N);B['innerHTML']=U[fB(0x39f)]?b[fB(0x39f)]:b[fB(0x31d)],B[fB(0x205)]=()=>{const fE=fB,o=getMessageLikeStatus(N),s=!o[fE(0x39f)],p={};p[fE(0x39f)]=s,p['disliked']=![],I['xSRlm'](saveMessageLikeStatus,N,p),B[fE(0x48a)]=s?b['liked']:b[fE(0x31d)],k[fE(0x48a)]=b['unlike'];},Q[fB(0x256)](B);const k=document[fB(0x19c)](I[fB(0x512)]);k[fB(0x23c)]=I[fB(0x446)],k[fB(0x48a)]=U[fB(0x468)]?b['unliked']:b[fB(0x45f)],k['onclick']=()=>{const fR=fB,o=getMessageLikeStatus(N),s=!o[fR(0x468)],p={};p[fR(0x39f)]=![],p[fR(0x468)]=s,I['XEZlB'](saveMessageLikeStatus,N,p),k[fR(0x48a)]=s?b['unliked']:b[fR(0x45f)],B[fR(0x48a)]=b[fR(0x31d)];},Q[fB(0x256)](k),Q[fB(0x3e5)](fB(0x3c0))[fB(0x192)](o=>{const fG=fB,s={};s[fG(0x4f8)]=I[fG(0x3d3)],s['border']=I[fG(0x3a8)],s[fG(0x45b)]=I[fG(0x25a)],s[fG(0x43a)]=I[fG(0x491)],s['display']='flex',s[fG(0x391)]=I[fG(0x367)],s[fG(0x2bd)]='center',s[fG(0x4aa)]=fG(0x250),Object[fG(0x319)](o[fG(0x404)],s),o[fG(0x294)]=()=>o['style'][fG(0x4aa)]='1',o['onmouseleave']=()=>o[fG(0x404)][fG(0x4aa)]=fG(0x250);}),q[fB(0x256)](Q);}function appendMessage(q,u,N,I,z=[],b=![],Q=null){const fO=S3,m={'zxBvP':'div','WXibj':fO(0x1c6),'TLRrh':fO(0x1de),'OhtoZ':fO(0x41a),'nBsjP':fO(0x410),'egWpK':fO(0x53a),'CxFMv':fO(0x433),'CnJPT':fO(0x4bd),'VUZJL':'0px','HdKgU':fO(0x2f2),'gXQXG':fO(0x3c2),'pWVbE':function(o,s){return o===s;},'YBjyG':fO(0x241),'tMbMS':'picture_as_pdf','VesNM':fO(0x2b8),'xZeUw':fO(0x34d),'tQgaD':fO(0x424),'nVLCl':fO(0x416),'pEYWm':'article','Khcpg':fO(0x390),'vTThE':fO(0x49d),'tAcjD':function(o,s){return o>s;},'RFgQF':function(o,s){return o+s;},'MnvUO':'...','TFLTT':function(o,s,p,j){return o(s,p,j);},'ydgHf':fO(0x20a),'ttfEW':function(o,s){return o>s;},'jnsIB':fO(0x4c6),'SuPyL':fO(0x44f),'XgTQn':fO(0x321),'JoHrE':function(o,s){return o===s;},'AqbMY':fO(0x1ed),'sbqhQ':'user-message','qczxo':fO(0x1fa),'kDcty':'100%','KNYOk':fO(0x2aa),'ludZu':'auto','Rzctb':'36px','CqIyx':function(o,s){return o>s;},'eFWUC':fO(0x302),'VeNVd':'flex','XbYND':'2px','jdULC':fO(0x206),'poDfT':function(o,s){return o===s;},'pQMub':function(o,s){return o===s;},'rDJJd':function(o,s){return o>s;},'rfeVC':'message-doc-grid','BVKft':function(o,s){return o(s);},'VeQfY':fO(0x345),'VnVZC':function(o,s,p,j,w){return o(s,p,j,w);},'IOtfo':function(o){return o();}};Q=Q||fO(0x42b)+Date[fO(0x22e)]()+'-'+Math['random']()[fO(0x217)](-0xd37+-0x36d+0x10c8)[fO(0x373)](-0x151e+-0x759*0x3+0x2b2b,-0xd89+0x195a+0xbc8*-0x1);const D=document[fO(0x19c)](m[fO(0x497)]);D[fO(0x4b9)]=fO(0x4c0)+q+fO(0x505),D[fO(0x492)](fO(0x2ff),Q);const C=document[fO(0x19c)](m['nBsjP']);C[fO(0x52b)]=I,C['className']=m[fO(0x35b)],D[fO(0x256)](C);const n=document[fO(0x19c)](m['zxBvP']);n[fO(0x4b9)]=m[fO(0x267)],D['appendChild'](n);const B=document['createElement'](m[fO(0x497)]);B['className']=fO(0x521),B[fO(0x3b6)]=N,n[fO(0x256)](B);const U=document[fO(0x19c)](m['zxBvP']);U[fO(0x4b9)]=fO(0x4e5)+(m[fO(0x2e9)](q,m['AqbMY'])?fO(0x1cb):m[fO(0x1c9)]),U['style'][fO(0x329)]=m[fO(0x510)],U[fO(0x404)][fO(0x1d4)]=m[fO(0x41b)];q===m[fO(0x4b0)]&&(U[fO(0x404)]['marginLeft']=m[fO(0x4a4)]);n[fO(0x256)](U);m['JoHrE'](q,fO(0x1ed))&&u&&(U[fO(0x404)][fO(0x394)]=m['Rzctb']);if(z&&m['CqIyx'](z['length'],0xc41+-0x69b*0x1+-0x5a6)){const o=document['createElement'](m[fO(0x497)]);o['className']='message-files-container';const s=z['filter'](j=>j[fO(0x2c7)]&&j[fO(0x2c7)][fO(0x2f5)](fO(0x44a))),p=z[fO(0x471)](j=>!j[fO(0x2c7)]||!j[fO(0x2c7)][fO(0x2f5)](fO(0x44a)));if(m[fO(0x407)](s[fO(0x498)],0x67f*0x1+0x61e+-0xc9d)){const j=document[fO(0x19c)](m['zxBvP']);j['className']=m[fO(0x4d5)];const w={};w[fO(0x317)]=m[fO(0x484)],w[fO(0x494)]=m[fO(0x4a4)],w[fO(0x1d4)]=m[fO(0x41b)],w[fO(0x43a)]=m[fO(0x34a)],w[fO(0x339)]=m[fO(0x3c1)],Object[fO(0x319)](j[fO(0x404)],w);if(m[fO(0x2e9)](q,m[fO(0x4b0)])&&m['JoHrE'](s[fO(0x498)],0x2262+-0x2*-0x108e+0xd*-0x531))j['style'][fO(0x2bd)]='flex-end';else m[fO(0x2ca)](q,m[fO(0x28d)])&&m['poDfT'](s[fO(0x498)],0x3*0x2c1+-0x79b+-0xa7)&&(j['style'][fO(0x2bd)]=fO(0x2a8));if(m[fO(0x332)](q,m[fO(0x4b0)])){const E={};E['marginLeft']=m[fO(0x4a4)],Object[fO(0x319)](o[fO(0x404)],E);}s['forEach'](R=>{const fT=fO;if(R[fT(0x1e2)]){const G=document[fT(0x19c)](m[fT(0x497)]);G[fT(0x4b9)]=m[fT(0x3b2)];const O={};O['flexShrink']='0',O[fT(0x43a)]=fT(0x265),Object['assign'](G['style'],O);const T=document[fT(0x19c)](m[fT(0x479)]);T['src']=R['dataURL'],T[fT(0x2a3)]=R[fT(0x35e)];const H={};H['height']=m['egWpK'],H['width']=fT(0x2e5),H[fT(0x1ad)]=fT(0x1b2),H[fT(0x317)]=m[fT(0x41c)],H[fT(0x45b)]=m[fT(0x207)],H[fT(0x43a)]=m[fT(0x29a)],Object[fT(0x319)](T['style'],H),T[fT(0x205)]=()=>{const fH=fT,d={};d[fH(0x1dd)]=function(v,Y){return v===Y;};const c=d,M=document[fH(0x19c)](m[fH(0x497)]);M[fH(0x4b9)]=m[fH(0x4e3)],M[fH(0x48a)]=fH(0x46d)+R['dataURL']+fH(0x4d1),document[fH(0x27b)]['appendChild'](M),M[fH(0x3b3)](m[fH(0x480)])[fH(0x205)]=()=>M[fH(0x2d7)](),M[fH(0x205)]=v=>{const fd=fH;if(c[fd(0x1dd)](v[fd(0x1a6)],M))M['remove']();};},G[fT(0x256)](T),j[fT(0x256)](G);}}),o[fO(0x256)](j);}if(m[fO(0x23b)](p[fO(0x498)],-0x1*-0x149d+-0x1*-0x6dd+-0x1b7a)){const R=document[fO(0x19c)](fO(0x2b3));R[fO(0x4b9)]=m[fO(0x2c4)],p[fO(0x192)](G=>{const fc=fO,O=document[fc(0x19c)](m[fc(0x497)]);O[fc(0x4b9)]=m['HdKgU'],O[fc(0x23c)]=G[fc(0x1c8)]||G[fc(0x35e)];const T=document[fc(0x19c)](fc(0x49d));T['className']=m[fc(0x309)];if(m[fc(0x2ca)](G[fc(0x2c7)],m[fc(0x36b)]))T[fc(0x3b6)]=m['tMbMS'],O['style'][fc(0x1aa)]=m[fc(0x1e1)];else{if(m[fc(0x2ca)](G['type'],m[fc(0x2f8)]))T[fc(0x3b6)]=fc(0x53f),O[fc(0x404)][fc(0x1aa)]=m['tQgaD'];else m['pWVbE'](G['type'],'text/html')||G['isUrl']?(T[fc(0x3b6)]=fc(0x1fc),O[fc(0x404)][fc(0x1aa)]=m[fc(0x35d)]):(T[fc(0x3b6)]=m[fc(0x291)],O[fc(0x404)][fc(0x1aa)]=m['Khcpg']);}const H=document[fc(0x19c)](m[fc(0x420)]);H[fc(0x3b6)]=m[fc(0x477)](G['name'][fc(0x498)],0x3*0xbf+0x4ca+-0x3*0x251)?m[fc(0x465)](G[fc(0x35e)][fc(0x4c1)](-0x39*-0x71+0x10f6+-0x2a1f,-0x4*0x2cc+-0x16f8+0x2239),m[fc(0x47f)]):G[fc(0x35e)],O['appendChild'](T),O[fc(0x256)](H),R[fc(0x256)](O);}),o[fO(0x256)](R);}n[fO(0x2d9)](o,U);}const k=document['createElement'](m[fO(0x497)]);u&&U['appendChild'](k);if(m[fO(0x2ca)](q,m[fO(0x4b0)]))k[fO(0x48a)]=m[fO(0x456)](escapeHtml,u)[fO(0x39d)](/\n/g,m[fO(0x2c3)]);else{const G=()=>{const fM=fO;m['TFLTT'](addBotActionButtons,U,u,Q);const O=k[fM(0x3e5)](m[fM(0x3ea)]);if(m[fM(0x2e6)](O[fM(0x498)],0x13c8+0x7d*-0x46+0xe66)&&window[fM(0x210)])try{O[fM(0x192)]((H,d)=>H['id']='mermaid-'+Q+'-'+d);const T={};T[fM(0x1da)]=O,mermaid[fM(0x31c)](T);}catch(H){console['error'](m[fM(0x47d)],H);}};m[fO(0x1d0)](renderMessageContent,k,u,!b,G);}chatBox[fO(0x256)](D);if(autoScrollEnabled)chatBox[fO(0x418)]=chatBox[fO(0x43d)];m[fO(0x37d)](checkChatEmpty);}function highlightCode(X){const fv=S3;return X['replace'](/&/g,'&')[fv(0x39d)](/</g,'<')[fv(0x39d)](/>/g,'>');}function showToast(X){const fY=S3,A={'GthOm':fY(0x42e),'APpes':fY(0x2e8),'OxLGN':'toast-notification','IJtta':function(N,I,z){return N(I,z);}},q=document['querySelector'](A['APpes']);q&&q[fY(0x2d7)]();const u=document[fY(0x19c)](fY(0x2b3));u['className']=A[fY(0x23e)],u[fY(0x3b6)]=X,document[fY(0x27b)]['appendChild'](u),A['IJtta'](setTimeout,()=>{const fK=fY;u[fK(0x523)]['add']('show');},0x1525+0xb4+-0x15cf),A[fY(0x233)](setTimeout,()=>{const fF=fY;u[fF(0x523)]['remove'](fF(0x503)),u[fF(0x508)](A[fF(0x342)],()=>{u['remove']();});},-0x243d+0x22f2*-0x1+0x50f3);}function appendLoadingMessage(){const fa=S3,X={'FhgHF':function(z){return z();},'jXTvx':'div','wPiPR':'message-container\x20bot','kQExV':fa(0x410),'HqTKb':fa(0x333),'zzymr':fa(0x44f),'soFTj':fa(0x321),'PoczV':fa(0x2fb)};X[fa(0x3cc)](removeLoadingMessage);const A=document['createElement'](X['jXTvx']);A['id']='loading-message',A[fa(0x4b9)]=X['wPiPR'];const q=document[fa(0x19c)](X[fa(0x2cc)]);q['src']=X[fa(0x2b7)],q['className']=X[fa(0x313)];const u=document[fa(0x19c)](X[fa(0x299)]);u[fa(0x4b9)]=X[fa(0x426)];const N=document[fa(0x19c)](X[fa(0x299)]);N[fa(0x4b9)]=fa(0x521),N[fa(0x3b6)]=X[fa(0x437)];const I=document[fa(0x19c)](fa(0x2b3));I['className']=fa(0x224),I[fa(0x48a)]=fa(0x308),u[fa(0x256)](N),u[fa(0x256)](I),A[fa(0x256)](q),A[fa(0x256)](u),chatBox[fa(0x256)](A),chatBox[fa(0x418)]=chatBox['scrollHeight'];}function removeLoadingMessage(){const fh=S3,A={};A[fh(0x4fa)]='loading-message';const q=A,u=document[fh(0x514)](q['wkKFa']);if(u)u['remove']();}function escapeHtml(A){const fW=S3,q={};q['FBSMR']=fW(0x2b3);const u=q;if(!A)return'';let N=document[fW(0x19c)](u[fW(0x266)]);return N['appendChild'](document[fW(0x2a1)](A)),N[fW(0x48a)];}function parseMarkdown(A){const fP=S3,q={};q[fP(0x1f5)]='<hr\x20class=\x22md-hr\x22/>',q[fP(0x191)]=fP(0x2e2),q[fP(0x36a)]=fP(0x372),q['MChla']='<strong>$1</strong>',q[fP(0x49e)]=fP(0x4cf),q[fP(0x273)]=fP(0x38f),q['Lqkmi']='__PARAGRAPH_BREAK__',q[fP(0x42a)]=fP(0x345);const u=q;if(!A)return'';let N=A;return N=N[fP(0x39d)](/---/g,u[fP(0x1f5)]),N=N['replace'](/^###\s*(.*?)(\n|$)/gm,fP(0x1f2)),N=N[fP(0x39d)](/^##\s*(.*?)(\n|$)/gm,fP(0x41f)),N=N[fP(0x39d)](/^#\s*(.*?)(\n|$)/gm,u['DurWp']),N=N[fP(0x39d)](/^\s*([*-+])\s+(.*)/gm,'<li>$2</li>'),N=N[fP(0x39d)](/((?:<li>.*?<\/li>\s*)+)/gs,u[fP(0x36a)]),N=N[fP(0x39d)](/\*\*(.*?)\*\*/g,fP(0x292)),N=N[fP(0x39d)](/__(.*?)__/g,u[fP(0x269)]),N=N[fP(0x39d)](/\*(.*?)\*/g,fP(0x29d)),N=N[fP(0x39d)](/_(.*?)_/g,fP(0x29d)),N=N[fP(0x39d)](/~~(.*?)~~/g,u[fP(0x49e)]),N=N['replace'](/`([^`]+)`/g,fP(0x3d2)),N=N['replace'](/\[(.*?)\]\((.*?)\)/g,u['tionM']),N=N['replace'](/\n\n/g,u[fP(0x52a)]),N=N[fP(0x39d)](/\n/g,u[fP(0x42a)]),N=N[fP(0x39d)](/__PARAGRAPH_BREAK__/g,fP(0x248)),!/^\s*<(h[1-6]|ul|ol|table|div|hr|pre|p)\b/i[fP(0x3e8)](N[fP(0x3ae)]())&&(N=fP(0x1cf)+N+fP(0x377)),N=N[fP(0x39d)](/<p><\/p>/g,''),N=N[fP(0x39d)](/<p>\s*<br>\s*<\/p>/g,''),N;}function S(){const Xc=['VJxte','CqIyx','1:118694699779:web:2667c1b4d02dcfb333bf36','QjjVH','onAuthStateChanged','find','https://example.com/CeritoKeBae.apk','URL','KzABF','MyTOm','img','ezHNF','https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f','application/json','onload','DvOcJ','#0288D1','push','scrollTop','dMBXw','message-image-wrapper','kDcty','CxFMv','color','rPrFm','<h2>$1</h2>','vTThE','kpVJk','GoogleAuthProvider','hNdXK','#FF0000','8px\x2012px','soFTj','pdfjsLib','pre-wrap','FYtyG','suOyo','msg-','height','drag-over','transitionend','GlobalWorkerOptions','PxItg','includes','scroll','block','JkOSE','Failed\x20to\x20copy\x20code:','openSidebarBtn','PoczV','requestSubmit','AJYwg','padding','error','profileOptionsBtn','scrollHeight','OAkwt','YouTube\x20Video','sIzav','table','iMqMP','hSiVv','clipboard','dataTransfer','DcxKz','PHUWD','readAsDataURL','xUXeP','image/','arrayBuffer','nBmYZ','XGQYA','325665cEqkQI','profile-image','status','chatForm','WHFay','Leqoo','lBvYH','submit','BVKft','kebijakanprivasi','nHNRT','function','vzSGQ','cursor','https://ai-digging.vercel.app/','cZQHL','fhhDE','unlike','FgXXC','.code-wrapper','https://cdn-icons-png.flaticon.com/512/1077/1077114.png','IGAQC','closest','RFgQF','hilang-sepenuhnya','<img\x20src=\x22images/unlike.png\x22\x20alt=\x22Unlike\x22\x20width=\x2220\x22\x20height=\x2220\x22\x20/>','disliked','LhSwZ','DGUfx','https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=','auth','<span\x20class=\x22close-modal\x22>×</span><img\x20src=\x22','GPKHg','WKsPu','jelajahideveloper','filter','WgEMk','join','youtube.com/watch','KgOwZ','userProfilePic','tAcjD','data-chat-id','nBsjP','0\x204px\x208px\x20rgba(0,0,0,0.2)','website-putra','pricing.html','jnsIB','mobileProfilePic','MnvUO','TLRrh','getItem','right','highlightElement','VeNVd','ilbbP','stringify','utBJh','visualViewport','VSNbV','innerHTML','oLccG','file','parts','text-diagram','rUdIH','disabled','oTdfn','setAttribute','file-','overflowX','UXYdm','none','zxBvP','length','FYuZq','iulEx','Percakapan\x20Baru','</td>','span','bwsdU','isArray','moiqz','Suka','API\x20Error:','undefined','ludZu','messagingSenderId','statusText','Failed\x20to\x20process\x20URL\x20','Tipe\x20konten\x20URL\x20tidak\x20didukung\x20untuk\x20ekstraksi\x20teks:\x20','loading-message','opacity','code-label','tYsTI','Invalid\x20URL:','mammoth','mqXDP','KNYOk','2px','location','iAOmo','clientHeight','attributes','Hapus\x20Chat\x20Ini?','toUpperCase','ymbUf','className','hEAYf','bpSeF','bDHxa','pointer','allChatSessions','preview-file-name','message-container\x20','substring','joKHI','logoutBtn','lang','article,\x20main,\x20#main-content,\x20.content,\x20.post-content','Mermaid.js\x20error:','measurementId','input','jiqsE','scRbz','Konten\x20dari\x20','Pywrl','ywsBS','Mencoba\x20memproses\x20URL:\x20','<del>$1</del>','KmJGq','\x22\x20/>','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20xmlns=\x22http://www.w3.org/2000/svg\x22\x20fill=\x22none\x22\x20stroke=\x22currentColor\x22\x20stroke-width=\x222\x22\x20viewBox=\x220\x200\x2024\x2024\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20aria-hidden=\x22true\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M16\x204H8a2\x202\x200\x200\x200-2\x202v12m2-2h8a2\x202\x200\x200\x200\x202-2V6a2\x202\x200\x200\x200-2-2z\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>Copy</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','uSrSq','bukasidebar','eFWUC','100%','TCKnL','content','kUHJn','nslmV','Mmtpi','36px','SSyRi','uHlLO','EhCsr','fdhis','Tidak\x20Suka','Salin\x20kode','WXibj','str','message\x20','ctNJA','.doc','getDocument','.docx','Bagikan','\x20...\x20(dan\x20semua\x20isinya)\x20...\x20','4px','Gagal\x20login:\x20','urLec','url_content','vqFkO','rMDZR','bXUtn','shiftKey','TbaYN','map','preventDefault','Penghapusan\x20chat\x20dibatalkan.','background','__PARAGRAPH_BREAK__','wkKFa','website-putra.firebaseapp.com','border','EWWaY','PIfBS','aEXfz','LbYKz','pFgLj','margin','show','leftMenuBtn','\x20message-fade-in','WEbwL','sfbiq','addEventListener','data:','2335400ZjewCw','BdqMl','authDomain','extractedText','endsWith','DuWjJ','qczxo','Teks\x20&\x20link\x20disalin\x20untuk\x20dibagikan.','NDOpS','GghAE','getElementById','speak','NWclT','BqYpk','chat-','Failed\x20to\x20extract\x20text:','AIzaSyDBjiZV69xqzCS8pcvclAVJ4RQ4TxvYzos','Chat\x20berhasil\x20dihapus.','\x22:\x0a','YosfE','observe','copy','WcxQr','username','</tr>','classList','DMNmg','rbHwC','MpjWP','code','XGuor','marginLeft','Lqkmi','src','NZflO','zkeyA','website-putra.appspot.com','goxSI','stopPropagation','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20xmlns=\x22http://www.w3.org/2000/svg\x22\x20fill=\x22none\x22\x20stroke=\x22currentColor\x22\x20stroke-width=\x222\x22\x20viewBox=\x220\x200\x2024\x2024\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20aria-hidden=\x22true\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M16\x204H8a2\x202\x200\x200\x200-2\x202v12m2-2h8a2\x202\x200\x200\x200\x202-2V6a2\x202\x200\x200\x200-2-2z\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>Copy</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','KdUrP','TTfFH','XWDLK','VveuJ','eCrpD','1px\x20solid\x20#333','data-filename','XwYLG','100px','json','KgNLv','jpg','HJQSW','ondemand_video','HpNQs','split','VNWkD','DajEk','sidebarOverlay','DurWp','forEach','UpeDJ','zUokR','code-content-pre','https://firebasestorage.googleapis.com/v0/b/website-putra.appspot.com/o/icons8-download-96.png?alt=media&token=c26ee380-f3ec-45f9-960e-81bc69e0624b','apiKey','yTBUM','signInWithPopup','application/msword','message-container\x20bot','createElement','jpeg','FnjHC','Salin\x20Teks','match','bottom','<td\x20style=\x22padding:8px;border:1px\x20solid\x20#555;color:#ddd;text-align:','osvqr','fontSize','Tidak\x20ada\x20konten\x20yang\x20dapat\x20dikirim\x20ke\x20AI.','target','ojhXO','Inisialisasi\x20halaman\x20untuk\x20pengguna:','Gagal\x20membacakan\x20teks.','backgroundColor','cNxpm','lastIndexOf','borderRadius','3|4|1|2|0','#252526','ykjIb','aMMlo','8px','dialogCancelBtn','toLowerCase','then','blob','pbDzE','AINKq','NWkmE','section.chat-container','hidden','lLvTU','onstart','jvFAa','MeKCd','pFlry','aRTAR','XvQuV','<p\x20style=\x22color:\x20#aaa;\x20padding:\x2010px;\x20text-align:\x20center;\x22>Belum\x20ada\x20riwayat\x20chat.</p>','signOut','PhMpP','image-modal','Tersalin\x20ke\x20papan\x20klip','originalUrl','sbqhQ','JoYaT','bot-message','JVujE','HqDlE','wordWrap','<p>','VnVZC','vlBpp','ZeXhc','user-message','maxWidth','[data-file-id=\x22','QSRXB','mQxDx','KMOLY','aTtRZ','nodes','databaseURL','\x22]\x20img','bteAE','.close-modal','186920YDFkzp','WmoUc','VesNM','dataURL','rHgHu','previousElementSibling','\x22\x20target=\x22_blank\x22\x20rel=\x22noopener\x20noreferrer\x22\x20style=\x22color:rgb(49,\x20117,\x20180);\x20text-decoration:\x20underline;\x20font-weight:\x20bold;\x22>','text','getTextContent','<img\x20src=\x22images/aksilike.png\x22\x20alt=\x22Liked\x22\x20width=\x2220\x22\x20height=\x2220\x22\x20/>','gmEqD','Dengarkan','srvSo','dlmyK','bot',';box-sizing:border-box;\x20word-break:\x20break-word;\x20overflow-wrap:\x20break-word;\x22>','<div\x20style=\x22overflow-x:auto;\x20max-width:\x20100%;\x22><table\x20style=\x22width:100%;border-collapse:collapse;margin:10px\x200;table-layout:fixed;\x22><thead><tr\x20style=\x22background-color:#3a3a3a;\x22>','WVdhc','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20xmlns=\x22[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)\x22\x20fill=\x22none\x22\x20stroke=\x22currentColor\x22\x20stroke-width=\x222\x22\x20viewBox=\x220\x200\x2024\x2024\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20aria-hidden=\x22true\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M16\x204H8a2\x202\x200\x200\x200-2\x202v12m2-2h8a2\x202\x200\x200\x200\x202-2V6a2\x202\x200\x200\x200-2-2z\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>Copy</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','<h3>$1</h3>','resize','Request\x20failed\x20with\x20status\x20','MqStq','Oapps','dVxsI','bEmHJ','warn','relative','dragleave','link','text/html','menu4','HyuVB','uLEge','maiMk','unshift','#f8f8f2','some','onclick','5px','CnJPT','YbVKB','UhcYy','.mermaid','value','role','Dkjtk','ClLBE','fpoFr','mermaid','catch','SZbJy','assistant','ldGHK','IwIcE','writeText','toString','CawaL','zgudw','</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<button\x20class=\x22delete-chat-item\x22\x20data-chat-id=\x22','aSaWT','Error\x20sharing:','items','customDialogOverlay','ZxiwP','JyWFn','5VseyFB','neQNO','cCoCl','message\x20loading-animation','key','align-top','article','width','BdrYM','wVRJQ','szkxu','yOWiq','AbortError','now','JPmEJ','href','Teks\x20dari\x20URL\x20web\x20berhasil\x20diekstrak\x20(','vbdJu','IJtta','lmZII','code-toolbar','Okidn','JHsWL','ArsUK','YtnnL','UwzCL','rDJJd','title','append','OxLGN','zZyXR','menufitur1','application/pdf','adHQS','URL\x20Video\x20YouTube:\x20','from','POST','cQVqP','Menunggu\x20status\x20otentikasi\x20dari\x20Firebase...','</p><p>','clearChatBtn','https://website-putra-default-rtdb.firebaseio.com','...','ifVjO','fLLVa','VyWAJ','transition','0.7','Fitur\x20ini\x20segera\x20hadir','lastIndex','Lrkhc','CgTXo','dialogTitle','appendChild','vJeJt','userProfileSection','ulLIV','bqnQa','message-doc-grid','qulYb','HRTlh','iiXRo','chatBox','sidebar','yyJtQ','wOsQv','uzZnj','preview-remove-btn','0px','FBSMR','XgTQn','DOMContentLoaded','MChla','ZYiKf','absolute','RMSpt','cDaIx','AjEOu','jlZcT','NthTO','dialogMessage','unliked','tionM','gIMcm','mVYra','lpclU','share','Failed\x20to\x20process\x20URL:','zrPGa','SeXul','body','hFuxv','Fitur\x20suara\x20tidak\x20didukung\x20browser\x20ini.','message-actions','borderBottom','slice','insertAdjacentHTML','Vyndg','<tr\x20style=\x22background-color:#2a2a2a;\x22>','Chat\x20dari\x20AI\x20Digging','documentElement','iiarn','frlvc','ELEMENT_NODE','WjYdr','mime_type','speechSynthesis','PwEXx','AqbMY','aLowK','URL\x20Video\x20YouTube\x20untuk\x20dianalisis:\x20','code-header','pEYWm','<strong>$1</strong>','pricing','onmouseenter','.input-container','FEBHe','OUpkT','KKSdZ','jXTvx','VUZJL','pAAOI','boxShadow','<em>$1</em>','promise','preview','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js','createTextNode','JhzFG','alt','KsamL','mLlaj','loading-animation-styles','flex-end','flex-start','JLvei','user','QCwmw','UKccN','Kzftu','16px\x200','dXCKm','add','oNkYq','.delete-chat-item','div','You','0.9em','<img\x20src=\x22images/like.png\x22\x20alt=\x22Like\x22\x20width=\x2220\x22\x20height=\x2220\x22\x20/>','HqTKb','#D32F2F','fontFamily','pre','yvSuY','dFELV','justifyContent','setItem','Teks\x20dari\x20','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<svg\x20xmlns=\x22http://www.w3.org/2000/svg\x22\x20fill=\x22none\x22\x20stroke=\x22#10B981\x22\x20stroke-width=\x222\x22\x20viewBox=\x220\x200\x2024\x2024\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20aria-hidden=\x22true\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<path\x20d=\x22M5\x2013l4\x204L19\x207\x22/>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20</svg>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<span>Copied</span>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','displayName','alFch','VeQfY','rfeVC','eDbuE','#ceritokebae','type','dragover','vpjPY','pWVbE','WkQNg','kQExV','diagram','KVNSF','pBilL','2436CpSHaT','tVubd','GDWBe','xPotM','.chat-box','language-','qbkPg','remove','cIFmi','insertBefore','600','qEOQn','MzWVu','index','NwTvP','VSFVR','OGcmK','log','<h1>$1</h1>','message','1.5','auto','ttfEW','UJlcW','.toast-notification','JoHrE','left','charAt','voice.html','vYSUF','aria-label','\x20karakter).','jGXqX','getAttribute','message-doc-tag','emptyMessage','AAmOk','startsWith','udnPb','eTpSu','xZeUw','uEFsD','gMeSl','AI\x20Digging','chatInput','XbGUR','tQaFx','data-message-id','url','inline_data','message-image-grid','DEKuH','\x20berhasil\x20diekstrak.','buDCO','YgCzz','storageBucket','<span\x20class=\x22dot\x22></span><span\x20class=\x22dot\x22></span><span\x20class=\x22dot\x22></span>','gXQXG','20yooXOW','RHUkW','aoYdM','lxMNn','Tindakan\x20ini\x20tidak\x20dapat\x20diurungkan.','GomMi','pnqlo','overflow','fOVQj','zzymr','<a\x20href=\x22','sort','scrollTo','display','<img\x20src=\x22images/tick.png\x22\x20alt=\x22Copied\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20/>','assign','stayLoggedOutBtn','whiteSpace','run','like','result','PeVKm','lRhgB','message-content','messages','flex','click','xGbdD','<img\x20src=\x22images/copy.png\x22\x20alt=\x22Copied\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20/>','gmTaN','message-files-container','position','NXQnG','picture_as_pdf','center','Chat\x20session\x20not\x20found:','innerWidth','HIcZn','min','nDyJR','pQMub','[https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f](https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f)','#1e1e1e','oRTYV','TEXT_NODE','language','onerror','gap','removeEventListener','GMYeK','OLHvt','4|5|3|0|2|1','vLrlY','MulQB','MnFvZ','G-7P4RNX03CZ','GthOm','cokge','KXrVq','<br>','Pengguna','RkYQd','blur','systemInstruction','XbYND','GhuKH','visible','video/youtube','contents','4410ZgNbll','tfkXu','nutupsidebar','URL\x20ini\x20sudah\x20ditambahkan:\x20','WnZdi','\x27Source\x20Code\x20Pro\x27,\x20monospace','active','CeritoKeBae.apk','Gambar\x20dari\x20URL\x20berhasil\x20dimuat:\x20','SYcup','XCyPq','rANKu','SuPyL',';color:#fff;box-sizing:border-box;\x20word-break:\x20break-word;\x20overflow-wrap:\x20break-word;\x22>','nVLCl','name','QAmNA','3|0|1|2|4','lVngb','pooIH','FYQcq','ZGZWU','isUrl','IrFII','OnvhM','<img\x20src=\x22images/copy.png\x22\x20alt=\x22Copy\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20/>','newChatBtn','IeUIi','YBjyG','Joxku','lIuXC','head','qVpbG','.code-toolbar','</tbody></table></div>','<ul>$1</ul>','substr','YRggs','extractRawText','speaking','</p>','</th>','CgTBY','Failed\x20to\x20save\x20all\x20chat\x20sessions\x20to\x20localStorage','739116yrrbXR','ZrMGG','IOtfo','profileMenu','Salin\x20kode\x20di\x20','Error\x20saat\x20logout:','GIAjP','XqStB','ugtYL','Maaf,\x20saya\x20tidak\x20bisa\x20memberikan\x20respons\x20saat\x20ini.','\x20file\x20tercapai.','transparent','QCbZG','Kode\x20tersalin!','CEeUY','</a>','PNOOt','4|2|3|1|0|5','rqqIV','cJpEU','<a\x20href=\x22$2\x22\x20target=\x22_blank\x22\x20rel=\x22noopener\x20noreferrer\x22>$1</a>','#1976D2','alignItems','TUryI','wEMxF','paddingBottom','sidebar-chat-item\x20','contains','<img\x20src=\x22images/aksiunlike.png\x22\x20alt=\x22Unliked\x22\x20width=\x2220\x22\x20height=\x2220\x22\x20/>','\x0a\x0aDibagikan\x20dari\x20AI\x20Digging.\x20Kunjungi\x20kami\x20di\x20','files','iZQwD','Tzxxw','munWo','replace','hrBcc','liked','127075taoPpD','tGlSo','createdAt','[Error:\x20Failed\x20to\x20process\x20URL\x20','HGKSn','nodeType','Fhcum','rjqVE','GNzvY','menufiturawal','FOVtq','diond','data','flexShrink','trim','getPage','indexOf','xvvdw','OhtoZ','querySelector','copied','signInBtn','textContent','GftjW','uFANt','ccYgY','VKTqY','<th\x20style=\x22padding:8px;border:1px\x20solid\x20#555;text-align:','FYayk','TTuQm','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x0a\x20\x20\x20\x20\x20\x20\x20\x20<span\x20class=\x22chat-title\x22>','usbVj','button','jdULC','material-icons','bHxKy','MYVaH','Xepho','SBDeB','LUUfs','random','MesPW','238050iQlNCt','XZlAv','FhgHF','Failed\x20to\x20load\x20all\x20chat\x20sessions\x20from\x20localStorage','toast-notification','DKKaV','toggle','clearChatBtnn','<code\x20class=\x22md-inline-code\x22>$1</code>','zGKJP','tykVV','preview-item-doc','userProfileName','AI\x20Generated\x20Image','lgMiK','parse','sidebarToggle','rtDGD','You\x20are\x20AI\x20Digging.\x20A\x20helpful\x20and\x20smart\x20assistant.\x20If\x20asked\x20to\x20create\x20an\x20image,\x20you\x20should\x20respond\x20with\x20a\x20description\x20of\x20the\x20image,\x20as\x20I\x20cannot\x20directly\x20generate\x20images\x20for\x20you.','mxEcD','XmUrH','aALDi','Tidak\x20ada\x20teks\x20yang\x20jelas\x20ditemukan\x20dari\x20URL\x20web.','NMDHn','HQSgE','oYxqY','CqxJp','querySelectorAll','twKOC','icAmC','test','XqFiF','ydgHf','ovRXM','DsFGL','#ccc','youtu.be/','uploadbtn','hYWWP','AaMpt','rKDnm','numPages','gNSbW','cNWUh','offsetHeight','FwfaM','IGAoM','once','pMuVy','htpxC','CbQJY','pirDm','Error\x20saat\x20login\x20dengan\x20Google:','pPFOR','GFmBC','Teks\x20dari\x20PDF\x20URL\x20berhasil\x20diekstrak.','onend','Etbbo','style','code-copy-btn'];S=function(){return Xc;};return S();}function parseMarkdownTable(X){const fl=S3,A={'ciGLZ':fl(0x32c),'YosfE':fl(0x2ea),'rPrFm':function(m,D){return m(D);},'lgMiK':function(m,D){return m===D;},'JkOSE':fl(0x283),'SeXul':fl(0x522),'lpclU':function(m,D){return m<D;},'IrFII':function(m,D){return m(D);},'yyJtQ':fl(0x1ef),'bDHxa':'</tr></thead><tbody>','PeVKm':'</tbody></table></div>'};if(!X)return'';const q=X[fl(0x3ae)]()['split']('\x0a')[fl(0x471)](m=>m[fl(0x3ae)]()!=='');if(A[fl(0x276)](q['length'],-0x1*0x9f3+-0x2*-0x1b1+0x693*0x1))return A[fl(0x366)](escapeHtml,X);const u=q[-0x116*-0x14+-0xa*0x26f+0x29e],N=q[-0x20d6+-0xed4*0x1+0x2fab],I=q['slice'](-0xd63+-0x7d6+0x153b),z=u['split']('|')[fl(0x4f5)](m=>m[fl(0x3ae)]())[fl(0x471)](m=>m!==''),b=N[fl(0x541)]('|')[fl(0x4f5)](m=>{const fi=fl;m=m['trim']();if(m[fi(0x2f5)](':')&&m[fi(0x50e)](':'))return A['ciGLZ'];if(m['endsWith'](':'))return fi(0x482);if(m[fi(0x2f5)](':'))return fi(0x2ea);return A[fi(0x51d)];})[fl(0x471)](m=>m!=='');let Q=A[fl(0x261)];return z[fl(0x192)]((m,D)=>{const fy=fl,C=b[D]||fy(0x2ea);Q+=fy(0x3bb)+C+';color:#fff;box-sizing:border-box;\x20word-break:\x20break-word;\x20overflow-wrap:\x20break-word;\x22>'+A[fy(0x41e)](escapeHtml,m)+fy(0x378);}),Q+=A[fl(0x4bc)],I[fl(0x192)](m=>{const fZ=fl,D=m[fZ(0x541)]('|')[fZ(0x4f5)](C=>C[fZ(0x3ae)]())[fZ(0x471)](C=>C!=='');A[fZ(0x3d8)](D['length'],z[fZ(0x498)])&&(Q+=A[fZ(0x434)],D['forEach']((C,n)=>{const fg=fZ,B=b[n]||A[fg(0x51d)];Q+=fg(0x1a2)+B+fg(0x1ee)+escapeHtml(C)+'</td>';}),Q+=A[fZ(0x27a)]);}),Q+=A[fl(0x31f)],Q;}function copyTextFromButton(X){const fe=S3,A=X[fe(0x1e4)];if(!A)return;const q=A[fe(0x3b6)];navigator['clipboard'][fe(0x216)](q)[fe(0x1b5)](()=>{X['innerHTML']='<img\x20src=\x22images/tick.png\x22\x20alt=\x22Copied\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20/>',setTimeout(()=>{const fL=f;X[fL(0x48a)]=fL(0x368);},0xa*0x3e3+-0xfda*0x1+-0x1128);});}function addCopyButtonsToCodeBlocks(X,A='AI\x20Digging'){const fV=S3,q={'LUUfs':function(N,I){return N!==I;},'ZrMGG':fV(0x4a3),'zgudw':function(N,I){return N(I);},'PxItg':'.code-toolbar','DvOcJ':fV(0x2ba),'rANKu':fV(0x527),'mLlaj':'div','OUJHv':fV(0x49d),'wEMxF':fV(0x4ab),'vpjPY':fV(0x3c0),'GghAE':fV(0x405),'pBilL':fV(0x2ee),'eTpSu':function(N,I){return N===I;},'KqIop':fV(0x2b4),'FOVtq':fV(0x461)};if(q[fV(0x2f7)](A,q['KqIop']))return;const u=X[fV(0x3e5)](q[fV(0x3aa)]);u[fV(0x192)](N=>{const ft=fV,I={'IfdrY':function(n,B){const fr=f;return q[fr(0x3c7)](n,B);},'iiXRo':q[ft(0x37c)],'KmJGq':function(n,B){const fx=ft;return q[fx(0x219)](n,B);},'NWkmE':ft(0x388)};if(N['querySelector'](q[ft(0x430)]))return;const z=N[ft(0x3b3)](q[ft(0x415)]);if(!z)return;const b=z[ft(0x3b3)](q[ft(0x35a)]);if(!b)return;const Q=document[ft(0x19c)](q[ft(0x2a5)]);Q[ft(0x4b9)]=ft(0x235);const m=N[ft(0x2f1)](ft(0x538))||q['rANKu'],D=document['createElement'](q['OUJHv']);D[ft(0x4b9)]=q[ft(0x393)],D[ft(0x3b6)]=m;const C=document[ft(0x19c)](q[ft(0x2c9)]);C[ft(0x4b9)]=q[ft(0x513)],C['type']=q[ft(0x2c9)],C[ft(0x23c)]=ft(0x4e2),C['setAttribute'](q[ft(0x2cf)],ft(0x37f)+m),C[ft(0x48a)]=ft(0x1f1),C[ft(0x205)]=()=>{const fJ=ft;navigator['clipboard']['writeText'](b[fJ(0x3b6)])[fJ(0x1b5)](()=>{const X0=fJ;I['IfdrY'](typeof showToast,I[X0(0x25e)])&&I[X0(0x4d0)](showToast,I[X0(0x1b9)]);})[fJ(0x211)](n=>console[fJ(0x43b)](fJ(0x435),n));},Q[ft(0x256)](D),Q[ft(0x256)](C),N[ft(0x2d9)](Q,z);});}async function renderMessageContent(X,A,q=![],u=()=>{}){const X1=S3,N={'GhuKH':function(D,C){return D>C;},'cZQHL':X1(0x527),'PNOOt':X1(0x441),'rODfB':function(D,C){return D<C;},'xGbdD':'text','UKccN':function(D,C){return D===C;},'IGAoM':function(D,C){return D!==C;},'GFmBC':X1(0x4a3),'AINKq':function(D,C,n){return D(C,n);},'htpxC':function(D,C){return D(C);},'ykjIb':X1(0x210),'ZGZWU':function(D,C){return D===C;},'hFuxv':X1(0x2cd),'ZxiwP':'flowchart','BdrYM':X1(0x2ba),'fpoFr':X1(0x2b3),'VNWkD':'code-wrapper','hrBcc':X1(0x334),'KVNSF':X1(0x354),'ulLIV':X1(0x2ae),'TBhZl':X1(0x1b2),'mMWRX':X1(0x1bb),'KgOwZ':X1(0x537),'hNdXK':X1(0x47a),'jiqsE':X1(0x323),'vqFkO':X1(0x32c),'moyTi':X1(0x425),'hYWWP':X1(0x1af),'rVwXN':X1(0x49d),'oYxqY':'code-language-label','KsamL':X1(0x3c0),'KgNLv':X1(0x4e2),'cIFmi':X1(0x496),'hUqNk':'pointer','jvFAa':X1(0x2e5),'WcxQr':X1(0x4ec),'uqsfy':'12px\x2016px','HIcZn':X1(0x428),'DajEk':'break-word','CKAoW':X1(0x203),'Dkjtk':X1(0x2b5),'KKSdZ':X1(0x2e4),'WhXKf':function(D,C){return D(C);},'oNkYq':'function','srvSo':function(D,C){return D(C);},'pMuVy':'beforeend','YgCzz':function(D,C){return D(C);},'tQaFx':function(D,C){return D===C;},'vJeJt':function(D,C){return D!==C;},'fhhDE':function(D){return D();}};X[X1(0x48a)]='';const I=q?-0xcea+-0x1459+0x8e*0x3c:0x25*0x102+-0x2*0x67f+0x5*-0x4dc,z=D=>{const X2=X1,C=[],n=/(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;let B=-0x14ff+-0x1d03+-0x3202*-0x1,U;while((U=n['exec'](D))!==null){N[X2(0x34b)](U[X2(0x2dd)],B)&&C['push']({'type':X2(0x1e6),'content':D[X2(0x280)](B,U['index'])});if(U[0x2*-0x35d+-0x8*-0xb0+-0x23*-0x9]){const k=U[0x2*0x1038+0xe0*0xd+-0x2bcf*0x1],o=k[X2(0x1a0)](/```(.*?)\n/),s=o?o[-0x1*0x169c+-0x43+0x16e0][X2(0x3ae)]()[X2(0x1b4)]():N[X2(0x45d)],p=k[X2(0x39d)](/```(.*?)\n/,'')[X2(0x39d)](/```$/,'')[X2(0x3ae)](),j={};j[X2(0x2c7)]=N[X2(0x45d)],j[X2(0x337)]=s,j[X2(0x4d8)]=p,C[X2(0x417)](j);}else{if(U[0xe*-0x18+-0x1b6*0xe+0x2*0xca3]){const w={};w['type']=N[X2(0x38b)],w['content']=U[-0x204b+0x2157+-0x13*0xe],C['push'](w);}}B=n[X2(0x252)];}return N['rODfB'](B,D[X2(0x498)])&&C[X2(0x417)]({'type':N[X2(0x325)],'content':D['slice'](B)}),C;},b=async(D,C)=>{const X3=X1;for(const n of Array[X3(0x244)](D['childNodes'])){if(N['UKccN'](n[X3(0x3a5)],Node[X3(0x336)]))for(const B of n[X3(0x3b6)]){C[X3(0x256)](document['createTextNode'](B)),N[X3(0x3f8)](typeof autoScrollEnabled,N[X3(0x400)])&&autoScrollEnabled&&typeof chatBox!==N['GFmBC']&&(chatBox[X3(0x418)]=chatBox['scrollHeight']),q&&await new Promise(U=>setTimeout(U,I));}else{if(N[X3(0x2ac)](n[X3(0x3a5)],Node[X3(0x288)])){const U=document[X3(0x19c)](n['tagName']);Array[X3(0x244)](n[X3(0x4b5)])['forEach'](k=>{const X4=X3;U[X4(0x492)](k[X4(0x35e)],k[X4(0x20b)]);}),C['appendChild'](U),await N[X3(0x1b8)](b,n,U);}}}},Q=async(D,C)=>{const X7=X1,n={'LeuBn':function(k,o){const X5=f;return N[X5(0x3f8)](k,o);},'GIAjP':'undefined','mJGvk':function(k,o){const X6=f;return N[X6(0x3fb)](k,o);},'tVubd':'Kode\x20tersalin!'},{language:B,content:U}=C;if(N['UKccN'](B,N[X7(0x1b0)])){const k=document[X7(0x19c)](X7(0x2b3));k[X7(0x4b9)]='mermaid',k[X7(0x3b6)]=U,D[X7(0x256)](k);}else{if(N[X7(0x364)](B,N[X7(0x27c)])||N[X7(0x364)](B,N[X7(0x21f)])){const o=document[X7(0x19c)](N[X7(0x229)]);o['className']=X7(0x48e),o[X7(0x3b6)]=U,D[X7(0x256)](o);}else{const s=document[X7(0x19c)](N['fpoFr']);s['className']=N[X7(0x542)];const p={};p[X7(0x1aa)]=N[X7(0x39e)],p[X7(0x2b9)]=N[X7(0x2ce)],p[X7(0x502)]=N[X7(0x259)],p[X7(0x1ad)]=N['TBhZl'],p[X7(0x311)]=N['mMWRX'],p[X7(0x4fc)]=N[X7(0x475)],p[X7(0x29c)]=N[X7(0x423)],Object[X7(0x319)](s[X7(0x404)],p);const j=document[X7(0x19c)](X7(0x2b3));j[X7(0x4b9)]=X7(0x290);const w={};w[X7(0x317)]=N[X7(0x4c9)],w['alignItems']=N[X7(0x4f0)],w[X7(0x43a)]=N['moyTi'],w[X7(0x27f)]=N[X7(0x475)],w['backgroundColor']=N[X7(0x3f0)],w[X7(0x41d)]=X7(0x3ed),w['fontWeight']=X7(0x2da),w[X7(0x1a4)]=X7(0x2b5),Object['assign'](j[X7(0x404)],w);const E=document['createElement'](N['rVwXN']);E[X7(0x3b6)]=B[X7(0x4b7)](),E[X7(0x4b9)]=N[X7(0x3e3)];const R=document[X7(0x19c)](N[X7(0x2a4)]);R[X7(0x23c)]=N[X7(0x53c)],R[X7(0x48a)]='<img\x20src=\x22images/copy.png\x22\x20alt=\x22Copy\x22\x20width=\x2216\x22\x20height=\x2216\x22\x20/>',R[X7(0x4b9)]='copy-code-btn';const G={};G[X7(0x4f8)]=N['cIFmi'],G[X7(0x4fc)]=N[X7(0x2d8)],G['cursor']=N['hUqNk'],G['marginLeft']=N[X7(0x1be)],G[X7(0x43a)]=X7(0x4ec),G[X7(0x1ad)]=N[X7(0x520)],G[X7(0x24f)]='background-color\x200.2s\x20ease',Object[X7(0x319)](R['style'],G),R['onmouseover']=()=>R[X7(0x404)][X7(0x1aa)]='#444',R['onmouseout']=()=>R[X7(0x404)][X7(0x1aa)]=X7(0x386),R[X7(0x205)]=()=>{const X8=X7;navigator[X8(0x444)][X8(0x216)](U)[X8(0x1b5)](()=>{const X9=X8;n['LeuBn'](typeof showToast,n[X9(0x381)])&&n['mJGvk'](showToast,n[X9(0x2d1)]);})['catch'](d=>console['error'](X8(0x435),d));},j[X7(0x23d)](E,R);const O=document[X7(0x19c)](N[X7(0x229)]);O['className']=X7(0x195);const T={};T[X7(0x502)]='0',T['padding']=N['uqsfy'],T[X7(0x494)]=N[X7(0x1be)],T[X7(0x31b)]=N[X7(0x32f)],T[X7(0x1ce)]=N[X7(0x543)],T[X7(0x41d)]=N['CKAoW'],T['fontSize']=N[X7(0x20d)],T['lineHeight']=N[X7(0x298)],Object[X7(0x319)](O[X7(0x404)],T);const H=document['createElement'](N[X7(0x45d)]);H['className']=X7(0x2d5)+B,O[X7(0x256)](H),s[X7(0x23d)](j,O),D[X7(0x256)](s);if(q)for(const d of U){H[X7(0x3b6)]+=d,N[X7(0x3f8)](typeof autoScrollEnabled,N[X7(0x400)])&&autoScrollEnabled&&typeof chatBox!==N[X7(0x400)]&&(chatBox[X7(0x418)]=chatBox[X7(0x43d)]),await new Promise(c=>setTimeout(c,-0x1*0x2669+0x98b+0x1ce0));}else H[X7(0x3b6)]=U;typeof Prism!==N[X7(0x400)]&&Prism[X7(0x483)](H);}}},m=N['WhXKf'](z,A);for(const D of m){if(N[X1(0x364)](D[X1(0x2c7)],N['xGbdD'])){if(typeof parseMarkdown===N[X1(0x2b1)]){const C=document[X1(0x19c)](N[X1(0x20f)]);C[X1(0x48a)]=N[X1(0x1eb)](parseMarkdown,D[X1(0x4d8)]),await b(C,X);}else{const n=document[X1(0x19c)]('p');n['textContent']=D[X1(0x4d8)],X[X1(0x256)](n);}}else{if(N[X1(0x364)](D[X1(0x2c7)],N['PNOOt'])){if(N[X1(0x2ac)](typeof parseMarkdownTable,X1(0x459)))X[X1(0x281)](N[X1(0x3fa)],N[X1(0x306)](parseMarkdownTable,D[X1(0x4d8)]));else{const B=document[X1(0x19c)](X1(0x2ba));B[X1(0x3b6)]=D['content'],X['appendChild'](B);}}else N[X1(0x2fe)](D[X1(0x2c7)],N[X1(0x45d)])&&await Q(X,D);}typeof autoScrollEnabled!==N[X1(0x400)]&&autoScrollEnabled&&N[X1(0x257)](typeof chatBox,N['GFmBC'])&&(chatBox[X1(0x418)]=chatBox[X1(0x43d)]);}u&&N[X1(0x45e)](u);}function appendMessage(q,u,N,I,z=[],b=![],Q=null){const XS=S3,m={'uSrSq':function(o,s){return o===s;},'iAOmo':XS(0x2b3),'fJdJt':XS(0x1c6),'cJpEU':XS(0x1de),'oRTYV':XS(0x41a),'mVYra':XS(0x410),'JgGIY':XS(0x53a),'diond':XS(0x2e5),'RHUkW':XS(0x1b2),'WmoUc':XS(0x433),'pFlry':XS(0x4bd),'dahsX':XS(0x265),'VJxte':XS(0x2f2),'cNWUh':XS(0x49d),'dVxsI':XS(0x3c2),'szkxu':function(o,s){return o===s;},'yizYv':'application/pdf','kOwWL':XS(0x2b8),'LbYKz':XS(0x34d),'PIGjQ':'#FF0000','mQxDx':XS(0x227),'AJYwg':'#1976D2','EWWaY':function(o,s){return o+s;},'UGsBb':XS(0x24b),'UwzCL':function(o,s,p,j){return o(s,p,j);},'AEcJX':XS(0x20a),'KzABF':function(o,s){return o>s;},'frlvc':XS(0x4c6),'zZyXR':XS(0x2ff),'OAkwt':XS(0x321),'Fhcum':'username','cDaIx':'bot-message','Etbbo':XS(0x1d3),'HRTlh':XS(0x1fa),'iZQwD':XS(0x2aa),'XGuor':function(o,s){return o===s;},'lmZII':XS(0x1ed),'JzHjg':XS(0x4dc),'aMMlo':function(o,s){return o>s;},'lBvYH':XS(0x328),'XCyPq':XS(0x323),'Lrkhc':XS(0x4d6),'lRhgB':XS(0x4b1),'yvSuY':function(o,s){return o===s;},'bDVsX':XS(0x2a7),'vzSGQ':XS(0x2a8),'yTBUM':function(o,s){return o(s);},'CbQJY':function(o,s,p,j,w){return o(s,p,j,w);},'DuWjJ':function(o){return o();}};Q=Q||XS(0x42b)+Date[XS(0x22e)]()+'-'+Math['random']()[XS(0x217)](0x168+0x236*0xf+-0x226e)['substr'](0x21e8+0x18ef+-0x3ad5,-0x52a+0x2363*-0x1+0x2896);const D=document[XS(0x19c)](m['iAOmo']);D['className']='message-container\x20'+q+'\x20message-fade-in',D[XS(0x492)](m[XS(0x23f)],Q);const C=document[XS(0x19c)](m[XS(0x275)]);C[XS(0x52b)]=I,C[XS(0x4b9)]=XS(0x44f),D[XS(0x256)](C);const n=document[XS(0x19c)](XS(0x2b3));n[XS(0x4b9)]=m[XS(0x43e)],D[XS(0x256)](n);const B=document[XS(0x19c)](m[XS(0x4b3)]);B[XS(0x4b9)]=m[XS(0x3a6)],B['textContent']=N,n[XS(0x256)](B);const U=document['createElement'](m[XS(0x4b3)]);U['className']=XS(0x4e5)+(m[XS(0x4d3)](q,XS(0x1ed))?m[XS(0x26d)]:m[XS(0x403)]),U['style'][XS(0x329)]=m[XS(0x25d)],U[XS(0x404)][XS(0x1d4)]=XS(0x4d6);m['uSrSq'](q,m[XS(0x39a)])&&(U[XS(0x404)][XS(0x529)]=m[XS(0x3ab)]);n[XS(0x256)](U);m[XS(0x528)](q,m[XS(0x234)])&&u&&(U['style'][XS(0x394)]=m['JzHjg']);if(z&&m[XS(0x1b1)](z[XS(0x498)],-0xd51+-0x2f*0x8f+0xa*0x3f5)){const o=document['createElement'](m[XS(0x4b3)]);o[XS(0x4b9)]=m[XS(0x454)];const s=z['filter'](j=>j['type']&&j[XS(0x2c7)][XS(0x2f5)](XS(0x44a))),p=z[XS(0x471)](j=>!j[XS(0x2c7)]||!j[XS(0x2c7)][XS(0x2f5)]('image/'));if(m[XS(0x40e)](s[XS(0x498)],-0x1d2+0xbd3+-0xa01)){const j=document[XS(0x19c)](XS(0x2b3));j[XS(0x4b9)]=XS(0x302);const w={};w[XS(0x317)]=m[XS(0x359)],w[XS(0x494)]=m['diond'],w[XS(0x1d4)]=m[XS(0x253)],w[XS(0x43a)]=m[XS(0x320)],Object[XS(0x319)](j[XS(0x404)],w);if(m[XS(0x2bb)](q,m[XS(0x39a)])&&m[XS(0x4d3)](s['length'],-0x1*0x2454+0x2*-0x2aa+-0x4a1*-0x9))j[XS(0x404)][XS(0x2bd)]=m['bDVsX'];else q===m['lmZII']&&m['yvSuY'](s['length'],-0x1c80+0x1d*0x45+-0x10*-0x14b)&&(j[XS(0x404)][XS(0x2bd)]=m[XS(0x45a)]);if(m[XS(0x22b)](q,m[XS(0x39a)])){const E={};E['marginLeft']=m[XS(0x3ab)],Object['assign'](o[XS(0x404)],E);}s['forEach'](R=>{const Xf=XS;if(R[Xf(0x1e2)]){const G=document[Xf(0x19c)](Xf(0x2b3));G[Xf(0x4b9)]=m[Xf(0x335)];const O={};O[Xf(0x3ad)]='0',O[Xf(0x43a)]='0px',Object['assign'](G[Xf(0x404)],O);const T=document[Xf(0x19c)](m['mVYra']);T[Xf(0x52b)]=R['dataURL'],T[Xf(0x2a3)]=R[Xf(0x35e)];const H={};H[Xf(0x42c)]=m['JgGIY'],H[Xf(0x228)]=m[Xf(0x3ab)],H[Xf(0x1ad)]=m[Xf(0x30b)],H[Xf(0x317)]=m[Xf(0x1e0)],H[Xf(0x45b)]=m[Xf(0x1c0)],H['padding']=m['dahsX'],Object[Xf(0x319)](T[Xf(0x404)],H),T[Xf(0x205)]=()=>{const XA=Xf,d={'mxEcD':function(M,v){const XX=f;return m[XX(0x4d3)](M,v);}},c=document[XA(0x19c)](m[XA(0x4b3)]);c[XA(0x4b9)]=m['fJdJt'],c[XA(0x48a)]=XA(0x46d)+R[XA(0x1e2)]+'\x22\x20/>',document[XA(0x27b)][XA(0x256)](c),c[XA(0x3b3)](m[XA(0x38e)])[XA(0x205)]=()=>c[XA(0x2d7)](),c[XA(0x205)]=M=>{const Xq=XA;if(d[Xq(0x3dd)](M[Xq(0x1a6)],c))c[Xq(0x2d7)]();};},G['appendChild'](T),j[Xf(0x256)](G);}}),o[XS(0x256)](j);}if(p[XS(0x498)]>0x683*0x2+-0x1a+0xcec*-0x1){const R=document[XS(0x19c)](m['iAOmo']);R[XS(0x4b9)]=XS(0x25b),p[XS(0x192)](G=>{const Xu=XS,O=document[Xu(0x19c)](m[Xu(0x4b3)]);O[Xu(0x4b9)]=m[Xu(0x406)],O['title']=G[Xu(0x1c8)]||G[Xu(0x35e)];const T=document[Xu(0x19c)](m[Xu(0x3f5)]);T[Xu(0x4b9)]=m[Xu(0x1f7)];if(m[Xu(0x22b)](G[Xu(0x2c7)],m['yizYv']))T['textContent']=Xu(0x32b),O[Xu(0x404)][Xu(0x1aa)]=m['kOwWL'];else m[Xu(0x22b)](G[Xu(0x2c7)],m[Xu(0x500)])?(T['textContent']=Xu(0x53f),O[Xu(0x404)][Xu(0x1aa)]=m['PIGjQ']):(T[Xu(0x3b6)]=m[Xu(0x1d7)],O[Xu(0x404)][Xu(0x1aa)]=m[Xu(0x439)]);const H=document[Xu(0x19c)](m[Xu(0x3f5)]);H[Xu(0x3b6)]=G[Xu(0x35e)][Xu(0x498)]>0x12*-0x8+0xe5d*0x1+-0xdb9?m[Xu(0x4fd)](G['name'][Xu(0x4c1)](-0x179+0x1*0xf69+-0x6f8*0x2,-0x63*0x4f+0xb5d+0x1341),m['UGsBb']):G[Xu(0x35e)],O[Xu(0x256)](T),O[Xu(0x256)](H),R[Xu(0x256)](O);}),o[XS(0x256)](R);}n[XS(0x2d9)](o,U);}const k=document[XS(0x19c)](XS(0x2b3));u&&U[XS(0x256)](k);if(q===XS(0x2aa))k['innerHTML']=m[XS(0x198)](escapeHtml,u)[XS(0x39d)](/\n/g,'');else{const G=()=>{const XN=XS;m[XN(0x23a)](addBotActionButtons,U,u,Q);const O=k[XN(0x3e5)](m['AEcJX']);if(m['KzABF'](O[XN(0x498)],-0x49c+0x3*-0x229+0xb17)&&window[XN(0x210)])try{O['forEach']((H,d)=>H['id']='mermaid-'+Q+'-'+d);const T={};T[XN(0x1da)]=O,mermaid['run'](T);}catch(H){console[XN(0x43b)](m[XN(0x287)],H);}};m[XS(0x3fc)](renderMessageContent,k,u,!b,G);}chatBox[XS(0x256)](D);if(autoScrollEnabled)chatBox[XS(0x418)]=chatBox[XS(0x43d)];m[XS(0x50f)](checkChatEmpty);}function highlightCode(X){const XI=S3;return X[XI(0x39d)](/&/g,'&')[XI(0x39d)](/</g,'<')[XI(0x39d)](/>/g,'>');}function showToast(X){const Xz=S3,A={'FYtyG':Xz(0x503),'CqxJp':Xz(0x42e),'IEdyf':Xz(0x2e8),'MesPW':'div','joKHI':Xz(0x3ce),'lLvTU':function(N,I,z){return N(I,z);}},q=document[Xz(0x3b3)](A['IEdyf']);q&&q['remove']();const u=document[Xz(0x19c)](A[Xz(0x3c9)]);u[Xz(0x4b9)]=A[Xz(0x4c2)],u[Xz(0x3b6)]=X,document[Xz(0x27b)]['appendChild'](u),A['lLvTU'](setTimeout,()=>{const Xb=Xz;u[Xb(0x523)][Xb(0x2b0)](A['FYtyG']);},0x19ca+-0x239*0x8+-0x7f8),A[Xz(0x1bc)](setTimeout,()=>{const XQ=Xz;u[XQ(0x523)][XQ(0x2d7)](A[XQ(0x429)]),u[XQ(0x508)](A[XQ(0x3e4)],()=>{const Xm=XQ;u[Xm(0x2d7)]();});},0x8d2*0x2+0xad*0xb+-0x1*0xf4f);}function appendLoadingMessage(){const XD=S3,A={};A['IGAQC']=XD(0x2b3),A['PjVpV']=XD(0x4a9),A['iMqMP']=XD(0x19b),A[XD(0x1a7)]='img',A[XD(0x421)]=XD(0x412),A['cCoCl']=XD(0x321),A[XD(0x2dc)]='username',A['Edexe']=XD(0x2fb),A[XD(0x48f)]=XD(0x224);const q=A;removeLoadingMessage();const u=document['createElement'](q[XD(0x463)]);u['id']=q['PjVpV'],u[XD(0x4b9)]=q[XD(0x442)];const N=document[XD(0x19c)](q['ojhXO']);N[XD(0x52b)]=q[XD(0x421)],N[XD(0x4b9)]=XD(0x44f);const I=document['createElement'](q[XD(0x463)]);I['className']=q[XD(0x223)];const z=document[XD(0x19c)](q[XD(0x463)]);z[XD(0x4b9)]=q['MzWVu'],z[XD(0x3b6)]=q['Edexe'];const b=document[XD(0x19c)]('div');b['className']=q[XD(0x48f)],b[XD(0x48a)]=XD(0x308),I[XD(0x256)](z),I[XD(0x256)](b),u[XD(0x256)](N),u['appendChild'](I),chatBox[XD(0x256)](u),chatBox[XD(0x418)]=chatBox[XD(0x43d)];}function removeLoadingMessage(){const XC=S3,A={};A[XC(0x286)]=XC(0x4a9);const q=A,u=document[XC(0x514)](q[XC(0x286)]);if(u)u['remove']();}function escapeHtml(A){const Xn=S3,q={};q[Xn(0x3de)]=Xn(0x2b3);const u=q;if(!A)return'';let N=document[Xn(0x19c)](u[Xn(0x3de)]);return N[Xn(0x256)](document[Xn(0x2a1)](A)),N[Xn(0x48a)];}function parseMarkdown(A){const XB=S3,q={};q[XB(0x24c)]='<hr\x20class=\x22md-hr\x22/>',q[XB(0x33c)]='<h3>$1</h3>',q[XB(0x39b)]=XB(0x2e2),q['dXCKm']='<li>$2</li>',q['hSiVv']=XB(0x372),q[XB(0x363)]=XB(0x292),q[XB(0x25c)]=XB(0x29d),q['maiMk']=XB(0x38f),q[XB(0x36d)]=XB(0x4f9),q[XB(0x350)]=XB(0x248);const u=q;if(!A)return'';let N=A;return N=N[XB(0x39d)](/---/g,u[XB(0x24c)]),N=N[XB(0x39d)](/^###\s*(.*?)(\n|$)/gm,u['OLHvt']),N=N[XB(0x39d)](/^##\s*(.*?)(\n|$)/gm,'<h2>$1</h2>'),N=N['replace'](/^#\s*(.*?)(\n|$)/gm,u[XB(0x39b)]),N=N[XB(0x39d)](/^\s*([*-+])\s+(.*)/gm,u[XB(0x2af)]),N=N[XB(0x39d)](/((?:<li>.*?<\/li>\s*)+)/gs,u[XB(0x443)]),N=N[XB(0x39d)](/\*\*(.*?)\*\*/g,u[XB(0x363)]),N=N[XB(0x39d)](/__(.*?)__/g,XB(0x292)),N=N[XB(0x39d)](/\*(.*?)\*/g,u[XB(0x25c)]),N=N[XB(0x39d)](/_(.*?)_/g,u[XB(0x25c)]),N=N[XB(0x39d)](/~~(.*?)~~/g,XB(0x4cf)),N=N['replace'](/`([^`]+)`/g,XB(0x3d2)),N=N[XB(0x39d)](/\[(.*?)\]\((.*?)\)/g,u[XB(0x201)]),N=N[XB(0x39d)](/\n\n/g,u['lIuXC']),N=N[XB(0x39d)](/\n/g,XB(0x345)),N=N[XB(0x39d)](/__PARAGRAPH_BREAK__/g,u['tfkXu']),!/^\s*<(h[1-6]|ul|ol|table|div|hr|pre|p)\b/i[XB(0x3e8)](N[XB(0x3ae)]())&&(N=XB(0x1cf)+N+'</p>'),N=N[XB(0x39d)](/<p><\/p>/g,''),N=N[XB(0x39d)](/<p>\s*<br>\s*<\/p>/g,''),N;}function parseMarkdownTable(X){const XU=S3,A={'Leqoo':XU(0x1ae),'aLowK':XU(0x2ea),'FEBHe':'right','MSNOf':function(m,D){return m(D);},'KXrVq':function(m,D){return m(D);},'pirDm':XU(0x283),'AjEOu':'</tr>','CEeUY':function(m,D){return m<D;},'aEXfz':XU(0x1ef),'Joxku':'</tr></thead><tbody>','FYayk':XU(0x371)};if(!X)return'';const q=X[XU(0x3ae)]()['split']('\x0a')[XU(0x471)](m=>m['trim']()!=='');if(A[XU(0x389)](q['length'],0xc19+-0x410+-0x807))return A['KXrVq'](escapeHtml,X);const u=q[-0x400+0x34*-0x2c+0x24*0x5c],N=q[-0x1*0x1bca+0x601*-0x5+0x39d0],I=q['slice'](-0x121*-0x2+-0xdf*-0x15+-0x148b),z=u[XU(0x541)]('|')[XU(0x4f5)](m=>m[XU(0x3ae)]())[XU(0x471)](m=>m!==''),b=N['split']('|')[XU(0x4f5)](m=>{const Xk=XU,D=A[Xk(0x453)][Xk(0x541)]('|');let C=-0x2183+-0x2706+-0x4889*-0x1;while(!![]){switch(D[C++]){case'0':return A[Xk(0x28e)];case'1':if(m[Xk(0x50e)](':'))return A[Xk(0x296)];continue;case'2':if(m['startsWith'](':'))return A['aLowK'];continue;case'3':m=m[Xk(0x3ae)]();continue;case'4':if(m[Xk(0x2f5)](':')&&m['endsWith'](':'))return Xk(0x32c);continue;}break;}})[XU(0x471)](m=>m!=='');let Q=A[XU(0x4ff)];return z[XU(0x192)]((m,D)=>{const Xo=XU,C=b[D]||A[Xo(0x28e)];Q+=Xo(0x3bb)+C+Xo(0x35c)+A['MSNOf'](escapeHtml,m)+Xo(0x378);}),Q+=A[XU(0x36c)],I[XU(0x192)](m=>{const Xs=XU,D=m[Xs(0x541)]('|')[Xs(0x4f5)](C=>C['trim']())[Xs(0x471)](C=>C!=='');D[Xs(0x498)]===z[Xs(0x498)]&&(Q+=A[Xs(0x3fd)],D[Xs(0x192)]((C,n)=>{const Xp=Xs,B=b[n]||A[Xp(0x28e)];Q+=Xp(0x1a2)+B+Xp(0x1ee)+A[Xp(0x344)](escapeHtml,C)+Xp(0x49c);}),Q+=A[Xs(0x26e)]);}),Q+=A[XU(0x3bc)],Q;}function copyTextFromButton(X){const Xj=S3,A={'uzZnj':function(N,I,z){return N(I,z);}},q=X[Xj(0x1e4)];if(!q)return;const u=q['textContent'];navigator[Xj(0x444)][Xj(0x216)](u)[Xj(0x1b5)](()=>{const Xw=Xj;X['innerHTML']=Xw(0x318),A[Xw(0x263)](setTimeout,()=>{const XE=Xw;X[XE(0x48a)]=XE(0x368);},-0x2*0xe21+0x1a94+0x78a);});}function addCopyButtonsToCodeBlocks(X,A='AI\x20Digging'){const XR=S3,q={'CgTXo':function(N,I,z){return N(I,z);},'GDWBe':'code-toolbar','munWo':XR(0x538),'ZeXhc':'code','pUMaY':XR(0x49d),'jHniE':XR(0x4ab),'XvQuV':XR(0x3c0),'neQNO':XR(0x2ee),'RMSpt':function(N,I){return N===I;},'QCbZG':'You'};if(q[XR(0x26c)](A,q[XR(0x387)]))return;const u=X[XR(0x3e5)](XR(0x461));u[XR(0x192)](N=>{const XO=XR,I={'twKOC':function(n,B,U){const XG=f;return q[XG(0x254)](n,B,U);}};if(N[XO(0x3b3)](XO(0x370)))return;const z=N['querySelector'](XO(0x2ba));if(!z)return;const b=z[XO(0x3b3)](XO(0x527));if(!b)return;const Q=document['createElement'](XO(0x2b3));Q[XO(0x4b9)]=q[XO(0x2d2)];const m=N['getAttribute'](q[XO(0x39c)])||q[XO(0x1d2)],D=document['createElement'](q['pUMaY']);D[XO(0x4b9)]=q['jHniE'],D['textContent']=m;const C=document[XO(0x19c)](q[XO(0x1c2)]);C[XO(0x4b9)]=XO(0x405),C[XO(0x2c7)]=q['XvQuV'],C['title']='Salin\x20kode',C[XO(0x492)](q[XO(0x222)],XO(0x37f)+m),C['innerHTML']=XO(0x531),C[XO(0x205)]=()=>{const XT=XO;navigator[XT(0x444)][XT(0x216)](b['textContent'])[XT(0x1b5)](()=>{const XH=XT;C[XH(0x48a)]=XH(0x2c0),I[XH(0x3e6)](setTimeout,()=>{const Xd=XH;C[Xd(0x48a)]=Xd(0x4d2);},0x2*0x76d+-0x93*-0xa+-0x52*0x2e);});},Q['appendChild'](D),Q[XO(0x256)](C),N[XO(0x2d9)](Q,z);});}
+const chatBox = document.getElementById("chatBox");
+const chatForm = document.getElementById("chatForm");
+const chatInput = document.getElementById("chatInput");
+const clearChatBtn = document.getElementById("clearChatBtn"); // Navbar trash icon
+const clearChatBtnn = document.getElementById("clearChatBtnn"); // Chat header trash icon
+const newChatBtn = document.getElementById("newChatBtn"); // Sidebar "Chat Baru" button
+const leftMenuBtn = document.getElementById("leftMenuBtn");
+const sidebar = document.getElementById("sidebar");
+const sidebars = document.getElementById("sidebar"); // Duplicate ID, ensure this references the correct 'sidebar' if used differently
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+const emptyMessage = document.getElementById("emptyMessage");
+const pricing = document.getElementById("pricing");
+const jelajahideveloper = document.getElementById("jelajahideveloper");
+const speakdigging = document.getElementById("speakdigging");
+const kebijakanprivasi = document.getElementById("kebijakanprivasi");
+const inputContainer = document.querySelector(".input-container");
+const menufitur1 = document.getElementById("menufitur1");
+const menufiturawal = document.getElementById("menufiturawal");
+const menufiturkedua = document.getElementById("menufiturkedua");
+const fileInput = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+const chatContainer = document.querySelector("section.chat-container");
+const uploadBtn = document.getElementById("uploadbtn");
+const sidebarToggleBtn = document.getElementById("sidebarToggle"); // Not found in HTML, might be unused
+const openSidebarBtn = document.getElementById("openSidebarBtn"); // Not found in HTML, might be unused
+const tombolTutup = document.getElementById("nutupsidebar"); // For desktop sidebar close
+const tombolBuka = document.getElementById("bukasidebar"); // For desktop sidebar open
+const tombolTutupmobile = document.getElementById("nutupsidebar"); // Duplicate ID, ensure this references the correct 'nutupsidebar'
+// -- TAMBAHKAN INI --
+const userProfileSection = document.getElementById("userProfileSection");
+const userProfilePic = document.getElementById("userProfilePic");
+const userProfileName = document.getElementById("userProfileName");
+const logoutBtn = document.getElementById("logoutBtn");
+const profileMenu = document.getElementById("profileMenu");
+
+// -- TAMBAHKAN INI --
+const profileOptionsBtn = document.getElementById("profileOptionsBtn"); // Tombol titik tiga
+// -- AKHIR TAMBAHAN --
+const chatHistoryList = document.getElementById("chatHistoryList"); // NEW: Element to display chat history
+
+let messages = []; // Current chat messages
+let isLoading = false;
+let autoScrollEnabled = true;
+let selectedFiles = [];
+let allowWelcomeAnimation = false; // PERUBAHAN: Tambahkan variabel izin ini
+let typewriterTimeoutId = null; // PERUBAHAN: Tambahkan variabel ini
+
+// Chat history management
+let chatSessions = []; // Array to store all chat sessions
+let currentChatId = null; // ID of the currently active chat session
+
+// --- IMPORTANT: REPLACE WITH YOUR ACTUAL PROXY SERVER URL! ---
+const PROXY_SERVER_URL = "https://ai-digging.vercel.app/";
+
+const OFFICIAL_WEBSITE_URL = "https://ai-digging.vercel.app/";
+
+// Initialize worker for pdf.js if library exists
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js`;
+}
+
+// Determine minimum width for desktop mode (in pixels)
+const desktopBreakpoint = 768;
+
+// 3. Add "event listener" that will run the function when the button is clicked
+tombolTutup.addEventListener("click", () => {
+  // Check if the current browser window width is greater than or equal to the desktop breakpoint
+  if (window.innerWidth >= desktopBreakpoint) {
+    // 4. If yes (desktop mode), execute action to hide sidebar
+    sidebars.style.display = "none";
+    tombolBuka.style.display = "block";
+  }
+  // If not (mobile mode), no action is taken
+});
+
+tombolBuka.addEventListener("click", () => {
+  // Also check here for consistency
+  if (window.innerWidth >= desktopBreakpoint) {
+    // 4. If yes (desktop mode), execute action to display sidebar
+    sidebars.style.display = "block";
+    tombolBuka.style.display = "none";
+  }
+});
+
+function updateChatBoxPadding() {
+  if (!chatBox || !inputContainer) return;
+  const inputHeight = inputContainer.offsetHeight;
+  const extraMargin = 15;
+  chatBox.style.paddingBottom = `${inputHeight + extraMargin}px`;
+}
+
+if (inputContainer) {
+  const observer = new ResizeObserver(updateChatBoxPadding);
+  observer.observe(inputContainer);
+}
+
+menufiturawal.style.display = "none";
+menufiturkedua.style.display = "none";
+
+document.addEventListener("DOMContentLoaded", () => {
+  allowWelcomeAnimation = true; // Beri izin untuk animasi
+  createNewChatSession(); // Jalankan fungsi untuk membuat chat baru
+  // ===================================================================
+  // BAGIAN 1: KONFIGURASI DAN INISIALISASI FIREBASE
+  // ===================================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyDBjiZV69xqzCS8pcvclAVJ4RQ4TxvYzos",
+    authDomain: "website-putra.firebaseapp.com",
+    databaseURL: "https://website-putra-default-rtdb.firebaseio.com",
+    projectId: "website-putra",
+    storageBucket: "website-putra.appspot.com",
+    messagingSenderId: "118694699779",
+    appId: "1:118694699779:web:2667c1b4d02dcfb333bf36",
+    measurementId: "G-7P4RNX03CZ",
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+  // ===================================================================
+  // BAGIAN 2: MENGAMBIL SEMUA ELEMEN DARI HTML (DOM)
+  // ===================================================================
+  // Dialog & Auth
+  const welcomeBackOverlay = document.getElementById("welcomeBackOverlay");
+  const signInBtn = document.getElementById("signInBtn");
+  const signUpFreeBtn = document.getElementById("signUpFreeBtn");
+  const stayLoggedOutBtn = document.getElementById("stayLoggedOutBtn");
+
+  // Profil Desktop (di dalam sidebar)
+  const userProfileSection = document.getElementById("userProfileSection");
+  const userProfilePic = document.getElementById("userProfilePic");
+  const userProfileName = document.getElementById("userProfileName");
+  const profileOptionsBtn = document.getElementById("profileOptionsBtn"); // Tombol titik tiga
+  const profileMenu = document.getElementById("profileMenu"); // Menu yg muncul
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  // Profil Mobile (di navbar atas)
+  const mobileProfileBtn = document.getElementById("mobileProfileBtn");
+  const mobileProfilePic = document.getElementById("mobileProfilePic");
+
+  // Interaksi Sidebar Mobile
+  const sidebar = document.getElementById("sidebar");
+  const sidebarOverlay = document.getElementById("sidebarOverlay");
+  const leftMenuBtn = document.getElementById("leftMenuBtn"); // Tombol hamburger utama di navbar
+  const nutupsidebarBtn = document.getElementById("nutupsidebar"); // Tombol tutup di dalam sidebar
+
+  // ===================================================================
+  // BAGIAN 3: FUNGSI-FUNGSI OTENTIKASI
+  // ===================================================================
+  const signInWithGoogle = () => {
+    auth.signInWithPopup(googleProvider).catch((error) => {
+      console.error("Error saat login dengan Google:", error.code, error.message);
+      alert(`Gagal login: ${error.message}`);
+    });
+  };
+
+  const signOutUser = () => {
+    auth.signOut().catch((error) => {
+      console.error("Error saat logout:", error);
+    });
+  };
+
+  // ===================================================================
+  // BAGIAN 4: LOGIKA UTAMA APLIKASI ANDA (TIDAK DIUBAH)
+  // ===================================================================
+  function initializePageForLoggedInUser(user) {
+    console.log("Inisialisasi halaman untuk pengguna:", user.displayName);
+    if (typeof loadAllChatSessions === "function") loadAllChatSessions();
+    if (typeof currentChatId !== "undefined" && currentChatId && typeof chatSessions !== "undefined" && chatSessions.some((s) => s.id === currentChatId)) {
+      if (typeof loadChatSession === "function") loadChatSession(currentChatId);
+    } else {
+      if (typeof createNewChatSession === "function") {
+        allowWelcomeAnimation = true;
+        createNewChatSession();
+      }
+    }
+    if (typeof renderChatHistoryList === "function") renderChatHistoryList();
+    if (typeof updateChatBoxPadding === "function") updateChatBoxPadding();
+  }
+
+  // ===================================================================
+  // BAGIAN 5: PENGECEKAN STATUS LOGIN (TITIK MASUK UTAMA)
+  // ===================================================================
+  console.log("Menunggu status otentikasi dari Firebase...");
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      // ---- PENGGUNA SUDAH LOGIN ----
+      const photoURL = user.photoURL || "images/default-avatar.png";
+      const displayName = user.displayName || "Pengguna";
+
+      // 1. Update UI untuk profil DESKTOP
+      if (userProfileSection) {
+        userProfileSection.style.display = "flex";
+        userProfileName.textContent = displayName;
+        userProfilePic.src = photoURL;
+      }
+
+      // 2. Update UI untuk profil MOBILE
+      if (mobileProfileBtn) {
+        mobileProfileBtn.style.display = "block";
+        mobileProfilePic.src = photoURL;
+        if (leftMenuBtn) leftMenuBtn.style.display = "none";
+      }
+
+      // 3. Sembunyikan dialog selamat datang
+      if (welcomeBackOverlay) welcomeBackOverlay.classList.remove("visible");
+
+      initializePageForLoggedInUser(user);
+    } else {
+      // ---- PENGGUNA BELUM LOGIN ----
+      // 1. Sembunyikan semua elemen profil
+      if (userProfileSection) userProfileSection.style.display = "none";
+      if (mobileProfileBtn) mobileProfileBtn.style.display = "none";
+
+      // 2. Tampilkan kembali tombol hamburger utama
+      if (leftMenuBtn) leftMenuBtn.style.display = "block";
+
+      // 3. Tampilkan dialog selamat datang
+      if (welcomeBackOverlay) welcomeBackOverlay.classList.add("visible");
+    }
+  });
+
+  // ===================================================================
+  // BAGIAN 6: SEMUA EVENT LISTENERS (DIPERBAIKI & DILENGKAPI)
+  // ===================================================================
+
+  // --- Listener untuk Auth ---
+  if (signInBtn) signInBtn.addEventListener("click", signInWithGoogle);
+  if (signUpFreeBtn) signUpFreeBtn.addEventListener("click", signInWithGoogle);
+  if (stayLoggedOutBtn) {
+    stayLoggedOutBtn.addEventListener("click", () => {
+      if (welcomeBackOverlay) welcomeBackOverlay.classList.remove("visible");
+    });
+  }
+
+  // --- Listener untuk Interaksi Sidebar Mobile ---
+  function openSidebar() {
+    if (sidebar) sidebar.classList.add("active");
+    if (sidebarOverlay) sidebarOverlay.classList.add("active");
+  }
+
+  function closeSidebar() {
+    if (sidebar) sidebar.classList.remove("active");
+    if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+  }
+
+  if (leftMenuBtn) leftMenuBtn.addEventListener("click", openSidebar);
+  if (mobileProfileBtn) mobileProfileBtn.addEventListener("click", openSidebar);
+  if (nutupsidebarBtn) nutupsidebarBtn.addEventListener("click", closeSidebar);
+  if (sidebarOverlay) sidebarOverlay.addEventListener("click", closeSidebar);
+
+  // --- Listener untuk Menu Profil di Dalam Sidebar ---
+  if (profileOptionsBtn) {
+    profileOptionsBtn.addEventListener("click", (event) => {
+      event.stopPropagation(); // Mencegah klik menyebar ke elemen lain
+      if (profileMenu) profileMenu.classList.toggle("visible");
+    });
+  }
+
+  // Listener untuk menutup menu profil saat klik di luar area
+  document.addEventListener("click", (event) => {
+    if (profileMenu && profileMenu.classList.contains("visible")) {
+      if (userProfileSection && !userProfileSection.contains(event.target)) {
+        profileMenu.classList.remove("visible");
+      }
+    }
+  });
+
+  // Listener untuk tombol logout di dalam menu profil
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", (event) => {
+      event.stopPropagation(); // Mencegah klik menyebar
+      signOutUser();
+    });
+  }
+});
+pricing.addEventListener("click", () => {
+  window.location.href = "pricing.html";
+});
+
+jelajahideveloper.addEventListener("click", () => {
+  showToast("Fitur ini segera hadir");
+});
+
+speakdigging.addEventListener("click", () => {
+  showToast("Fitur ini segera hadir");
+});
+
+kebijakanprivasi.addEventListener("click", () => {
+  showToast("Fitur ini segera hadir");
+});
+
+leftMenuBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  sidebarOverlay.classList.toggle("active");
+});
+
+tombolTutupmobile.addEventListener("click", () => {
+  sidebar.classList.toggle("active");
+  sidebarOverlay.classList.toggle("active");
+});
+
+sidebarOverlay.addEventListener("click", () => {
+  sidebar.classList.remove("active");
+  sidebarOverlay.classList.remove("active");
+});
+
+window.addEventListener("resize", () => {
+  const chatBoxElement = document.querySelector(".chat-box");
+  if (chatBoxElement) {
+    chatBoxElement.scrollTo(0, chatBoxElement.scrollHeight);
+  }
+});
+
+// NEW FUNCTION: Generate a unique ID
+function generateUniqueId() {
+  return `chat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+function clearChatMessages() {
+  if (!chatBox) return;
+  const messageElements = chatBox.querySelectorAll(".message-container");
+  messageElements.forEach((el) => el.remove());
+}
+
+function createNewChatSession(loadImmediately = true) {
+  const newId = generateUniqueId();
+  messages = [];
+  currentChatId = newId;
+
+  clearChatMessages();
+
+  // PERUBAHAN: Reset alignment ke bawah saat chat baru (kosong)
+  chatBox.classList.remove("align-top");
+
+  initializeChatDisplay();
+
+  if (loadImmediately) {
+    renderChatHistoryList();
+  }
+}
+// NEW FUNCTION: Save all chat sessions to localStorage
+function saveAllChatSessions() {
+  try {
+    localStorage.setItem("allChatSessions", JSON.stringify(chatSessions));
+  } catch (e) {
+    console.error("Failed to save all chat sessions to localStorage", e);
+  }
+}
+
+// MODIFIED FUNCTION: Load all chat sessions from localStorage
+function loadAllChatSessions() {
+  try {
+    const storedSessions = localStorage.getItem("allChatSessions");
+    if (storedSessions) {
+      chatSessions = JSON.parse(storedSessions);
+      // Ensure messages array exists and is an array for each session
+      chatSessions.forEach((session) => {
+        if (!session.messages || !Array.isArray(session.messages)) {
+          session.messages = [];
+        }
+      });
+      // Sort sessions by creation date, newest first
+      chatSessions.sort((a, b) => b.createdAt - a.createdAt);
+    } else {
+      chatSessions = []; // Initialize as empty if no stored sessions
+    }
+
+    // Set currentChatId to the most recent chat or create a new one if none exist
+    if (chatSessions.length > 0) {
+      currentChatId = chatSessions[0].id;
+    } else {
+      // If no sessions, prepare a new empty session, but don't add to list yet
+      createNewChatSession(false); // Do not loadImmediately, just prepare currentChatId
+    }
+  } catch (e) {
+    console.error("Failed to load all chat sessions from localStorage", e);
+    chatSessions = []; // Reset on error
+    createNewChatSession(false); // Prepare new empty session
+  }
+}
+
+// NEW FUNCTION: Load a specific chat session by ID
+function loadChatSession(id) {
+  const session = chatSessions.find((s) => s.id === id);
+  if (session) {
+    currentChatId = id;
+    messages = session.messages; // Set global messages to the loaded session's messages
+    clearChatMessages(); // Clear current chat display
+    messages.forEach((msg) => {
+      const role = msg.role === "user" ? "user" : "bot";
+      const username = role === "user" ? "You" : "AI Digging";
+      const profileUrl =
+        role === "user" ? "https://cdn-icons-png.flaticon.com/512/1077/1077114.png" : "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f";
+      // Pass the original message ID when loading from history
+      appendMessage(role, msg.content, username, profileUrl, msg.files || [], true, msg.id); // isHistory = true
+    });
+    chatBox.scrollTop = chatBox.scrollHeight;
+    initializeChatDisplay(); // Call here to manage initial message display after loading
+    // Close sidebar on mobile after selecting a chat
+    if (window.innerWidth < desktopBreakpoint) {
+      sidebar.classList.remove("active");
+      sidebarOverlay.classList.remove("active");
+    }
+    renderChatHistoryList(); // Update active class
+  } else {
+    console.error("Chat session not found:", id);
+    // If session not found (e.g., deleted by another tab), create a new empty one
+    createNewChatSession();
+  }
+}
+
+// NEW FUNCTION: Update the title of the current chat session
+function updateCurrentChatTitle(newTitle) {
+  const currentSession = chatSessions.find((s) => s.id === currentChatId);
+  // Only update if it's the default title or if there's no title yet
+  if (currentSession && (currentSession.title === "Percakapan Baru" || !currentSession.title)) {
+    currentSession.title = newTitle.substring(0, 50) + (newTitle.length > 50 ? "..." : ""); // Truncate title
+    saveAllChatSessions();
+    renderChatHistoryList();
+  }
+}
+
+// NEW FUNCTION: Render the chat history list in the sidebar
+function renderChatHistoryList() {
+  chatHistoryList.innerHTML = ""; // Clear existing list
+  if (chatSessions.length === 0) {
+    chatHistoryList.innerHTML = `<p style="color: #aaa; padding: 10px; text-align: center;">Belum ada riwayat chat.</p>`;
+    return;
+  }
+
+  chatSessions.forEach((session) => {
+    const listItem = document.createElement("button");
+    listItem.className = `sidebar-chat-item ${session.id === currentChatId ? "active" : ""}`;
+    listItem.setAttribute("data-chat-id", session.id);
+    listItem.innerHTML = `
+        
+        <span class="chat-title">${escapeHtml(session.title)}</span>
+        <button class="delete-chat-item" data-chat-id="${session.id}" title="Hapus chat ini">
+            <span class="material-icons">delete</span>
+        </button>
+    `;
+    listItem.addEventListener("click", (e) => {
+      // Prevent clicking the delete button from loading the chat
+      if (!e.target.closest(".delete-chat-item")) {
+        loadChatSession(session.id);
+      }
+    });
+
+    // Add event listener for delete button
+    const deleteButton = listItem.querySelector(".delete-chat-item");
+    deleteButton.addEventListener("click", async (e) => {
+      e.stopPropagation(); // Stop event from propagating to the list item
+      await deleteChatSession(session.id);
+    });
+
+    chatHistoryList.appendChild(listItem);
+  });
+}
+
+// NEW FUNCTION: Delete a chat session
+async function deleteChatSession(idToDelete) {
+  try {
+    await showConfirmationDialog("Hapus Chat Ini?", "Tindakan ini tidak dapat diurungkan.");
+    chatSessions = chatSessions.filter((session) => session.id !== idToDelete);
+    saveAllChatSessions();
+    if (currentChatId === idToDelete) {
+      // If the deleted chat was the current one, load a new empty chat or the first available
+      if (chatSessions.length > 0) {
+        loadChatSession(chatSessions[0].id); // Load the first existing chat
+      } else {
+        createNewChatSession(); // Create a brand new session if none left
+      }
+    }
+    renderChatHistoryList(); // Re-render the list after deletion
+    showToast("Chat berhasil dihapus.");
+  } catch (error) {
+    console.log("Deletion cancelled or error:", error);
+    showToast("Penghapusan chat dibatalkan.");
+  }
+}
+
+// Function to add loading animation styles
+// HAPUS SEMUA BLOK INI DARI FILE JAVASCRIPT ANDA
+function addLoadingAnimationStyles() {
+  // Check to prevent styles from being added repeatedly
+  if (document.getElementById("loading-animation-styles")) return;
+
+  const styleSheet = document.createElement("style");
+  styleSheet.id = "loading-animation-styles";
+  styleSheet.textContent = ` ... (dan semua isinya) ... `;
+  document.head.appendChild(styleSheet);
+}
+
+// Call this function once when the script loads
+addLoadingAnimationStyles();
+
+// File Preview Logic for Multi-Type Files (including PDF and DOCX)
+function showFilePreview(files) {
+  const maxFiles = 10;
+  for (const file of files) {
+    if (selectedFiles.length >= maxFiles) {
+      showToast(`Maksimal ${maxFiles} file tercapai.`);
+      break;
+    }
+
+    const fileId = "file-" + Date.now() + "-" + Math.random().toString(36).substr(2, 9);
+    const fileObject = {
+      id: fileId,
+      file: file,
+      type: file.type,
+      name: file.name,
+      dataURL: null, // Only for images
+      extractedText: null, // For PDF/DOCX
+      isUrl: false, // Mark whether this is from a URL
+    };
+
+    createPreviewElement(fileObject);
+    // Only extract content for non-images (PDF, DOCX)
+    if (!fileObject.type.startsWith("image/")) {
+      extractFileContent(fileObject);
+    } else {
+      // For images, read as data URL for display
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        fileObject.dataURL = e.target.result;
+        // Update existing preview element if needed
+        const existingImg = preview.querySelector(`[data-file-id="${fileObject.id}"] img`);
+        if (existingImg) {
+          existingImg.src = e.target.result;
+        }
+      };
+      reader.readAsDataURL(fileObject.file);
+    }
+
+    selectedFiles.push(fileObject);
+  }
+  updateFileInput();
+}
+
+/**
+ * Adds a URL to the preview list and attempts to fetch and extract its content.
+ * @param {string} urlString - The URL to process.
+ */
+async function addUrlToPreview(urlString) {
+  const maxFiles = 10;
+  if (selectedFiles.length >= maxFiles) {
+    showToast(`Maksimal ${maxFiles} file tercapai.`);
+    return;
+  }
+
+  // [Fix]: Basic URL validation
+  try {
+    new URL(urlString); // Will throw an error if URL is invalid
+  } catch (e) {
+    showToast(`URL tidak valid: ${urlString}`);
+    console.error("Invalid URL:", urlString, e);
+    return;
+  }
+
+  // Ensure URL is not already in selectedFiles to avoid duplication
+  if (selectedFiles.some((f) => f.isUrl && f.originalUrl === urlString)) {
+    showToast(`URL ini sudah ditambahkan: ${urlString}`);
+    return;
+  }
+
+  const fileId = "file-" + Date.now() + "-" + Math.random().toString(36).substr(2, 9);
+  const fileName = urlString.substring(urlString.lastIndexOf("/") + 1) || "url_content";
+  let fileType = "application/octet-stream"; // Default unknown type
+
+  // Detect file type based on heuristics
+  if (/\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(urlString)) {
+    fileType = "image/" + urlString.match(/\.(jpg|jpeg|png|gif|webp)/i)[1].replace("jpg", "jpeg");
+  } else if (/\.pdf(\?.*)?$/i.test(urlString)) {
+    fileType = "application/pdf";
+  } else if (/\.(doc|docx)(\?.*)?$/i.test(urlString)) {
+    fileType = "application/msword";
+  } else if (urlString.includes("youtube.com/watch") || urlString.includes("youtu.be/")) {
+    fileType = "video/youtube";
+  } else {
+    fileType = "text/html"; // Assume default for regular web links
+  }
+
+  const fileObject = {
+    id: fileId,
+    file: null, // No actual File object for URL
+    type: fileType,
+    name: fileName,
+    dataURL: null, // For images from URL
+    extractedText: null, // For text from URL
+    isUrl: true, // Mark this as from a URL
+    originalUrl: urlString, // Store the original URL
+  };
+
+  createPreviewElement(fileObject);
+  selectedFiles.push(fileObject);
+  updateFileInput();
+
+  // Fetch URL content via proxy
+  showToast(`Mencoba memproses URL: ${urlString}`);
+  try {
+    const response = await fetch(`${PROXY_SERVER_URL}?url=${encodeURIComponent(urlString)}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: response.statusText }));
+      throw new Error(`Failed to fetch content from URL (${response.status}): ${errorData.message || response.statusText}`);
+    }
+
+    if (fileObject.type.startsWith("image/")) {
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        fileObject.dataURL = e.target.result;
+        const existingImg = preview.querySelector(`[data-file-id="${fileObject.id}"] img`);
+        if (existingImg) {
+          existingImg.src = e.target.result;
+        }
+        showToast(`Gambar dari URL berhasil dimuat: ${fileObject.name}`);
+      };
+      reader.readAsDataURL(blob);
+    } else if (fileObject.type === "application/pdf" && window.pdfjsLib) {
+      const arrayBuffer = await response.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let text = "";
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map((item) => item.str).join(" ") + "\n";
+      }
+      fileObject.extractedText = text.trim();
+      showToast(`Teks dari PDF URL berhasil diekstrak.`);
+    } else if (fileObject.type === "video/youtube") {
+      fileObject.extractedText = `URL Video YouTube: ${urlString}`;
+      showToast(`Mendeteksi URL YouTube. AI akan menerima URL video.`);
+    } else if (fileObject.type === "text/html") {
+      const textContent = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(textContent, "text/html");
+
+      let mainContent = "";
+      const articleElement = doc.querySelector("article, main, #main-content, .content, .post-content");
+      if (articleElement) {
+        mainContent = articleElement.textContent;
+      } else {
+        mainContent = doc.body.textContent || doc.documentElement.textContent;
+      }
+
+      fileObject.extractedText = mainContent.replace(/\s+/g, " ").trim().substring(0, 5000);
+
+      if (fileObject.extractedText) {
+        showToast(`Teks dari URL web berhasil diekstrak (${fileObject.extractedText.length} karakter).`);
+      } else {
+        showToast(`Tidak ada teks yang jelas ditemukan dari URL web.`);
+      }
+    } else {
+      fileObject.extractedText = `[Konten URL tidak dapat diproses: ${urlString}]`;
+      showToast(`Tipe konten URL tidak didukung untuk ekstraksi teks: ${fileObject.type}. URL akan dikirim sebagai tautan.`);
+    }
+  } catch (error) {
+    console.error("Failed to process URL:", error);
+    showToast(`Failed to process URL ${urlString}: ${error.message}`);
+    fileObject.extractedText = `[Error: Failed to process URL ${urlString}. ${error.message}]`;
+  }
+}
+
+function createPreviewElement(fileObject) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "preview-item";
+  wrapper.setAttribute("data-file-id", fileObject.id);
+  wrapper.title = fileObject.name;
+
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.className = "preview-remove-btn";
+  closeBtn.innerHTML = "×";
+  closeBtn.onclick = () => {
+    wrapper.remove();
+    selectedFiles = selectedFiles.filter((f) => f.id !== fileObject.id);
+    updateFileInput();
+  };
+
+  if (fileObject.type.startsWith("image/")) {
+    const img = document.createElement("img");
+    img.alt = fileObject.name;
+    wrapper.appendChild(img);
+  } else if (fileObject.type === "video/youtube") {
+    wrapper.classList.add("preview-item-doc");
+    const icon = document.createElement("span");
+    icon.className = "material-icons";
+    icon.textContent = "ondemand_video";
+    wrapper.style.backgroundColor = "#FF0000";
+    const fileNameSpan = document.createElement("span");
+    fileNameSpan.className = "preview-file-name";
+    fileNameSpan.textContent = "YouTube Video";
+    wrapper.appendChild(icon);
+    wrapper.appendChild(fileNameSpan);
+  } else {
+    wrapper.classList.add("preview-item-doc");
+    const icon = document.createElement("span");
+    icon.className = "material-icons";
+    if (fileObject.type === "application/pdf") {
+      icon.textContent = "picture_as_pdf";
+      wrapper.style.backgroundColor = "#D32F2F";
+    } else if (fileObject.type === "text/html") {
+      icon.textContent = "link";
+      wrapper.style.backgroundColor = "#0288D1";
+    } else {
+      icon.textContent = "article";
+      wrapper.style.backgroundColor = "#1976D2";
+    }
+    const fileNameSpan = document.createElement("span");
+    fileNameSpan.className = "preview-file-name";
+    fileNameSpan.textContent = fileObject.name.length > 15 ? fileObject.name.substring(0, 12) + "..." : fileObject.name;
+
+    wrapper.appendChild(icon);
+    wrapper.appendChild(fileNameSpan);
+  }
+
+  wrapper.appendChild(closeBtn);
+  preview.appendChild(wrapper);
+}
+
+async function extractFileContent(fileObject) {
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const arrayBuffer = e.target.result;
+    let text = "";
+    try {
+      if (fileObject.type === "application/pdf" && window.pdfjsLib) {
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          text += content.items.map((item) => item.str).join(" ") + "\n";
+        }
+      } else if ((fileObject.name.endsWith(".docx") || fileObject.name.endsWith(".doc")) && window.mammoth) {
+        const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+        text = result.value;
+      }
+      fileObject.extractedText = text.trim();
+      if (text) showToast(`Teks dari ${fileObject.name} berhasil diekstrak.`);
+    } catch (error) {
+      console.error("Failed to extract text:", error);
+      showToast(`Failed to process file ${fileObject.name}.`);
+      fileObject.extractedText = `[Error: Failed to read file content ${fileObject.name}]`;
+    }
+  };
+  if (!fileObject.type.startsWith("image/")) {
+    reader.readAsArrayBuffer(fileObject.file);
+  }
+}
+
+/**
+ * Updates the list of files attached to the file input (for local files only).
+ */
+function updateFileInput() {
+  const localFiles = selectedFiles.filter((f) => !f.isUrl);
+  const dataTransfer = new DataTransfer();
+  localFiles.forEach((item) => dataTransfer.items.add(item.file));
+  fileInput.files = dataTransfer.files;
+  updateChatBoxPadding();
+}
+
+document.getElementById("menu4").addEventListener("click", function () {
+  window.location.href = "voice.html";
+});
+
+uploadBtn.addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", (event) => {
+  if (event.target.files.length > 0) {
+    showFilePreview(event.target.files);
+  }
+});
+
+chatContainer.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  chatContainer.classList.add("drag-over");
+});
+
+chatContainer.addEventListener("dragleave", (e) => {
+  e.preventDefault();
+  chatContainer.classList.remove("drag-over");
+});
+
+chatContainer.addEventListener("drop", (e) => {
+  e.preventDefault();
+  chatContainer.classList.remove("drag-over");
+  if (e.dataTransfer.files.length > 0) {
+    showFilePreview(e.dataTransfer.files);
+  }
+});
+
+if (window.visualViewport) {
+  const adjustLayout = () => {
+    if (!chatContainer) return;
+    chatContainer.style.height = `${window.visualViewport.height}px`;
+    if (chatBox) {
+      setTimeout(() => {
+        chatBox.scrollTo(0, chatBox.scrollHeight);
+      }, 50);
+    }
+  };
+  window.visualViewport.addEventListener("resize", adjustLayout);
+  adjustLayout();
+}
+
+const text = "Apakah ada yang bisa saya bantu?";
+let index = 0;
+
+function typeWriter() {
+  if (index === 0) {
+    menufitur1.style.display = "flex";
+    emptyMessage.textContent = "";
+  }
+
+  if (index < text.length) {
+    emptyMessage.textContent += text.charAt(index);
+    index++;
+    // PERUBAHAN: Simpan ID timeout ke variabel global
+    typewriterTimeoutId = setTimeout(typeWriter, 100);
+  } else {
+    menufiturawal.style.display = "flex";
+    menufiturkedua.style.display = "flex";
+    typewriterTimeoutId = null; // Reset saat animasi selesai
+  }
+}
+// PERUBAHAN: Fungsi ini sekarang hanya mengatur tampilan layar kosong,
+// tanpa memulai animasi secara otomatis.
+// PERUBAHAN: Fungsi ini sekarang memeriksa izin sebelum menjalankan animasi
+function initializeChatDisplay() {
+  if (messages.length === 0) {
+    // Bagian ini selalu berjalan untuk chat kosong: menyiapkan layar.
+    emptyMessage.textContent = "";
+    index = 0;
+    menufitur1.style.display = "flex";
+    menufiturawal.style.display = "none";
+    menufiturkedua.style.display = "none";
+
+    // Cek izin sebelum menjalankan animasi
+    if (allowWelcomeAnimation) {
+      typeWriter();
+      allowWelcomeAnimation = false; // Reset izin setelah digunakan agar tidak berjalan lagi
+    }
+  } else {
+    // Bagian ini berjalan jika chat memiliki pesan: menyembunyikan layar sambutan.
+    menufitur1.style.display = "none";
+    menufiturawal.style.display = "none";
+    menufiturkedua.style.display = "none";
+  }
+}
+
+chatInput.addEventListener("input", () => {
+  chatInput.style.height = "auto";
+  const maxHeight = 120;
+  chatInput.style.height = `${Math.min(chatInput.scrollHeight, maxHeight)}px`;
+});
+
+function isMobileDevice() {
+  return window.innerWidth <= 768;
+}
+
+chatInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !isMobileDevice() && !e.shiftKey) {
+    e.preventDefault();
+    chatForm.requestSubmit();
+  }
+});
+
+/**
+ * FUNGSI FINAL UNTUK MENGHILANGKAN menufitur1 SECARA TOTAL
+ */
+function stopWelcomeAnimation() {
+  // Hentikan dulu timer animasi ketik jika masih berjalan
+  if (typewriterTimeoutId) {
+    clearTimeout(typewriterTimeoutId);
+    typewriterTimeoutId = null;
+  }
+
+  // Cari elemen kontainer utama yang ingin kita hilangkan
+  const welcomeContainer = document.getElementById("menufitur1");
+
+  // Jika elemennya ada, tambahkan kelas "pamungkas" kita
+  if (welcomeContainer) {
+    welcomeContainer.classList.add("hilang-sepenuhnya");
+  }
+}
+
+chatBox.addEventListener("scroll", () => {
+  const threshold = 40;
+  const distanceFromBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight;
+  autoScrollEnabled = distanceFromBottom < threshold;
+});
+
+// PERUBAHAN: Event listener untuk "Chat Baru" sekarang secara eksplisit memulai animasi.
+// PERUBAHAN: Event listener ini sekarang memberi "izin" untuk animasi berjalan
+newChatBtn.addEventListener("click", () => {
+  allowWelcomeAnimation = true; // Beri izin untuk animasi
+  createNewChatSession(); // Jalankan fungsi untuk membuat chat baru
+});
+
+clearChatBtnn.addEventListener("click", () => {
+  allowWelcomeAnimation = true; // Beri izin untuk animasi
+  createNewChatSession(); // Jalankan fungsi untuk membuat chat baru
+});
+
+clearChatBtn.addEventListener("click", () => {
+  allowWelcomeAnimation = true; // Beri izin untuk animasi
+  createNewChatSession(); // Jalankan fungsi untuk membuat chat baru
+});
+
+// Event listeners for clearing chat (now handles deletion of current session)
+//clearChatBtn.addEventListener("click", () => deleteChatSession(currentChatId));
+
+/**
+ * Fungsi untuk mendeteksi URL dalam teks dan mengubahnya menjadi tautan HTML yang bisa diklik.
+ * @param {string} text - Teks masukan yang mungkin mengandung URL.
+ * @returns {string} - Teks dengan URL yang sudah diubah menjadi tautan HTML.
+ */
+function makeLinksClickable(text) {
+  // Regular Expression untuk mendeteksi URL (http atau https) diikuti oleh karakter non-spasi
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  // Mengganti setiap URL yang terdeteksi dengan tag <a> HTML
+  const clickableText = text.replace(urlRegex, (url) => {
+    // Memastikan tautan terbuka di tab baru dan aman
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color:rgb(49, 117, 180); text-decoration: underline; font-weight: bold;">${url}</a>`;
+  });
+
+  return clickableText;
+}
+
+chatForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  // 1. Hentikan animasi selamat datang jika masih berjalan
+  stopWelcomeAnimation();
+
+  let userText = chatInput.value.trim();
+  const lowerCaseUserText = userText.toLowerCase();
+
+  // 2. Tandai jika ini adalah pesan pertama. Variabel ini akan kita gunakan nanti.
+  const isFirstMessage = messages.length === 0;
+
+  // --- Logika untuk membuat sesi chat baru di riwayat ---
+  let isNewSession = false;
+  if (!chatSessions.some((s) => s.id === currentChatId)) {
+    const newSession = {
+      id: currentChatId,
+      title: "Percakapan Baru",
+      messages: [],
+      createdAt: Date.now(),
+    };
+    chatSessions.unshift(newSession);
+    isNewSession = true;
+  }
+
+  // Set judul chat berdasarkan pesan pertama
+  if (isFirstMessage && userText) {
+    updateCurrentChatTitle(userText);
+  }
+
+  // --- Penanganan kasus khusus "berikan aku aplikasi cerito ke bae" ---
+  if (lowerCaseUserText === "#ceritokebae") {
+    appendMessage("user", userText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", [], false);
+    messages.push({ role: "user", content: userText, files: [], id: generateUniqueId() });
+
+    const currentSession = chatSessions.find((s) => s.id === currentChatId);
+    if (currentSession) {
+      currentSession.messages = [...messages];
+      saveAllChatSessions();
+    }
+    if (isNewSession) renderChatHistoryList();
+
+    isLoading = true;
+    appendLoadingMessage();
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    removeLoadingMessage();
+
+    const botReplyText = `Tentu, ini aplikasi "Cerito Ke Bae" yang bisa kamu unduh:\n**Nama File:** CeritoKeBae.apk\n**Ukuran:** 12 MB\n**Status:** Terverifikasi\n**Link:** https://www.upload-apk.com/6quo8GQxRgHNVqe`;
+    const downloadFileName = "CeritoKeBae.apk";
+    const downloadFileUrl = "https://www.upload-apk.com/6quo8GQxRgHNVqe"; // Ganti dengan URL unduhan sebenarnya
+    const downloadLogoUrl = "https://firebasestorage.googleapis.com/v0/b/website-putra.appspot.com/o/icons8-download-96.png?alt=media&token=c26ee380-f3ec-45f9-960e-81bc69e0624b";
+
+    const clickableBotReplyText = makeLinksClickable(botReplyText);
+
+    appendMessage("bot", clickableBotReplyText, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
+    // Pastikan fungsi appendDownloadButton sudah didefinisikan di tempat lain
+    if (typeof appendDownloadButton === "function") {
+      appendDownloadButton(downloadFileName, downloadFileUrl, downloadLogoUrl);
+    }
+
+    messages.push({ role: "assistant", content: botReplyText, files: [], id: generateUniqueId() });
+    if (currentSession) {
+      currentSession.messages = [...messages];
+      saveAllChatSessions();
+    }
+
+    chatInput.value = "";
+    chatInput.style.height = "auto";
+    preview.innerHTML = "";
+    selectedFiles = [];
+    updateFileInput();
+    isLoading = false;
+    chatInput.disabled = false;
+
+    // Jika ini pesan pertama, langsung ubah layout ke atas setelah selesai.
+    if (isFirstMessage) {
+      chatBox.classList.add("align-top");
+    }
+    return;
+  }
+
+  // --- Logika utama untuk mengirim pesan ke AI ---
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const foundUrls = userText.match(urlRegex);
+
+  if ((!userText && selectedFiles.length === 0 && !foundUrls) || isLoading) {
+    showToast("Mohon masukkan pesan, URL, atau lampirkan file.");
+    return;
+  }
+
+  if (foundUrls && foundUrls.length > 0) {
+    for (const url of foundUrls) {
+      userText = userText.replace(url, "").trim();
+      await addUrlToPreview(url);
+    }
+  }
+
+  const filesForDisplay = selectedFiles.map((f) => ({ id: f.id, name: f.name, type: f.type, dataURL: f.dataURL, originalUrl: f.originalUrl, isUrl: f.isUrl, extractedText: f.extractedText }));
+
+  const currentUserParts = [];
+  if (userText) {
+    currentUserParts.push({ text: userText });
+  }
+
+  // Tambahkan gambar yang dipilih pengguna sebagai inline_data
+  selectedFiles
+    .filter((f) => f.type.startsWith("image/") && f.dataURL)
+    .forEach((file) => {
+      const mimeType = file.type;
+      const base64Data = file.dataURL.substring(file.dataURL.indexOf(",") + 1);
+      currentUserParts.push({ inline_data: { mime_type: mimeType, data: base64Data } });
+    });
+
+  // Tambahkan teks yang diekstrak dari file/URL lainnya
+  selectedFiles
+    .filter((f) => f.extractedText)
+    .forEach((file) => {
+      if (file.type === "video/youtube" && file.originalUrl) {
+        currentUserParts.push({ text: `URL Video YouTube untuk dianalisis: ${file.originalUrl}` });
+      } else if (file.extractedText) {
+        currentUserParts.push({ text: `Konten dari ${file.isUrl ? "URL" : "file"} "${file.name || file.originalUrl}":\n${file.extractedText}` });
+      }
+    });
+
+  if (currentUserParts.length === 0) {
+    showToast("Tidak ada konten yang dapat dikirim ke AI.");
+    return;
+  }
+
+  // Tampilkan pesan user di UI
+  appendMessage("user", userText, "You", "https://cdn-icons-png.flaticon.com/512/1077/1077114.png", filesForDisplay, false);
+  messages.push({ role: "user", content: userText, files: filesForDisplay, id: generateUniqueId() });
+
+  const currentSessionAfterUserMsg = chatSessions.find((s) => s.id === currentChatId);
+  if (currentSessionAfterUserMsg) {
+    currentSessionAfterUserMsg.messages = [...messages];
+    saveAllChatSessions();
+  }
+  if (isNewSession) renderChatHistoryList();
+
+  chatInput.value = "";
+  chatInput.style.height = "auto";
+  if (window.innerWidth >= 768) {
+    chatInput.focus();
+  } else {
+    chatInput.blur();
+  }
+  preview.innerHTML = "";
+  selectedFiles = [];
+  updateFileInput();
+
+  // Tampilkan animasi loading bot
+  isLoading = true;
+  appendLoadingMessage();
+
+  try {
+    // --- Proses memanggil API Gemini ---
+    const historyContents = messages.slice(0, -1).map((msg) => {
+      const parts = [];
+      if (msg.content) {
+        parts.push({ text: msg.content });
+      }
+      // Tambahkan file (gambar/teks dari file lain) dari riwayat ke 'parts'
+      if (msg.files && msg.files.length > 0) {
+        msg.files.forEach((file) => {
+          if (file.type && file.type.startsWith("image/") && file.dataURL) {
+            const mimeType = file.type;
+            const base64Data = file.dataURL.substring(file.dataURL.indexOf(",") + 1);
+            parts.push({ inline_data: { mime_type: mimeType, data: base64Data } });
+          } else if (file.extractedText) {
+            parts.push({ text: `Konten dari ${file.isUrl ? "URL" : "file"} "${file.name || file.originalUrl}":\n${file.extractedText}` });
+          }
+        });
+      }
+      return { role: msg.role, parts: parts.length > 0 ? parts : [{ text: "" }] }; // Pastikan 'parts' tidak kosong
+    });
+
+    const finalContents = [...historyContents, { role: "user", parts: currentUserParts }];
+
+    const requestBody = {
+      contents: finalContents,
+      // Kembali menambahkan systemInstruction karena gemini-1.5-flash mendukungnya
+      systemInstruction: { parts: [{ text: "You are AI Digging. A helpful and smart assistant. If asked to create an image, you should respond with a description of the image, as I cannot directly generate images for you." }] },
+      // ^ Ganti instruksi sistem ini jika Anda ingin AI merespons cara lain terkait gambar.
+    };
+
+    // PASTIKAN API KEY INI ADALAH API KEY DARI GOOGLE AI STUDIO (GEMINI)
+    const apiKey = "AIzaSyBe6EkfS-eVWMOQalm2TpxL6ljGBC2z9dI"; // GANTI DENGAN API KEY ANDA YANG SESUNGGUHNYA
+    // MENGGUNAKAN MODEL GENERATIF YANG STABIL DAN SERBAGUNA
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error.message || `Request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    const candidates = data.candidates?.[0]?.content?.parts;
+
+    let botReplyText = "";
+    let botReplyFiles = []; // Array untuk menyimpan gambar yang dikirim oleh bot
+
+    if (candidates && candidates.length > 0) {
+      candidates.forEach((part) => {
+        if (part.text) {
+          botReplyText += part.text.trim() + "\n";
+        } else if (part.inline_data && part.inline_data.mime_type.startsWith("image/")) {
+          // Jika bot mengirim gambar (inline_data) - Gemini 1.5 Flash TIDAK langsung mengembalikan gambar ini tanpa Tooling
+          // Ini adalah fallback untuk berjaga-jaga jika ada perilaku yang tidak biasa, atau jika Anda mengintegrasikan API gambar di masa mendatang.
+          botReplyFiles.push({
+            id: generateUniqueId(),
+            name: "AI Generated Image",
+            type: part.inline_data.mime_type,
+            dataURL: `data:${part.inline_data.mime_type};base64,${part.inline_data.data}`,
+            isUrl: false,
+            extractedText: null,
+          });
+        }
+      });
+      botReplyText = botReplyText.trim();
+    } else {
+      botReplyText = "Maaf, saya tidak bisa memberikan respons saat ini.";
+    }
+
+    // Hapus animasi loading
+    removeLoadingMessage();
+
+    // Tampilkan respons bot (teks dan gambar)
+    appendMessage("bot", botReplyText, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f", botReplyFiles);
+
+    // Simpan pesan bot ke riwayat (termasuk informasi file)
+    messages.push({ role: "assistant", content: botReplyText, files: botReplyFiles, id: generateUniqueId() });
+
+    const currentSessionAfterBotMsg = chatSessions.find((s) => s.id === currentChatId);
+    if (currentSessionAfterBotMsg) {
+      currentSessionAfterBotMsg.messages = [...messages];
+      saveAllChatSessions();
+    }
+  } catch (err) {
+    console.error("API Error:", err);
+    removeLoadingMessage();
+    const errorMessage = err.message || "Terjadi kesalahan saat menghubungi server.";
+    appendMessage("bot", errorMessage, "AI Digging", "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f");
+    messages.push({ role: "assistant", content: errorMessage, files: [], id: generateUniqueId() });
+
+    const currentSessionOnError = chatSessions.find((s) => s.id === currentChatId);
+    if (currentSessionOnError) {
+      currentSessionOnError.messages = [...messages];
+      saveAllChatSessions();
+    }
+  } finally {
+    isLoading = false;
+    chatInput.disabled = false;
+
+    // Jika ini pesan pertama, ubah layout ke atas setelah selesai.
+    if (isFirstMessage) {
+      chatBox.classList.add("align-top");
+    }
+  }
+});
+
+function saveMessagesToStorage() {
+  // This function is now redundant as messages are saved via `saveAllChatSessions`
+  // when `currentSession.messages` is updated.
+  // We keep it empty for now to avoid breaking existing calls, but its functionality is handled.
+}
+
+function loadMessagesFromStorage() {
+  // This function is now redundant.
+  // The initial loading is handled by `loadAllChatSessions` and `loadChatSession`.
+  // Its functionality is now integrated into `loadChatSession(id)`.
+  // We keep it empty for now to avoid breaking existing calls.
+}
+
+// The `clearChat` function is now handled by `deleteChatSession(currentChatId)`.
+// The calls to `clearChatBtn.addEventListener("click", clearChat);` and
+// `clearChatBtnn.addEventListener("click", clearChat);`
+// have been updated to call `deleteChatSession(currentChatId)` directly.
+// The `clearChatBtnnn` is now `newChatBtn` and its event listener is for `createNewChatSession`.
+
+async function clearChat() {
+  // This function is now deprecated. Its logic is split between
+  // createNewChatSession and deleteChatSession.
+  console.warn("clearChat() is deprecated. Use createNewChatSession() or deleteChatSession() instead.");
+}
+
+function showConfirmationDialog(title, message) {
+  const dialogOverlay = document.getElementById("customDialogOverlay");
+  const dialogTitle = document.getElementById("dialogTitle");
+  const dialogMessage = document.getElementById("dialogMessage");
+  const confirmBtn = document.getElementById("dialogConfirmBtn");
+  const cancelBtn = document.getElementById("dialogCancelBtn");
+
+  dialogTitle.textContent = title;
+  dialogMessage.textContent = message;
+  dialogOverlay.classList.remove("hidden");
+
+  return new Promise((resolve, reject) => {
+    const onConfirm = () => {
+      dialogOverlay.classList.add("hidden");
+      removeListeners();
+      resolve();
+    };
+    const onCancel = () => {
+      dialogOverlay.classList.add("hidden");
+      removeListeners();
+      reject();
+    };
+    const removeListeners = () => {
+      confirmBtn.removeEventListener("click", onConfirm);
+      cancelBtn.removeEventListener("click", onCancel);
+    };
+    confirmBtn.addEventListener("click", onConfirm, { once: true });
+    cancelBtn.addEventListener("click", onCancel, { once: true });
+  });
+}
+
+function checkChatEmpty() {
+  // This function now only checks the current session's messages
+  const hasMessages = messages.length > 0;
+  if (hasMessages) {
+    menufitur1.style.display = "none";
+  } else {
+    menufitur1.style.display = "flex";
+  }
+}
+
+// --- NEW FUNCTION FOR LIKE/UNLIKE ---
+function getMessageLikeStatus(messageId) {
+  const status = localStorage.getItem(`message_like_status_${messageId}`);
+  return status ? JSON.parse(status) : { liked: false, disliked: false };
+}
+
+function saveMessageLikeStatus(messageId, status) {
+  localStorage.setItem(`message_like_status_${messageId}`, JSON.stringify(status));
+}
+// --- END OF NEW FUNCTION FOR LIKE/UNLIKE ---
+
+/**
+ * NEW HELPER FUNCTION
+ * Creates and adds all action buttons (Copy, Speak, Share, Like, Unlike)
+ * to a bot message element.
+ * @param {HTMLElement} messageEl - The message <div> element where buttons will be added.
+ * @param {string} text - The text content of the message to copy, speak, or share.
+ * @param {string} messageId - Unique ID of the message for Like/Unlike status.
+ */
+function addBotActionButtons(messageEl, text, messageId) {
+  if (!text) return; // Don't add buttons if bot message has no text
+
+  // Define all icons to be used
+  const icons = {
+    copy: `<img src="images/copy.png" alt="Copy" width="16" height="16" />`,
+    copied: `<img src="images/copy.png" alt="Copied" width="16" height="16" />`,
+    speak: `<img src="images/speaker.png" alt="Speak" width="20" height="20" />`,
+    speaking: `<img src="images/aksispeaker.png" alt="Speaking" width="20" height="20" />`,
+    share: `<img src="images/share.png" alt="Share" width="20" height="20" />`,
+    like: `<img src="images/like.png" alt="Like" width="20" height="20" />`,
+    liked: `<img src="images/aksilike.png" alt="Liked" width="20" height="20" />`,
+    unlike: `<img src="images/unlike.png" alt="Unlike" width="20" height="20" />`,
+    unliked: `<img src="images/aksiunlike.png" alt="Unliked" width="20" height="20" />`,
+  };
+
+  const buttonContainer = document.createElement("div");
+  buttonContainer.className = "message-actions";
+  Object.assign(buttonContainer.style, { position: "absolute", bottom: "4px", left: "0px", display: "flex", alignItems: "center", gap: "4px" });
+
+  // --- Copy Button ---
+  const copyBtn = document.createElement("button");
+  copyBtn.title = "Salin Teks";
+  copyBtn.innerHTML = icons.copy;
+  copyBtn.onclick = () => {
+    navigator.clipboard.writeText(text).then(() => {
+      copyBtn.innerHTML = icons.copied;
+      setTimeout(() => {
+        copyBtn.innerHTML = icons.copy;
+      }, 2000);
+      showToast("Tersalin ke papan klip");
+    });
+  };
+  buttonContainer.appendChild(copyBtn);
+
+  // --- Speak Button ---
+  const speakBtn = document.createElement("button");
+  speakBtn.title = "Dengarkan";
+  speakBtn.innerHTML = icons.speak;
+  speakBtn.onclick = () => {
+    if (!("speechSynthesis" in window)) {
+      showToast("Fitur suara tidak didukung browser ini.");
+      return;
+    }
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      return;
+    }
+    const cleanedText = text
+      .replace(/[^a-zA-Z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const utterance = new SpeechSynthesisUtterance(cleanedText);
+    utterance.lang = "id-ID";
+    utterance.onstart = () => (speakBtn.innerHTML = icons.speaking);
+    utterance.onend = () => (speakBtn.innerHTML = icons.speak);
+    utterance.onerror = () => {
+      speakBtn.innerHTML = icons.speak;
+      showToast("Gagal membacakan teks.");
+    };
+    window.speechSynthesis.speak(utterance);
+  };
+  buttonContainer.appendChild(speakBtn);
+
+  // --- Share Button ---
+  const shareBtn = document.createElement("button");
+  shareBtn.title = "Bagikan";
+  shareBtn.innerHTML = icons.share;
+  shareBtn.onclick = async () => {
+    const shareText = `${text}\n\nDibagikan dari AI Digging. Kunjungi kami di ${OFFICIAL_WEBSITE_URL}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Chat dari AI Digging", text: text, url: OFFICIAL_WEBSITE_URL });
+      } catch (error) {
+        if (error.name !== "AbortError") console.error("Error sharing:", error);
+      }
+    } else {
+      navigator.clipboard.writeText(shareText).then(() => showToast("Teks & link disalin untuk dibagikan."));
+    }
+  };
+  buttonContainer.appendChild(shareBtn);
+
+  // --- Like Button ---
+  const likeBtn = document.createElement("button");
+  likeBtn.title = "Suka";
+  const messageStatus = getMessageLikeStatus(messageId);
+  likeBtn.innerHTML = messageStatus.liked ? icons.liked : icons.like;
+  likeBtn.onclick = () => {
+    const currentStatus = getMessageLikeStatus(messageId);
+    const isLiked = !currentStatus.liked;
+    saveMessageLikeStatus(messageId, { liked: isLiked, disliked: false });
+    likeBtn.innerHTML = isLiked ? icons.liked : icons.like;
+    unlikeBtn.innerHTML = icons.unlike; // Always reset unlike button
+  };
+  buttonContainer.appendChild(likeBtn);
+
+  // --- Unlike Button ---
+  const unlikeBtn = document.createElement("button");
+  unlikeBtn.title = "Tidak Suka";
+  unlikeBtn.innerHTML = messageStatus.disliked ? icons.unliked : icons.unlike;
+  unlikeBtn.onclick = () => {
+    const currentStatus = getMessageLikeStatus(messageId);
+    const isDisliked = !currentStatus.disliked;
+    saveMessageLikeStatus(messageId, { liked: false, disliked: isDisliked });
+    unlikeBtn.innerHTML = isDisliked ? icons.unliked : icons.unlike;
+    likeBtn.innerHTML = icons.like; // Always reset like button
+  };
+  buttonContainer.appendChild(unlikeBtn);
+
+  // General styling for all buttons within the container
+  buttonContainer.querySelectorAll("button").forEach((btn) => {
+    Object.assign(btn.style, { background: "transparent", border: "none", cursor: "pointer", padding: "4px", display: "flex", alignItems: "center", justifyContent: "center", opacity: "0.7" });
+    btn.onmouseenter = () => (btn.style.opacity = "1");
+    btn.onmouseleave = () => (btn.style.opacity = "0.7");
+  });
+
+  messageEl.appendChild(buttonContainer);
+}
+
+// =================================================================================
+// MAIN APPENDMESSAGE FUNCTION (FINAL VERSION WITH TEXT FIXES & IMAGE ALIGNMENT)
+// =================================================================================
+function appendMessage(sender, text, username, profileUrl, files = [], isHistory = false, messageId = null) {
+  // If no messageId is provided, generate a new one. This is crucial for history tracking.
+  messageId = messageId || `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+  const container = document.createElement("div");
+  container.className = `message-container ${sender} message-fade-in`;
+  container.setAttribute("data-message-id", messageId); // Set data-attribute for message ID
+
+  const profileEl = document.createElement("img");
+  profileEl.src = profileUrl;
+  profileEl.className = "profile-image";
+  container.appendChild(profileEl);
+
+  const content = document.createElement("div");
+  content.className = "message-content";
+  container.appendChild(content);
+
+  const nameEl = document.createElement("div");
+  nameEl.className = "username";
+  nameEl.textContent = username;
+  content.appendChild(nameEl);
+
+  const messageEl = document.createElement("div");
+  messageEl.className = `message ${sender === "bot" ? "bot-message" : "user-message"}`;
+  messageEl.style.position = "relative"; // Needed for action buttons positioning
+
+  // Force the text bubble to have its own max-width to prevent stretching.
+  messageEl.style.maxWidth = "100%";
+
+  // For user messages, ensure the bubble sticks to the right.
+  if (sender === "user") {
+    messageEl.style.marginLeft = "auto";
+  }
+
+  content.appendChild(messageEl);
+
+  // Add padding-bottom for bot messages to accommodate action buttons
+  if (sender === "bot" && text) {
+    messageEl.style.paddingBottom = "36px";
+  }
+
+  // Handle files attached to the message
+  if (files && files.length > 0) {
+    const filesContainer = document.createElement("div");
+    filesContainer.className = "message-files-container";
+
+    const imageFiles = files.filter((f) => f.type && f.type.startsWith("image/"));
+    const otherFiles = files.filter((f) => !f.type || !f.type.startsWith("image/"));
+
+    // Render image files
+    if (imageFiles.length > 0) {
+      const imageGrid = document.createElement("div");
+      imageGrid.className = "message-image-grid";
+
+      Object.assign(imageGrid.style, {
+        display: "flex",
+        overflowX: "auto",
+        maxWidth: "100%",
+        padding: "2px",
+        gap: "5px", // Space between images
+      });
+
+      // Align single image to the right for user messages
+      if (sender === "user" && imageFiles.length === 1) {
+        imageGrid.style.justifyContent = "flex-end";
+      } else if (sender === "bot" && imageFiles.length === 1) {
+        // Align single image to the left for bot messages
+        imageGrid.style.justifyContent = "flex-start";
+      }
+
+      // Push the entire filesContainer to the right for user messages
+      if (sender === "user") {
+        Object.assign(filesContainer.style, {
+          marginLeft: "auto",
+        });
+      }
+
+      imageFiles.forEach((file) => {
+        if (file.dataURL) {
+          const imgWrapper = document.createElement("div");
+          imgWrapper.className = "message-image-wrapper";
+          Object.assign(imgWrapper.style, {
+            flexShrink: "0", // Prevent image from shrinking
+            padding: "0px",
+          });
+
+          const img = document.createElement("img");
+          img.src = file.dataURL;
+          img.alt = file.name;
+          Object.assign(img.style, {
+            height: "100px",
+            width: "auto",
+            borderRadius: "8px",
+            display: "block",
+            cursor: "pointer",
+            padding: "0px",
+          });
+
+          // Modal for image preview on click
+          img.onclick = () => {
+            const modal = document.createElement("div");
+            modal.className = "image-modal";
+            modal.innerHTML = `<span class="close-modal">×</span><img src="${file.dataURL}" />`;
+            document.body.appendChild(modal);
+            modal.querySelector(".close-modal").onclick = () => modal.remove();
+            modal.onclick = (e) => {
+              if (e.target === modal) modal.remove();
+            };
+          };
+          imgWrapper.appendChild(img);
+          imageGrid.appendChild(imgWrapper);
+        }
+      });
+      filesContainer.appendChild(imageGrid);
+    }
+
+    // Render non-image files (documents, videos, etc.)
+    if (otherFiles.length > 0) {
+      const docGrid = document.createElement("div");
+      docGrid.className = "message-doc-grid";
+      otherFiles.forEach((file) => {
+        const docTag = document.createElement("div");
+        docTag.className = "message-doc-tag";
+        docTag.title = file.originalUrl || file.name;
+        const icon = document.createElement("span");
+        icon.className = "material-icons";
+        if (file.type === "application/pdf") {
+          icon.textContent = "picture_as_pdf";
+          docTag.style.backgroundColor = "#D32F2F";
+        } else if (file.type === "video/youtube") {
+          icon.textContent = "ondemand_video";
+          docTag.style.backgroundColor = "#FF0000";
+        } else if (file.type === "text/html" || file.isUrl) {
+          // Generic URL
+          icon.textContent = "link";
+          docTag.style.backgroundColor = "#0288D1";
+        } else {
+          icon.textContent = "article";
+          docTag.style.backgroundColor = "#1976D2";
+        }
+        const fileNameSpan = document.createElement("span");
+        fileNameSpan.textContent = file.name.length > 20 ? file.name.substring(0, 17) + "..." : file.name;
+        docTag.appendChild(icon);
+        docTag.appendChild(fileNameSpan);
+        docGrid.appendChild(docTag);
+      });
+      filesContainer.appendChild(docGrid);
+    }
+
+    content.insertBefore(filesContainer, messageEl); // Insert files container before the message text element
+  }
+
+  // Handle message text content
+  const textContentDiv = document.createElement("div");
+  if (text) {
+    messageEl.appendChild(textContentDiv);
+  }
+
+  if (sender === "user") {
+    // For user messages, directly set innerHTML after escaping, no animation
+    textContentDiv.innerHTML = escapeHtml(text).replace(/\n/g, "<br>"); // Replace newlines with <br> for display
+  } else {
+    // For bot messages, use renderMessageContent for animation, markdown, code blocks, etc.
+    const onRenderFinish = () => {
+      addBotActionButtons(messageEl, text, messageId); // Add action buttons after rendering
+      const mermaidElements = textContentDiv.querySelectorAll(".mermaid");
+      if (mermaidElements.length > 0 && window.mermaid) {
+        try {
+          mermaidElements.forEach((el, index) => (el.id = `mermaid-${messageId}-${index}`));
+          mermaid.run({
+            nodes: mermaidElements,
+          });
+        } catch (e) {
+          console.error("Mermaid.js error:", e);
+        }
+      }
+    };
+    // If not from history, animate the text. Otherwise, render instantly.
+    renderMessageContent(textContentDiv, text, !isHistory, onRenderFinish);
+  }
+
+  chatBox.appendChild(container); // Add the complete message container to chatBox
+  if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll if enabled
+  checkChatEmpty(); // Update empty chat message visibility
+}
+
+function highlightCode(code) {
+  return code.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
+}
+
+/*
+// The old typeText function has been replaced by renderMessageContent.
+// If you still have calls to typeText elsewhere, you should change them to renderMessageContent.
+// However, if you are indeed still using typeText for some reason,
+// note that this function will not handle file separation
+// because that is the job of appendMessage.
+async function typeText(element, rawText, delay = 10, onFinish = () => {}) {
+    element.innerHTML = ""; // Clear target element
+
+    const parts = [];
+    const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = blockRegex.exec(rawText)) !== null) {
+        if (match.index > lastIndex) {
+            parts.push({ type: "text", content: rawText.slice(lastIndex, match.index) });
+        }
+
+        if (match[1]) {
+            const codeBlock = match[1];
+            const filenameMatch = codeBlock.match(/```(.*?)\n/);
+            parts.push({
+                type: "code",
+                filename: filenameMatch ? filenameMatch[1].trim() : "code",
+                code: codeBlock
+                    .replace(/```(.*?)\n/, "")
+                    .replace(/```$/, "")
+                    .trim(),
+            });
+        } else if (match[2]) {
+            parts.push({
+                type: "table",
+                content: match[2],
+            });
+        }
+        lastIndex = blockRegex.lastIndex;
+    }
+
+    if (lastIndex < rawText.length) {
+        parts.push({ type: "text", content: rawText.slice(lastIndex) });
+    }
+
+    for (const part of parts) {
+        if (part.type === "text") {
+            const parsedHtml = parseMarkdown(part.content);
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = parsedHtml;
+
+            const typeNodeInElement = async (node, parentElement) => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    for (const char of node.textContent) {
+                        parentElement.innerHTML += char === "\n" ? "<br>" : escapeHtml(char);
+                        if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+                        await new Promise((r) => setTimeout(r, delay));
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    const newElem = document.createElement(node.tagName);
+                    for (let i = 0; i < node.attributes.length; i++) {
+                        const attr = node.attributes[i];
+                        newElem.setAttribute(attr.name, attr.value);
+                    }
+                    parentElement.appendChild(newElem);
+                    for (const childNode of Array.from(node.childNodes)) {
+                        await typeNodeInElement(childNode, newElem);
+                    }
+                }
+            };
+
+            for (const node of Array.from(tempDiv.childNodes)) {
+                await typeNodeInElement(node, element);
+            }
+        } else if (part.type === "code") {
+            const wrapper = document.createElement("div");
+            wrapper.className = "code-wrapper";
+            Object.assign(wrapper.style, { backgroundColor: "#1e1e1e", fontFamily: "'Source Code Pro', monospace", fontSize: "0.9em", color: "#d4d4d4", position: "relative", borderRadius: "8px", margin: "8px 0" });
+
+            const header = document.createElement("div");
+            Object.assign(header.style, { display: "flex", alignItems: "center", padding: "8px", borderBottom: "1px solid #333", backgroundColor: "#252526" });
+
+            const label = document.createElement("span");
+            label.textContent = part.filename;
+            Object.assign(label.style, { color: "#ccc", fontWeight: "600" });
+
+            const copyBtn = document.createElement("button");
+            copyBtn.title = "Salin kode";
+            copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+            Object.assign(copyBtn.style, { background: "transparent", border: "none", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "auto" });
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(part.code).then(() => showToast("Kode tersalin!"));
+            };
+
+            header.appendChild(label);
+            header.appendChild(copyBtn);
+
+            const pre = document.createElement("pre");
+            Object.assign(pre.style, { margin: "0", paddingTop: "8px", overflowX: "auto", whiteSpace: "pre-wrap", wordWrap: "break-word" });
+
+            const codeEl = document.createElement("code");
+            pre.appendChild(codeEl);
+            wrapper.appendChild(header);
+            wrapper.appendChild(pre);
+            element.appendChild(wrapper);
+
+            for (const char of part.code) {
+                codeEl.textContent += char;
+                if (autoScrollEnabled) {
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+                await new Promise((r) => setTimeout(r, 5)); // Faster code animation
+            }
+        } else if (part.type === "table") {
+            const tableHtml = parseMarkdownTable(part.content);
+            element.insertAdjacentHTML("beforeend", tableHtml);
+            if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    chatInput.disabled = false;
+    if (onFinish) {
+        onFinish();
+    }
+}
+*/
+
+function showToast(message) {
+  const existingToast = document.querySelector(".toast-notification");
+  if (existingToast) {
+    existingToast.remove();
+  }
+  const toast = document.createElement("div");
+  toast.className = "toast-notification";
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add("show");
+  }, 10);
+  setTimeout(() => {
+    toast.classList.remove("show");
+    toast.addEventListener("transitionend", () => {
+      toast.remove();
+    });
+  }, 2500);
+}
+
+function appendLoadingMessage() {
+  removeLoadingMessage();
+  const messageContainer = document.createElement("div");
+  messageContainer.id = "loading-message";
+  messageContainer.className = "message-container bot";
+
+  const profileImg = document.createElement("img");
+  profileImg.src =
+    "[https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f](https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f)";
+  profileImg.className = "profile-image";
+
+  const contentContainer = document.createElement("div");
+  contentContainer.className = "message-content";
+
+  const nameEl = document.createElement("div");
+  nameEl.className = "username";
+  nameEl.textContent = "AI Digging";
+
+  const loadingDots = document.createElement("div");
+  loadingDots.className = "message loading-animation";
+  loadingDots.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+
+  contentContainer.appendChild(nameEl);
+  contentContainer.appendChild(loadingDots);
+  messageContainer.appendChild(profileImg);
+  messageContainer.appendChild(contentContainer);
+  chatBox.appendChild(messageContainer);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function removeLoadingMessage() {
+  const el = document.getElementById("loading-message");
+  if (el) el.remove();
+}
+
+function escapeHtml(text) {
+  if (!text) return "";
+  let div = document.createElement("div");
+  div.appendChild(document.createTextNode(text));
+  return div.innerHTML;
+}
+
+function parseMarkdown(text) {
+  if (!text) return "";
+
+  let html = text;
+
+  // Horizontal rule
+  html = html.replace(/---/g, '<hr class="md-hr"/>');
+
+  // Headers (order: H3, H2, H1)
+  html = html.replace(/^###\s*(.*?)(\n|$)/gm, "<h3>$1</h3>");
+  html = html.replace(/^##\s*(.*?)(\n|$)/gm, "<h2>$1</h2>");
+  html = html.replace(/^#\s*(.*?)(\n|$)/gm, "<h1>$1</h1>");
+
+  // Lists (basic - unordered)
+  html = html.replace(/^\s*([*-+])\s+(.*)/gm, "<li>$2</li>");
+  html = html.replace(/((?:<li>.*?<\/li>\s*)+)/gs, "<ul>$1</ul>");
+
+  // Bold
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
+  // Italic
+  html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+  html = html.replace(/_(.*?)_/g, "<em>$1</em>");
+  // Strikethrough
+  html = html.replace(/~~(.*?)~~/g, "<del>$1</del>");
+
+  // Inline Code
+  html = html.replace(/`([^`]+)`/g, `<code class="md-inline-code">$1</code>`);
+
+  // Links (basic)
+  html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+  // Paragraphs and Line Breaks
+  html = html.replace(/\n\n/g, "__PARAGRAPH_BREAK__");
+  html = html.replace(/\n/g, "<br>");
+  html = html.replace(/__PARAGRAPH_BREAK__/g, "</p><p>");
+
+  if (!/^\s*<(h[1-6]|ul|ol|table|div|hr|pre|p)\b/i.test(html.trim())) {
+    html = `<p>${html}</p>`;
+  }
+
+  // Remove empty paragraphs
+  html = html.replace(/<p><\/p>/g, "");
+  html = html.replace(/<p>\s*<br>\s*<\/p>/g, "");
+
+  return html;
+}
+
+// --- NEW FUNCTION: parseMarkdownTable (specifically for table conversion) ---
+function parseMarkdownTable(tableMarkdownText) {
+  if (!tableMarkdownText) return "";
+
+  const lines = tableMarkdownText
+    .trim()
+    .split("\n")
+    .filter((line) => line.trim() !== ""); // Filter out empty lines
+
+  if (lines.length < 2) return escapeHtml(tableMarkdownText); // Not a valid table (minimal header + separator)
+
+  const headerLine = lines[0];
+  const separatorLine = lines[1];
+  const dataLines = lines.slice(2);
+
+  // Parse header
+  const headers = headerLine
+    .split("|")
+    .map((h) => h.trim())
+    .filter((h) => h !== "");
+
+  // Determine column alignment from separator line
+  const alignments = separatorLine
+    .split("|")
+    .map((s) => {
+      s = s.trim();
+      if (s.startsWith(":") && s.endsWith(":")) return "center"; // :--:
+      if (s.endsWith(":")) return "right"; // ---:
+      if (s.startsWith(":")) return "left"; // :---
+      return "left"; // default ---
+    })
+    .filter((s) => s !== ""); // Filter out empty strings from initial split
+
+  let tableHtml = '<div style="overflow-x:auto; max-width: 100%;"><table style="width:100%;border-collapse:collapse;margin:10px 0;table-layout:fixed;"><thead><tr style="background-color:#3a3a3a;">';
+  headers.forEach((header, i) => {
+    const textAlign = alignments[i] || "left";
+    // HTML escape header content directly
+    tableHtml += `<th style="padding:8px;border:1px solid #555;text-align:${textAlign};color:#fff;box-sizing:border-box; word-break: break-word; overflow-wrap: break-word;">${escapeHtml(header)}</th>`;
+  });
+  tableHtml += "</tr></thead><tbody>";
+
+  // Parse data rows
+  dataLines.forEach((line) => {
+    const cells = line
+      .split("|")
+      .map((c) => c.trim())
+      .filter((c) => c !== "");
+    if (cells.length === headers.length) {
+      // Ensure number of cells matches number of headers
+      tableHtml += '<tr style="background-color:#2a2a2a;">';
+      cells.forEach((cell, i) => {
+        const textAlign = alignments[i] || "left";
+        // HTML escape cell content directly
+        tableHtml += `<td style="padding:8px;border:1px solid #555;color:#ddd;text-align:${textAlign};box-sizing:border-box; word-break: break-word; overflow-wrap: break-word;">${escapeHtml(cell)}</td>`;
+      });
+      tableHtml += "</tr>";
+    }
+  });
+
+  tableHtml += "</tbody></table></div>";
+  return tableHtml;
+}
+// --- END OF NEW parseMarkdownTable FUNCTION ---
+
+function copyTextFromButton(button) {
+  const messageEl = button.previousElementSibling;
+  if (!messageEl) return;
+  const text = messageEl.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    button.innerHTML = `<img src="images/tick.png" alt="Copied" width="16" height="16" />`;
+    setTimeout(() => {
+      button.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+    }, 1500);
+  });
+}
+
+function addCopyButtonsToCodeBlocks(container, username = "AI Digging") {
+  if (username === "You") return;
+
+  const wrappers = container.querySelectorAll(".code-wrapper");
+
+  wrappers.forEach((wrapper) => {
+    if (wrapper.querySelector(".code-toolbar")) return;
+
+    const pre = wrapper.querySelector("pre");
+    if (!pre) return;
+    const code = pre.querySelector("code");
+    if (!code) return;
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "code-toolbar";
+
+    const filename = wrapper.getAttribute("data-filename") || "code";
+    const label = document.createElement("span");
+    label.className = "code-label";
+    label.textContent = filename;
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "code-copy-btn";
+    copyBtn.type = "button";
+    copyBtn.title = "Salin kode";
+    copyBtn.setAttribute("aria-label", `Salin kode di ${filename}`);
+
+    copyBtn.innerHTML = `
+                <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path d="M16 4H8a2 2 0 0 0-2 2v12m2-2h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+                </svg>
+                <span>Copy</span>
+                `;
+
+    copyBtn.onclick = () => {
+      navigator.clipboard
+        .writeText(code.textContent)
+        .then(() => {
+          if (typeof showToast !== "undefined") {
+            showToast("Kode tersalin!");
+          }
+        })
+        .catch((err) => console.error("Failed to copy code:", err));
+    };
+
+    toolbar.appendChild(label);
+    toolbar.appendChild(copyBtn);
+    wrapper.insertBefore(toolbar, pre);
+  });
+}
+
+/**
+ * Renders raw content from the bot (text, markdown, tables, code, diagrams) into the target element.
+ * @param {HTMLElement} element - The target div element to be filled with content.
+ * @param {string} rawText - The raw text from the AI.
+ * @param {boolean} isAnimated - If true, content will be animated (typing effect).
+ * @param {function} onFinish - Callback function to be executed after rendering is complete.
+ */
+async function renderMessageContent(element, rawText, isAnimated = false, onFinish = () => {}) {
+  // Always clear the target element before rendering new content
+  element.innerHTML = "";
+
+  // Set animation delay. Reduced delay for a faster experience.
+  const animationDelay = isAnimated ? 5 : 0; // Changed from 10ms to 5ms
+
+  /**
+   * Parses raw text into segments (text, code blocks, tables).
+   * @param {string} text - The raw text to parse.
+   * @returns {Array<Object>} - An array of segment objects.
+   */
+  const parseContentIntoSegments = (text) => {
+    const segments = [];
+    // Regex to capture code blocks (```) or markdown tables
+    const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = blockRegex.exec(text)) !== null) {
+      // Add text segment before the found block
+      if (match.index > lastIndex) {
+        segments.push({ type: "text", content: text.slice(lastIndex, match.index) });
+      }
+
+      // If it's a code block (match[1])
+      if (match[1]) {
+        const codeBlock = match[1];
+        const filenameMatch = codeBlock.match(/```(.*?)\n/);
+        // Extract language/filename, default to 'code' if none
+        const language = filenameMatch ? filenameMatch[1].trim().toLowerCase() : "code";
+        const codeContent = codeBlock
+          .replace(/```(.*?)\n/, "") // Remove opening ```language line
+          .replace(/```$/, "") // Remove closing ``` line
+          .trim();
+        segments.push({ type: "code", language, content: codeContent });
+      }
+      // If it's a table (match[2])
+      else if (match[2]) {
+        segments.push({ type: "table", content: match[2] });
+      }
+      lastIndex = blockRegex.lastIndex;
+    }
+
+    // Add remaining text after the last block (if any)
+    if (lastIndex < text.length) {
+      segments.push({ type: "text", content: text.slice(lastIndex) });
+    }
+    return segments;
+  };
+
+  /**
+   * Recursive function to animate adding nodes to the DOM.
+   * Used for typing effect on plain text.
+   * @param {Node} node - The DOM node to animate.
+   * @param {HTMLElement} parentElement - The parent element where the node will be added.
+   */
+  const animateTextNodeContent = async (node, parentElement) => {
+    for (const childNode of Array.from(node.childNodes)) {
+      if (childNode.nodeType === Node.TEXT_NODE) {
+        // Animate text character by character
+        for (const char of childNode.textContent) {
+          parentElement.appendChild(document.createTextNode(char));
+          // Ensure chatBox and autoScrollEnabled are defined globally
+          if (typeof autoScrollEnabled !== "undefined" && autoScrollEnabled && typeof chatBox !== "undefined") {
+            chatBox.scrollTop = chatBox.scrollHeight;
+          }
+          if (isAnimated) {
+            await new Promise((resolve) => setTimeout(resolve, animationDelay));
+          }
+        }
+      } else if (childNode.nodeType === Node.ELEMENT_NODE) {
+        // Create new element and recursively animate its content
+        const newElement = document.createElement(childNode.tagName);
+        // Copy all attributes from the original node to the new element (important for markdown styling)
+        Array.from(childNode.attributes).forEach((attr) => {
+          newElement.setAttribute(attr.name, attr.value);
+        });
+        parentElement.appendChild(newElement);
+        await animateTextNodeContent(childNode, newElement);
+      }
+    }
+  };
+
+  /**
+   * Renders a code block with a header, copy button, and syntax highlighting.
+   * @param {HTMLElement} parentElement - The element where the code block will be added.
+   * @param {Object} codeSegment - The code segment object { type, language, content }.
+   */
+  const renderCodeBlock = async (parentElement, codeSegment) => {
+    const { language, content } = codeSegment;
+
+    // Special handling for Mermaid and text-based diagrams
+    if (language === "mermaid") {
+      const mermaidDiv = document.createElement("div");
+      mermaidDiv.className = "mermaid";
+      mermaidDiv.textContent = content;
+      parentElement.appendChild(mermaidDiv);
+      // mermaid.init() or mermaid.run() needs to be called after all rendering is done.
+    } else if (language === "diagram" || language === "flowchart") {
+      const pre = document.createElement("pre");
+      pre.className = "text-diagram"; // Use class for styling
+      pre.textContent = content;
+      parentElement.appendChild(pre);
+    } else {
+      // Standard code block rendering
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-wrapper"; // Class for CSS styling
+      Object.assign(wrapper.style, {
+        backgroundColor: "#1e1e1e",
+        fontFamily: "'Source Code Pro', monospace",
+        margin: "16px 0", // Better vertical spacing
+        borderRadius: "8px",
+        overflow: "hidden",
+        border: "1px solid #333", // Border for clearer display
+        boxShadow: "0 4px 8px rgba(0,0,0,0.2)", // Slight shadow
+      });
+
+      const header = document.createElement("div");
+      header.className = "code-header"; // Class for CSS styling
+      Object.assign(header.style, {
+        display: "flex",
+        alignItems: "center",
+        padding: "8px 12px", // Header padding
+        borderBottom: "1px solid #333",
+        backgroundColor: "#252526",
+        color: "#ccc",
+        fontWeight: "600",
+        fontSize: "0.9em",
+      });
+
+      const label = document.createElement("span");
+      label.textContent = language.toUpperCase(); // Make language label more prominent
+      label.className = "code-language-label"; // Class for CSS styling
+
+      const copyBtn = document.createElement("button");
+      copyBtn.title = "Salin kode";
+      copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+      copyBtn.className = "copy-code-btn"; // Class for CSS styling
+      Object.assign(copyBtn.style, {
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        marginLeft: "auto",
+        padding: "4px",
+        borderRadius: "4px",
+        transition: "background-color 0.2s ease", // Hover effect
+      });
+      copyBtn.onmouseover = () => (copyBtn.style.backgroundColor = "#444");
+      copyBtn.onmouseout = () => (copyBtn.style.backgroundColor = "transparent");
+
+      copyBtn.onclick = () => {
+        navigator.clipboard
+          .writeText(content)
+          .then(() => {
+            if (typeof showToast !== "undefined") {
+              showToast("Kode tersalin!");
+            }
+          })
+          .catch((err) => console.error("Failed to copy code:", err));
+      };
+
+      header.append(label, copyBtn);
+
+      const pre = document.createElement("pre");
+      pre.className = "code-content-pre"; // Class for CSS styling
+      Object.assign(pre.style, {
+        margin: "0",
+        padding: "12px 16px", // Code content padding
+        overflowX: "auto",
+        whiteSpace: "pre-wrap",
+        wordWrap: "break-word",
+        color: "#f8f8f2", // Code text color (dark theme)
+        fontSize: "0.9em",
+        lineHeight: "1.5",
+      });
+
+      const codeEl = document.createElement("code");
+      codeEl.className = `language-${language}`; // For syntax highlighting libraries like Prism.js
+      pre.appendChild(codeEl);
+      wrapper.append(header, pre);
+      parentElement.appendChild(wrapper);
+
+      // Animate or display code content directly
+      if (isAnimated) {
+        for (const char of content) {
+          codeEl.textContent += char;
+          if (typeof autoScrollEnabled !== "undefined" && autoScrollEnabled && typeof chatBox !== "undefined") {
+            chatBox.scrollTop = chatBox.scrollHeight;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 2)); // Faster code animation
+        }
+      } else {
+        codeEl.textContent = content;
+      }
+
+      // Call syntax highlighter if available (e.g., Prism.js)
+      if (typeof Prism !== "undefined") {
+        Prism.highlightElement(codeEl);
+      }
+    }
+  };
+
+  // 1. Parse raw text into segments (text, code, table)
+  const segments = parseContentIntoSegments(rawText);
+
+  // 2. Render each segment
+  for (const segment of segments) {
+    if (segment.type === "text") {
+      if (typeof parseMarkdown === "function") {
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = parseMarkdown(segment.content);
+        await animateTextNodeContent(tempDiv, element);
+      } else {
+        // Fallback if parseMarkdown is not available
+        const textNode = document.createElement("p"); // Use <p> for text paragraphs
+        textNode.textContent = segment.content;
+        element.appendChild(textNode);
+      }
+    } else if (segment.type === "table") {
+      if (typeof parseMarkdownTable === "function") {
+        element.insertAdjacentHTML("beforeend", parseMarkdownTable(segment.content));
+      } else {
+        // Fallback if parseMarkdownTable is not available
+        const pre = document.createElement("pre");
+        pre.textContent = segment.content;
+        element.appendChild(pre);
+      }
+    } else if (segment.type === "code") {
+      await renderCodeBlock(element, segment);
+    }
+
+    // Scroll after each segment is rendered, if auto-scroll is enabled
+    if (typeof autoScrollEnabled !== "undefined" && autoScrollEnabled && typeof chatBox !== "undefined") {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }
+
+  // 3. Execute callback after all rendering is complete
+  if (onFinish) {
+    onFinish();
+  }
+}
+// =================================================================================
+// FUNGSI UTAMA APPENDMESSAGE (VERSI FINAL YANG SUDAH DIPERBAIKI)
+// =================================================================================
+// =================================================================================
+// FUNGSI UTAMA APPENDMESSAGE (VERSI FINAL DENGAN PERBAIKAN TEKS)
+// =================================================================================
+function appendMessage(sender, text, username, profileUrl, files = [], isHistory = false, messageId = null) {
+  messageId = messageId || `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  const container = document.createElement("div");
+  container.className = `message-container ${sender} message-fade-in`;
+  container.setAttribute("data-message-id", messageId);
+
+  const profileEl = document.createElement("img");
+  profileEl.src = profileUrl;
+  profileEl.className = "profile-image";
+  container.appendChild(profileEl);
+
+  const content = document.createElement("div");
+  content.className = "message-content";
+  container.appendChild(content);
+
+  const nameEl = document.createElement("div");
+  nameEl.className = "username";
+  nameEl.textContent = username;
+  content.appendChild(nameEl);
+
+  const messageEl = document.createElement("div");
+  messageEl.className = `message ${sender === "bot" ? "bot-message" : "user-message"}`;
+  messageEl.style.position = "relative";
+
+  // Force the text bubble to have its own max-width to prevent stretching.
+  messageEl.style.maxWidth = "100%";
+
+  // For user messages, ensure the bubble sticks to the right.
+  if (sender === "user") {
+    messageEl.style.marginLeft = "auto";
+  }
+
+  content.appendChild(messageEl);
+
+  if (sender === "bot" && text) {
+    messageEl.style.paddingBottom = "36px";
+  }
+
+  if (files && files.length > 0) {
+    const filesContainer = document.createElement("div");
+    filesContainer.className = "message-files-container";
+
+    const imageFiles = files.filter((f) => f.type && f.type.startsWith("image/"));
+    const otherFiles = files.filter((f) => !f.type || !f.type.startsWith("image/"));
+
+    if (imageFiles.length > 0) {
+      const imageGrid = document.createElement("div");
+      imageGrid.className = "message-image-grid";
+
+      Object.assign(imageGrid.style, {
+        display: "flex",
+        overflowX: "auto",
+        maxWidth: "100%",
+        padding: "2px",
+      });
+
+      // Align single image to the right for user messages
+      if (sender === "user" && imageFiles.length === 1) {
+        imageGrid.style.justifyContent = "flex-end";
+      } else if (sender === "bot" && imageFiles.length === 1) {
+        // Align single image to the left for bot messages
+        imageGrid.style.justifyContent = "flex-start";
+      }
+
+      // Push the entire filesContainer to the right for user messages
+      if (sender === "user") {
+        Object.assign(filesContainer.style, {
+          marginLeft: "auto",
+        });
+      }
+
+      imageFiles.forEach((file) => {
+        if (file.dataURL) {
+          const imgWrapper = document.createElement("div");
+          imgWrapper.className = "message-image-wrapper";
+          Object.assign(imgWrapper.style, {
+            flexShrink: "0",
+            padding: "0px",
+          });
+
+          const img = document.createElement("img");
+          img.src = file.dataURL;
+          img.alt = file.name;
+          Object.assign(img.style, {
+            height: "100px",
+            width: "auto",
+            borderRadius: "8px",
+            display: "block",
+            cursor: "pointer",
+            padding: "0px",
+          });
+
+          img.onclick = () => {
+            const modal = document.createElement("div");
+            modal.className = "image-modal";
+            modal.innerHTML = `<span class="close-modal">×</span><img src="${file.dataURL}" />`;
+            document.body.appendChild(modal);
+            modal.querySelector(".close-modal").onclick = () => modal.remove();
+            modal.onclick = (e) => {
+              if (e.target === modal) modal.remove();
+            };
+          };
+          imgWrapper.appendChild(img);
+          imageGrid.appendChild(imgWrapper);
+        }
+      });
+      filesContainer.appendChild(imageGrid);
+    }
+
+    // Section for non-image files
+    if (otherFiles.length > 0) {
+      const docGrid = document.createElement("div");
+      docGrid.className = "message-doc-grid";
+      otherFiles.forEach((file) => {
+        const docTag = document.createElement("div");
+        docTag.className = "message-doc-tag";
+        docTag.title = file.originalUrl || file.name;
+        const icon = document.createElement("span");
+        icon.className = "material-icons";
+        if (file.type === "application/pdf") {
+          icon.textContent = "picture_as_pdf";
+          docTag.style.backgroundColor = "#D32F2F";
+        } else if (file.type === "video/youtube") {
+          icon.textContent = "ondemand_video";
+          docTag.style.backgroundColor = "#FF0000";
+        } else {
+          icon.textContent = "article";
+          docTag.style.backgroundColor = "#1976D2";
+        }
+        const fileNameSpan = document.createElement("span");
+        fileNameSpan.textContent = file.name.length > 20 ? file.name.substring(0, 17) + "..." : file.name;
+        docTag.appendChild(icon);
+        docTag.appendChild(fileNameSpan);
+        docGrid.appendChild(docTag);
+      });
+      filesContainer.appendChild(docGrid);
+    }
+
+    content.insertBefore(filesContainer, messageEl);
+  }
+
+  const textContentDiv = document.createElement("div");
+  if (text) {
+    messageEl.appendChild(textContentDiv);
+  }
+
+  if (sender === "user") {
+    textContentDiv.innerHTML = escapeHtml(text).replace(/\n/g, "");
+  } else {
+    const onRenderFinish = () => {
+      addBotActionButtons(messageEl, text, messageId);
+      const mermaidElements = textContentDiv.querySelectorAll(".mermaid");
+      if (mermaidElements.length > 0 && window.mermaid) {
+        try {
+          mermaidElements.forEach((el, index) => (el.id = `mermaid-${messageId}-${index}`));
+          mermaid.run({
+            nodes: mermaidElements,
+          });
+        } catch (e) {
+          console.error("Mermaid.js error:", e);
+        }
+      }
+    };
+    renderMessageContent(textContentDiv, text, !isHistory, onRenderFinish);
+  }
+
+  chatBox.appendChild(container);
+  if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+  checkChatEmpty();
+}
+
+function highlightCode(code) {
+  return code.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
+}
+
+// Fungsi typeText lama sudah digantikan oleh renderMessageContent.
+// Jika Anda masih memiliki panggilan ke typeText di tempat lain,
+// sebaiknya Anda ubah menjadi renderMessageContent.
+// Namun, jika Anda memang masih menggunakan typeText untuk tujuan tertentu,
+// perhatikan bahwa fungsi ini tidak akan menangani pemisahan file
+// karena itu tugas dari appendMessage.
+
+/*
+async function typeText(element, rawText, delay = 10, onFinish = () => {}) {
+    element.innerHTML = ""; // Bersihkan elemen target
+
+    const parts = [];
+    const blockRegex = /(```[\s\S]*?```)|(^\|.+\|\s*\r?\n^\|[ |:\-]*-[ |:\-]*\|\s*\r?\n(?:^\|.*\|\s*\r?\n?)*)/gm;
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = blockRegex.exec(rawText)) !== null) {
+        if (match.index > lastIndex) {
+            parts.push({ type: "text", content: rawText.slice(lastIndex, match.index) });
+        }
+
+        if (match[1]) {
+            const codeBlock = match[1];
+            const filenameMatch = codeBlock.match(/```(.*?)\n/);
+            parts.push({
+                type: "code",
+                filename: filenameMatch ? filenameMatch[1].trim() : "code",
+                code: codeBlock
+                    .replace(/```(.*?)\n/, "")
+                    .replace(/```$/, "")
+                    .trim(),
+            });
+        } else if (match[2]) {
+            parts.push({
+                type: "table",
+                content: match[2],
+            });
+        }
+        lastIndex = blockRegex.lastIndex;
+    }
+
+    if (lastIndex < rawText.length) {
+        parts.push({ type: "text", content: rawText.slice(lastIndex) });
+    }
+
+    for (const part of parts) {
+        if (part.type === "text") {
+            const parsedHtml = parseMarkdown(part.content);
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = parsedHtml;
+
+            const typeNodeInElement = async (node, parentElement) => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    for (const char of node.textContent) {
+                        parentElement.innerHTML += char === "\n" ? "<br>" : escapeHtml(char);
+                        if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+                        await new Promise((r) => setTimeout(r, delay));
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    const newElem = document.createElement(node.tagName);
+                    for (let i = 0; i < node.attributes.length; i++) {
+                        const attr = node.attributes[i];
+                        newElem.setAttribute(attr.name, attr.value);
+                    }
+                    parentElement.appendChild(newElem);
+                    for (const childNode of Array.from(node.childNodes)) {
+                        await typeNodeInElement(childNode, newElem);
+                    }
+                }
+            };
+
+            for (const node of Array.from(tempDiv.childNodes)) {
+                await typeNodeInElement(node, element);
+            }
+        } else if (part.type === "code") {
+            const wrapper = document.createElement("div");
+            wrapper.className = "code-wrapper";
+            Object.assign(wrapper.style, { backgroundColor: "#1e1e1e", fontFamily: "'Source Code Pro', monospace", fontSize: "0.9em", color: "#d4d4d4", position: "relative", borderRadius: "8px", margin: "8px 0" });
+
+            const header = document.createElement("div");
+            Object.assign(header.style, { display: "flex", alignItems: "center", padding: "8px", borderBottom: "1px solid #333", backgroundColor: "#252526" });
+
+            const label = document.createElement("span");
+            label.textContent = part.filename;
+            Object.assign(label.style, { color: "#ccc", fontWeight: "600" });
+
+            const copyBtn = document.createElement("button");
+            copyBtn.title = "Salin kode";
+            copyBtn.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+            Object.assign(copyBtn.style, { background: "transparent", border: "none", cursor: "pointer", padding: "0", display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "auto" });
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(part.code).then(() => showToast("Kode tersalin!"));
+            };
+
+            header.appendChild(label);
+            header.appendChild(copyBtn);
+
+            const pre = document.createElement("pre");
+            Object.assign(pre.style, { margin: "0", paddingTop: "8px", overflowX: "auto", whiteSpace: "pre-wrap", wordWrap: "break-word" });
+
+            const codeEl = document.createElement("code");
+            pre.appendChild(codeEl);
+            wrapper.appendChild(header);
+            wrapper.appendChild(pre);
+            element.appendChild(wrapper);
+
+            for (const char of part.code) {
+                codeEl.textContent += char;
+                if (autoScrollEnabled) {
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+                await new Promise((r) => setTimeout(r, 5)); // Animasi kode lebih cepat
+            }
+        } else if (part.type === "table") {
+            const tableHtml = parseMarkdownTable(part.content);
+            element.insertAdjacentHTML("beforeend", tableHtml);
+            if (autoScrollEnabled) chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
+
+    chatInput.disabled = false;
+    if (onFinish) {
+        onFinish();
+    }
+}
+*/
+
+function showToast(message) {
+  const existingToast = document.querySelector(".toast-notification");
+  if (existingToast) {
+    existingToast.remove();
+  }
+  const toast = document.createElement("div");
+  toast.className = "toast-notification";
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add("show");
+  }, 10);
+  setTimeout(() => {
+    toast.classList.remove("show");
+    toast.addEventListener("transitionend", () => {
+      toast.remove();
+    });
+  }, 2500);
+}
+
+function appendLoadingMessage() {
+  removeLoadingMessage();
+  const messageContainer = document.createElement("div");
+  messageContainer.id = "loading-message";
+  messageContainer.className = "message-container bot";
+
+  const profileImg = document.createElement("img");
+  profileImg.src = "https://firebasestorage.googleapis.com/v0/b/renvonovel.appspot.com/o/20250526_232210.png?alt=media&token=dc5a0b3a-f869-432a-82a2-c27b32eca77f";
+  profileImg.className = "profile-image";
+
+  const contentContainer = document.createElement("div");
+  contentContainer.className = "message-content";
+
+  const nameEl = document.createElement("div");
+  nameEl.className = "username";
+  nameEl.textContent = "AI Digging";
+
+  const loadingDots = document.createElement("div");
+  loadingDots.className = "message loading-animation";
+  loadingDots.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+
+  contentContainer.appendChild(nameEl);
+  contentContainer.appendChild(loadingDots);
+  messageContainer.appendChild(profileImg);
+  messageContainer.appendChild(contentContainer);
+  chatBox.appendChild(messageContainer);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function removeLoadingMessage() {
+  const el = document.getElementById("loading-message");
+  if (el) el.remove();
+}
+
+function escapeHtml(text) {
+  if (!text) return "";
+  let div = document.createElement("div");
+  div.appendChild(document.createTextNode(text));
+  return div.innerHTML;
+}
+
+function parseMarkdown(text) {
+  if (!text) return "";
+
+  // Penting: Pastikan teks input TIDAK di-HTML-escape sepenuhnya di sini
+  // karena `renderMessageContent` atau `animateTextNodeContent` akan menangani
+  // escaping karakter per karakter saat animasi, atau Anda ingin tag HTML yang
+  // dihasilkan oleh parser markdown ini (seperti <strong>, <a>) tetap utuh.
+
+  let html = text; // Mulai dengan teks mentah
+
+  // 1. Tangani Block-level Elements (Header, List, Horizontal Rule) terlebih dahulu
+  // Ini penting agar regex untuk inline tidak salah menginterpretasikan baris-baris ini.
+
+  // Horizontal rule
+  html = html.replace(/---/g, '<hr class="md-hr"/>'); // Tambahkan kelas untuk styling
+
+  // Headers (perhatikan urutan: H3 dulu, baru H2, H1)
+  html = html.replace(/^###\s*(.*?)(\n|$)/gm, "<h3>$1</h3>");
+  html = html.replace(/^##\s*(.*?)(\n|$)/gm, "<h2>$1</h2>");
+  html = html.replace(/^#\s*(.*?)(\n|$)/gm, "<h1>$1</h1>");
+
+  // Lists (basic - unordered)
+  // Ini akan mengidentifikasi item list dan membungkusnya dalam <li>
+  // Kemudian, kelompokkan <li> yang berurutan ke dalam <ul>
+  html = html.replace(/^\s*([*-+])\s+(.*)/gm, "<li>$2</li>"); // Ganti bullet point dengan <li>
+  // Regex untuk membungkus <li> dalam <ul>. Ini cukup kompleks.
+  // Untuk kasus sederhana, kita bisa asumsikan <li> berada di blok yang sama.
+  // Pendekatan yang lebih robust:
+  html = html.replace(/((?:<li>.*?<\/li>\s*)+)/gs, "<ul>$1</ul>");
+  // `gs` flags: g for global (semua kecocokan), s for dotAll ('.' mencocokkan newline)
+
+  // 2. Tangani Inline Elements
+  // Bold
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
+  // Italic
+  html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+  html = html.replace(/_(.*?)_/g, "<em>$1</em>");
+  // Strikethrough
+  html = html.replace(/~~(.*?)~~/g, "<del>$1</del>");
+
+  // Inline Code (pastikan konten di dalamnya tidak di-escape HTML oleh parser ini)
+  // `code` adalah salah satu yang harus dihindari dari escapeHtml di sini
+  html = html.replace(/`([^`]+)`/g, `<code class="md-inline-code">$1</code>`);
+
+  // Links (dasar)
+  html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+  // 3. Tangani Paragraf dan Line Breaks
+  // Ini adalah bagian kunci untuk mengontrol jarak.
+
+  // Ganti SEMUA single newline yang TIDAK mengikuti tag block-level dengan <br>
+  // Ini akan memastikan paragraf tidak dipisah oleh <br> dan hanya baris baru 'lembut' yang menggunakannya.
+  // Penting: Ini dilakukan setelah block-level elements diubah.
+  // Regex ini mencoba menghindari penambahan <br> di dalam tag blok atau setelah tag penutup blok.
+  // Ini adalah tantangan umum di parser markdown sederhana.
+
+  // Langkah pertama: Ganti semua double newline (yang menandakan paragraf baru) dengan placeholder unik
+  // Lalu ganti semua single newline dengan <br> (kecuali yang di dalam kode block, tapi itu sudah ditangani oleh renderCodeBlock)
+  // Kemudian ganti placeholder kembali ke </p><p>
+  html = html.replace(/\n\n/g, "__PARAGRAPH_BREAK__"); // Ganti paragraf dengan placeholder
+  html = html.replace(/\n/g, "<br>"); // Ganti baris baru tunggal dengan <br>
+  html = html.replace(/__PARAGRAPH_BREAK__/g, "</p><p>"); // Kembalikan placeholder ke tag paragraf
+
+  // 4. Bungkus seluruh konten dengan tag <p> jika belum ada tag block-level
+  // Ini memastikan semua teks ada di dalam setidaknya satu paragraf.
+  // Kita perlu memastikan tidak membungkus tag block-level yang sudah ada (h1, h2, ul, hr, dll.)
+  // Cek apakah ada tag block-level di awal teks. Jika tidak, bungkus.
+  if (!/^\s*<(h[1-6]|ul|ol|table|div|hr|pre|p)\b/i.test(html.trim())) {
+    html = `<p>${html}</p>`;
+  }
+
+  // Hapus paragraf kosong yang mungkin muncul karena penggantian
+  html = html.replace(/<p><\/p>/g, "");
+  html = html.replace(/<p>\s*<br>\s*<\/p>/g, ""); // Hapus p yang hanya berisi br
+
+  return html;
+}
+
+// Ensure your CSS has styles for these new classes:
+// .md-inline-code
+// .md-hr
+// h1, h2, h3 within .message-content
+// ul, li within .message-content (for lists)
+// a within .message-content
+// --- AKHIR FUNGSI parseMarkdown yang fokus pada Inline Markdown ---
+
+// --- FUNGSI BARU: parseMarkdownTable (khusus untuk konversi tabel) ---
+function parseMarkdownTable(tableMarkdownText) {
+  if (!tableMarkdownText) return "";
+
+  const lines = tableMarkdownText
+    .trim()
+    .split("\n")
+    .filter((line) => line.trim() !== ""); // Filter out empty lines
+
+  if (lines.length < 2) return escapeHtml(tableMarkdownText); // Not a valid table (minimal header + separator)
+
+  const headerLine = lines[0];
+  const separatorLine = lines[1];
+  const dataLines = lines.slice(2);
+
+  // Parse header
+  const headers = headerLine
+    .split("|")
+    .map((h) => h.trim())
+    .filter((h) => h !== "");
+
+  // Determine column alignment from separator line
+  const alignments = separatorLine
+    .split("|")
+    .map((s) => {
+      s = s.trim();
+      if (s.startsWith(":") && s.endsWith(":")) return "center"; // :--:
+      if (s.endsWith(":")) return "right"; // ---:
+      if (s.startsWith(":")) return "left"; // :---
+      return "left"; // default ---
+    })
+    .filter((s) => s !== ""); // Filter out empty strings from initial split
+
+  let tableHtml = '<div style="overflow-x:auto; max-width: 100%;"><table style="width:100%;border-collapse:collapse;margin:10px 0;table-layout:fixed;"><thead><tr style="background-color:#3a3a3a;">';
+  headers.forEach((header, i) => {
+    const textAlign = alignments[i] || "left";
+    // HTML escape header content directly
+    tableHtml += `<th style="padding:8px;border:1px solid #555;text-align:${textAlign};color:#fff;box-sizing:border-box; word-break: break-word; overflow-wrap: break-word;">${escapeHtml(header)}</th>`;
+  });
+  tableHtml += "</tr></thead><tbody>";
+
+  // Parse data rows
+  dataLines.forEach((line) => {
+    const cells = line
+      .split("|")
+      .map((c) => c.trim())
+      .filter((c) => c !== "");
+    if (cells.length === headers.length) {
+      // Pastikan jumlah sel sesuai dengan jumlah header
+      tableHtml += '<tr style="background-color:#2a2a2a;">';
+      cells.forEach((cell, i) => {
+        const textAlign = alignments[i] || "left";
+        // HTML escape cell content directly
+        tableHtml += `<td style="padding:8px;border:1px solid #555;color:#ddd;text-align:${textAlign};box-sizing:border-box; word-break: break-word; overflow-wrap: break-word;">${escapeHtml(cell)}</td>`;
+      });
+      tableHtml += "</tr>";
+    }
+  });
+
+  tableHtml += "</tbody></table></div>";
+  return tableHtml;
+}
+// --- AKHIR FUNGSI parseMarkdown BARU UNTUK TABEL YANG LEBIH BAIK ---
+
+function copyTextFromButton(button) {
+  const messageEl = button.previousElementSibling;
+  if (!messageEl) return;
+  const text = messageEl.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    button.innerHTML = `<img src="images/tick.png" alt="Copied" width="16" height="16" />`;
+    setTimeout(() => {
+      button.innerHTML = `<img src="images/copy.png" alt="Copy" width="16" height="16" />`;
+    }, 1500);
+  });
+}
+
+function addCopyButtonsToCodeBlocks(container, username = "AI Digging") {
+  if (username === "You") return;
+
+  const wrappers = container.querySelectorAll(".code-wrapper");
+
+  wrappers.forEach((wrapper) => {
+    if (wrapper.querySelector(".code-toolbar")) return;
+
+    const pre = wrapper.querySelector("pre");
+    if (!pre) return;
+    const code = pre.querySelector("code");
+    if (!code) return;
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "code-toolbar";
+
+    const filename = wrapper.getAttribute("data-filename") || "code";
+    const label = document.createElement("span");
+    label.className = "code-label";
+    label.textContent = filename;
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "code-copy-btn";
+    copyBtn.type = "button";
+    copyBtn.title = "Salin kode";
+    copyBtn.setAttribute("aria-label", `Salin kode di ${filename}`);
+
+    copyBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path d="M16 4H8a2 2 0 0 0-2 2v12m2-2h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+                </svg>
+                <span>Copy</span>
+                `;
+
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        copyBtn.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#10B981" stroke-width="2" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                                <path d="M5 13l4 4L19 7"/>
+                            </svg>
+                            <span>Copied</span>
+                            `;
+        setTimeout(() => {
+          copyBtn.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                                    <path d="M16 4H8a2 2 0 0 0-2 2v12m2-2h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+                                </svg>
+                                <span>Copy</span>
+                            `;
+        }, 1500);
+      });
+    };
+
+    toolbar.appendChild(label);
+    toolbar.appendChild(copyBtn);
+    wrapper.insertBefore(toolbar, pre);
+  });
+}
