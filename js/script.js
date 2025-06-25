@@ -980,7 +980,7 @@ chatForm.addEventListener("submit", async (e) => {
 
     const botReplyText = `Tentu, ini aplikasi "Cerito Ke Bae" yang bisa kamu unduh:\n**Nama File:** CeritoKeBae.apk\n**Ukuran:** 12 MB\n**Status:** Terverifikasi\n**Link:** https://www.upload-apk.com/6quo8GQxRgHNVqe`;
     const downloadFileName = "CeritoKeBae.apk";
-    const downloadFileUrl = "https://www.upload-apk.com/6quo8GQxRgHNVqe"; // Ganti dengan URL unduhan sebenarnya
+    const downloadFileUrl = "https://www.upload-apk.com/OkMAUFOEyc4kJDt"; // Ganti dengan URL unduhan sebenarnya
     const downloadLogoUrl = "https://firebasestorage.googleapis.com/v0/b/website-putra.appspot.com/o/icons8-download-96.png?alt=media&token=c26ee380-f3ec-45f9-960e-81bc69e0624b";
 
     const clickableBotReplyText = makeLinksClickable(botReplyText);
