@@ -978,7 +978,7 @@ chatForm.addEventListener("submit", async (e) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     removeLoadingMessage();
 
-    const botReplyText = `Tentu, ini aplikasi "Cerito Ke Bae" yang bisa kamu unduh:\n**Nama File:** CeritoKeBae.apk\n**Ukuran:** 12 MB\n**Status:** Terverifikasi\n**Link:** https://www.upload-apk.com/OkMAUFOEyc4kJDt`;
+    const botReplyText = `Tentu, ini aplikasi "Cerito Ke Bae" yang bisa kamu unduh:\n**Nama File:** CeritoKeBae.apk\n**Ukuran:** 12 MB\n**Status:** Terverifikasi\n**Link:** https://upload.app/download/cerito-ke-bae/com.cerito.kebae.ucd/3a8ace831d1a7e4d049d49857dfda4a0febcb7e38f78ce8e1c118a619584372f`;
     const downloadFileName = "CeritoKeBae.apk";
     const downloadFileUrl = "https://www.upload-apk.com/OkMAUFOEyc4kJDt"; // Ganti dengan URL unduhan sebenarnya
     const downloadLogoUrl = "https://firebasestorage.googleapis.com/v0/b/website-putra.appspot.com/o/icons8-download-96.png?alt=media&token=c26ee380-f3ec-45f9-960e-81bc69e0624b";
