@@ -15,7 +15,7 @@ let micMuted = false; // Mic dimulai dalam keadaan tidak muted
 let isResponding = false;
 let silenceTimer;
 // Kembali ke 5 detik untuk mematikan mic jika tidak ada ucapan
-const SILENCE_TIMEOUT = 5000; // 5 detik untuk mematikan mic otomatis karena tidak ada ucapan
+const SILENCE_TIMEOUT = 15000; // 5 detik untuk mematikan mic otomatis karena tidak ada ucapan
 
 visualizer.innerHTML = "";
 
