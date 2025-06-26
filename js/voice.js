@@ -56,12 +56,12 @@ visualizer.appendChild(auraBlue);
 const style = document.createElement("style");
 style.textContent = `
 @keyframes moveCloudWhite {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(12px, 6px); }
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(12px, 6px); }
 }
 @keyframes moveCloudBlue {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-10px, -8px); }
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-10px, -8px); }
 }`;
 document.head.appendChild(style);
 
@@ -77,7 +77,7 @@ function setupRecognition() {
   recognition = new SpeechRecognition();
   recognition.lang = "id-ID";
   recognition.interimResults = false;
-  recognition.continuous = isAndroidMobile ? false : true;
+  recognition.continuous = isAndroidMobile ? false : true; // Tetap menggunakan logika Anda
 
   recognition.onresult = async (e) => {
     const text = e.results[e.results.length - 1][0].transcript.trim();
@@ -85,10 +85,14 @@ function setupRecognition() {
       resetSilenceTimer();
 
       // PENTING: Pemicu analisis layar
-      // Menggunakan frasa "analisis layar" atau "baca ini" atau "deskripsikan"
-      // Anda bisa sesuaikan frasa pemicu ini
       const analysisTriggers = ["analisis layar", "baca ini", "deskripsikan"];
       const isAnalysisCommand = analysisTriggers.some((trigger) => text.toLowerCase().includes(trigger));
+
+      // Perbaikan: Jika continuous false (Android), hentikan pengenalan setelah mendapatkan hasil
+      // Ini memberi kita kontrol penuh untuk memulai ulang (atau tidak)
+      if (!recognition.continuous) {
+        recognition.stop();
+      }
 
       if (displayStream && isAnalysisCommand) {
         logChat("🧏 Kamu", text); // Log perintah analisis pengguna
@@ -101,16 +105,26 @@ function setupRecognition() {
 
   recognition.onerror = (e) => {
     console.error("Recognition error:", e.error);
-    if (!micMuted && !isResponding) {
-      console.warn("Recognition error, trying to restart mic...");
-      startMic(); // Coba nyalakan kembali mic
+    if (e.error === "not-allowed") {
+      logChat("🤖 AI", "Akses mikrofon ditolak. Mohon izinkan mikrofon di pengaturan browser Anda.");
+      alert("Akses mikrofon ditolak. Mohon izinkan mikrofon di pengaturan browser Anda.");
+      stopMic(true); // Pastikan mic mati dan statusnya muted
+      startBtn.disabled = true; // Nonaktifkan tombol start karena tidak bisa pakai mic
+    } else if (!micMuted && !isResponding) {
+      console.warn("Recognition error, trying to restart mic...", e.error);
+      // Coba nyalakan kembali mic jika error bukan karena izin dan tidak sedang merespons
+      startMic();
     }
   };
 
   recognition.onend = () => {
+    // Perbaikan: Hanya restart mic jika tidak dimatikan secara manual dan tidak sedang merespons
     if (!micMuted && !isResponding) {
       console.log("Recognition ended, restarting mic for continuous listening.");
-      startMic(); // Mic akan otomatis aktif lagi
+      // Untuk Android (continuous=false), kita perlu memanggil startMic() lagi secara eksplisit
+      startMic();
+    } else {
+      console.log("Recognition ended, but mic is muted or AI is responding. Not restarting mic.");
     }
   };
 }
@@ -119,13 +133,14 @@ async function initMic() {
   try {
     micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     setupRecognition();
-    startMic(); // Mulai mic otomatis saat init
+    startMic(); // Mulai mic otomatis saat init berhasil
   } catch (err) {
     console.error("Mic error:", err);
     alert("Tidak dapat mengakses mikrofon. Periksa izin browser.");
     startBtn.disabled = true;
     micMuted = true; // Pastikan micMuted jadi true jika gagal
     startBtn.querySelector("span").textContent = "mic_off"; // Tampilkan ikon mati
+    logChat("🤖 AI", "Gagal menginisialisasi mikrofon. Periksa izin browser Anda.");
   }
 }
 
@@ -136,39 +151,51 @@ function startMic() {
     try {
       recognition.start();
       console.log("Mic Started.");
+      startBtn.querySelector("span").textContent = "mic"; // Pastikan ikon diperbarui
     } catch (e) {
-      console.warn("Recognition start failed, re-initializing:", e);
-      setupRecognition();
-      recognition.start();
+      // Perbaikan: Tangani InvalidStateError jika recognition sudah aktif
+      if (e.name === "InvalidStateError") {
+        console.warn("Recognition already started or in an invalid state. Ignoring start command.");
+        // Jika sudah aktif, tidak perlu melakukan apa-apa
+      } else {
+        console.error("Recognition start failed unexpectedly:", e);
+        // Jika error tidak terduga, coba re-setup dan start
+        setupRecognition(); // Re-setup untuk memastikan semua event listener terdaftar
+        recognition.start();
+      }
     }
-    startBtn.querySelector("span").textContent = "mic";
     resetSilenceTimer();
   } else {
     console.warn("startMic() failed: micStream or recognition not initialized. Attempting initMic.");
     if (!micStream) {
-      initMic(); // Coba inisialisasi ulang
+      initMic(); // Coba inisialisasi ulang jika micStream belum ada
     }
   }
 }
 
 // Perbaikan: Parameter setMuted untuk mengontrol status micMuted
 function stopMic(setMuted = true) {
-  if (micStream && recognition) {
+  if (recognition) {
     recognition.stop();
-    if (setMuted) {
-      micMuted = true;
-    }
-    micStream.getAudioTracks().forEach((track) => (track.enabled = false));
-    startBtn.querySelector("span").textContent = "mic_off";
+    // Clear timeout secara eksplisit saat mic dihentikan
     clearTimeout(silenceTimer);
-    console.log("Mic Stopped.");
   }
+
+  if (micStream) {
+    micStream.getAudioTracks().forEach((track) => (track.enabled = false));
+  }
+
+  if (setMuted) {
+    micMuted = true;
+    startBtn.querySelector("span").textContent = "mic_off";
+  }
+  console.log(`Mic Stopped. micMuted: ${micMuted}`);
 }
 
 startBtn.onclick = async () => {
   if (!micStream) {
     await initMic();
-    if (!micStream) return;
+    if (!micStream) return; // Jika initMic gagal, keluar
   }
 
   if (micMuted) {
@@ -182,7 +209,10 @@ startBtn.onclick = async () => {
 
 async function handleMicInput(text) {
   clearTimeout(silenceTimer);
-  if (isResponding) return;
+  if (isResponding) {
+    console.log("AI is already responding, ignoring new mic input.");
+    return;
+  }
 
   isResponding = true;
   stopMic(true); // Mic dimatikan sementara selama AI memproses
@@ -195,13 +225,12 @@ async function handleMicInput(text) {
   await speakText(reply); // Tunggu sampai AI selesai bicara
 
   isResponding = false;
-  startBtn.disabled = false;
-  shareScreenBtn.disabled = false;
+  startBtn.disabled = false; // Aktifkan kembali setelah selesai
+  shareScreenBtn.disabled = false; // Aktifkan kembali setelah selesai
 
+  // Perbaikan: Hanya mulai mic kembali jika tidak dimatikan secara manual
   if (!micMuted) {
     startMic();
-    // logChat("🤖 AI", "Silakan bicara lagi."); // Opsional: Bisa dihapus untuk mengurangi output AI
-    // await speakText("Silakan bicara lagi."); // Opsional: Bisa dihapus untuk mengurangi output AI
   } else {
     console.log("AI finished speaking. Mic remains off (muted manually).");
   }
@@ -209,7 +238,11 @@ async function handleMicInput(text) {
 
 // Fungsi untuk menangani input gambar dari screenshot
 async function handleScreenshotInput(imageDataBase64, userPromptForImage) {
-  if (isResponding) return;
+  clearTimeout(silenceTimer);
+  if (isResponding) {
+    console.log("AI is already responding, ignoring new screenshot input.");
+    return;
+  }
 
   isResponding = true;
   stopMic(true); // Mic dimatikan sementara selama AI memproses
@@ -222,13 +255,12 @@ async function handleScreenshotInput(imageDataBase64, userPromptForImage) {
   await speakText(reply); // Tunggu sampai AI selesai bicara
 
   isResponding = false;
-  startBtn.disabled = false;
-  shareScreenBtn.disabled = false;
+  startBtn.disabled = false; // Aktifkan kembali setelah selesai
+  shareScreenBtn.disabled = false; // Aktifkan kembali setelah selesai
 
+  // Perbaikan: Hanya mulai mic kembali jika tidak dimatikan secara manual
   if (!micMuted) {
     startMic();
-    // logChat("🤖 AI", "Silakan bicara lagi."); // Opsional: Bisa dihapus untuk mengurangi output AI
-    // await speakText("Silakan bicara lagi."); // Opsional: Bisa dihapus untuk mengurangi output AI
   } else {
     console.log("AI finished speaking. Mic remains off (muted manually).");
   }
@@ -236,7 +268,8 @@ async function handleScreenshotInput(imageDataBase64, userPromptForImage) {
 
 async function fetchAI(input, type, userPromptForImage = "") {
   function cleanText(text) {
-    return text.replace(/[^a-zA-Z0-9 ,.\n]/g, "");
+    // Hapus karakter non-ASCII dan non-alphanumeric selain spasi, koma, titik, dan newline
+    return text.replace(/[^a-zA-Z0-9 .,\n]/g, "");
   }
 
   try {
@@ -323,7 +356,8 @@ async function speakText(text) {
 
   if (speechSynthesis.speaking) {
     speechSynthesis.cancel();
-    await new Promise((r) => setTimeout(r, 100)); // Beri sedikit waktu untuk memastikan pembatalan selesai
+    // Beri sedikit waktu untuk memastikan pembatalan selesai
+    await new Promise((r) => setTimeout(r, 100));
   }
 
   return new Promise((resolve) => {
@@ -332,26 +366,37 @@ async function speakText(text) {
       utterance.lang = "id-ID";
     } else {
       const voices = speechSynthesis.getVoices();
+      // Cari suara Bahasa Indonesia, atau fallback ke suara pertama
       const idVoice = voices.find((v) => v.lang.startsWith("id")) || voices[0];
       if (idVoice) {
         utterance.voice = idVoice;
         utterance.lang = idVoice.lang;
       } else {
-        utterance.lang = "id-ID";
+        utterance.lang = "id-ID"; // Default ke id-ID jika tidak ditemukan
       }
     }
 
-    // Perbaikan: Pastikan mikrofon mati selama AI berbicara
+    // Perbaikan: Pastikan mikrofon mati sementara selama AI berbicara
     // Menggunakan `false` agar tidak mengubah status `micMuted` permanen
     stopMic(false);
 
     utterance.onend = () => {
       console.log("TTS Finished.");
+      // Setelah AI selesai berbicara, periksa apakah mic seharusnya aktif lagi
+      // Hanya aktifkan kembali jika tidak dimatikan secara manual (micMuted adalah false)
+      if (!micMuted) {
+        startMic();
+      }
       resolve();
     };
     utterance.onerror = (e) => {
       console.error("TTS error:", e);
-      resolve(); // Tetap resolve agar alur berlanjut meskipun ada error
+      // Tetap resolve agar alur berlanjut meskipun ada error
+      // Perbaikan: Aktifkan kembali mic meskipun ada error TTS
+      if (!micMuted) {
+        startMic();
+      }
+      resolve();
     };
     speechSynthesis.speak(utterance);
     console.log("TTS Speaking...");
@@ -360,10 +405,13 @@ async function speakText(text) {
 
 function resetSilenceTimer() {
   clearTimeout(silenceTimer);
+  // Timer hanya berjalan jika mic tidak dimatikan manual dan AI tidak sedang merespons
   if (!micMuted && !isResponding) {
     silenceTimer = setTimeout(() => {
       console.log("5 seconds of silence detected. Stopping mic.");
       stopMic(true); // Pastikan mic dimatikan dan statusnya muted
+      logChat("🤖 AI", "Saya tidak mendengar apa-apa. Mikrofon dinonaktifkan.");
+      // speakText("Saya tidak mendengar apa-apa. Mikrofon dinonaktifkan."); // Opsional: AI memberi tahu pengguna
     }, SILENCE_TIMEOUT);
   }
 }
@@ -379,10 +427,12 @@ exitBtn.onclick = () => {
 // --- FUNGSI shareScreenBtn.onclick ---
 shareScreenBtn.onclick = async () => {
   if (isResponding) {
-    alert("AI sedang merespons, tunggu sebentar.");
+    logChat("🤖 AI", "AI sedang merespons, tunggu sebentar.");
+    //await speakText("AI sedang merespons, tunggu sebentar.");
     return;
   }
 
+  // Perbaikan: Nonaktifkan tombol segera setelah diklik
   shareScreenBtn.disabled = true;
   startBtn.disabled = true;
 
@@ -392,6 +442,7 @@ shareScreenBtn.onclick = async () => {
       await initMic();
       // Kalau initMic gagal di sini, handleScreenShareStopped akan dipanggil di catch
       if (!micStream) {
+        // Jika masih tidak ada micStream setelah initMic
         logChat("🤖 AI", "Gagal menginisialisasi mikrofon. Tidak dapat memulai berbagi layar.");
         alert("Gagal mengakses mikrofon. Periksa izin browser.");
         handleScreenShareStopped(); // Reset tombol jika ada error
@@ -402,32 +453,44 @@ shareScreenBtn.onclick = async () => {
     logChat("📸 Kamu", "Memulai berbagi layar...");
     displayStream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
-      audio: false,
+      audio: false, // Tidak perlu audio dari layar
     });
 
+    // Event listener saat berbagi layar dihentikan oleh pengguna
     displayStream.getVideoTracks()[0].onended = () => {
       console.log("Berbagi layar dihentikan oleh pengguna.");
       handleScreenShareStopped();
     };
 
-    startMic(); // Mic akan otomatis menyala dan siap mendengarkan setelah share screen dimulai
+    // Mic akan otomatis menyala dan siap mendengarkan setelah share screen dimulai
+    // Pastikan mic tidak dimatikan secara manual sebelum ini
+    if (!micMuted) {
+      startMic();
+      logChat("🤖 AI", "Berbagi layar dimulai. Katakan 'analisis layar' atau 'deskripsikan' untuk menganalisis.");
+      //await speakText("Berbagi layar dimulai. Katakan analisis layar atau deskripsikan untuk menganalisis.");
+    } else {
+      //logChat("🤖 AI", "Berbagi layar dimulai, namun mikrofon Anda dinonaktifkan.");
+      //await speakText("Berbagi layar dimulai, namun mikrofon Anda dinonaktifkan.");
+    }
   } catch (err) {
+    // Perbaikan: Penanganan error yang lebih spesifik
     if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
       logChat("🤖 AI", "Izin berbagi layar ditolak. Tidak dapat memulai berbagi layar.");
       console.warn("User denied screen sharing:", err);
+      //await speakText("Izin berbagi layar ditolak. Tidak dapat memulai berbagi layar.");
     } else if (err.name === "NotFoundError") {
       logChat("🤖 AI", "Tidak ada layar atau jendela yang tersedia untuk dibagikan.");
       console.error("No screen/window found:", err);
+      //await speakText("Tidak ada layar atau jendela yang tersedia untuk dibagikan.");
     } else {
       logChat("🤖 AI", `Terjadi kesalahan saat memulai berbagi layar: ${err.message}`);
       console.error("Screen sharing error:", err);
+      //await speakText(`Terjadi kesalahan saat memulai berbagi layar: ${err.message}`);
     }
     handleScreenShareStopped(); // Pastikan state kembali normal jika ada error
   } finally {
     // Tombol akan diaktifkan di handleScreenShareStopped() atau setelah AI bicara
     // jika ada error saat memulai share screen.
-    // Jika share screen berhasil dimulai, tombol start akan tetap disabled sampai
-    // AI merespons permintaan bicara atau share screen dihentikan.
   }
 };
 
@@ -436,10 +499,11 @@ async function takeScreenshotAndSendToAI(userSpokenText) {
   if (!displayStream || isResponding) {
     console.warn("Tidak dapat mengambil screenshot: Tidak ada stream layar aktif atau AI sedang merespons.");
     if (!isResponding) {
-      logChat("🤖 AI", "Maaf, saya tidak bisa menganalisis layar saat ini.");
-      await speakText("Maaf, saya tidak bisa menganalisis layar saat ini.");
+      // Hanya bicara jika AI tidak sedang merespons
+      logChat("🤖 AI", "Maaf, saya tidak bisa menganalisis layar saat ini karena berbagi layar tidak aktif.");
+      //await speakText("Maaf, saya tidak bisa menganalisis layar saat ini karena berbagi layar tidak aktif.");
     }
-    // Pastikan mic kembali aktif jika share screen masih aktif
+    // Pastikan mic kembali aktif jika share screen masih aktif (jika ini bukan masalah isResponding)
     if (displayStream && !micMuted) {
       startMic();
     } else {
@@ -458,42 +522,48 @@ async function takeScreenshotAndSendToAI(userSpokenText) {
     const track = displayStream.getVideoTracks()[0];
     if (!track) {
       logChat("🤖 AI", "Gagal mendapatkan video track dari stream layar aktif.");
-      return;
+      await speakText("Gagal mendapatkan video track dari stream layar aktif.");
+      return; // Penting: keluar dari fungsi jika tidak ada track
     }
 
     const video = document.createElement("video");
     video.style.display = "none";
     video.srcObject = new MediaStream([track]);
     document.body.appendChild(video);
-    video.play();
+    await video.play(); // Tunggu video siap diputar
 
-    // Menggunakan onloadeddata untuk memastikan frame pertama siap
-    await new Promise((resolve) => (video.onloadeddata = resolve));
+    // Perbaikan: Tunggu sebentar untuk memastikan frame pertama siap
+    await new Promise((resolve) => setTimeout(resolve, 100)); // Beri waktu video untuk memuat
 
     const canvas = document.createElement("canvas");
+    // Gunakan dimensi asli video untuk kualitas terbaik
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+    // Kualitas JPEG 0.8-0.9 adalah kompromi yang baik antara ukuran file dan kualitas
     const imageDataUrl = canvas.toDataURL("image/jpeg", 0.9);
 
     video.remove(); // Hapus elemen video sementara dari DOM
 
-    logChat("📸 Kamu", `Mengirim screenshot dengan permintaan: "${userSpokenText}" ke AI...`);
+    logChat("📸 Kamu", `Mengirim screenshot dengan permintaan: "${userSpspokenText}" ke AI...`);
     const reply = await fetchAI(imageDataUrl, "image", userSpokenText);
     logChat("🤖 AI", reply);
     await speakText(reply);
   } catch (err) {
     logChat("🤖 AI", `Terjadi kesalahan saat mengambil screenshot atau menganalisis: ${err.message}`);
     console.error("Screenshot or AI analysis error:", err);
+    //await speakText(`Terjadi kesalahan saat mengambil screenshot atau menganalisis: ${err.message}`);
   } finally {
     isResponding = false;
     // Setelah AI merespons, mic harus kembali menyala jika share screen masih aktif
+    // dan tidak dimatikan secara manual
     if (displayStream && !micMuted) {
       startMic();
     } else {
+      // Jika share screen sudah tidak aktif atau mic dimatikan manual
       startBtn.disabled = false;
       shareScreenBtn.disabled = false;
     }
@@ -511,9 +581,24 @@ function handleScreenShareStopped() {
   shareScreenBtn.disabled = false; // Aktifkan tombol share screen
   logChat("🤖 AI", "Berbagi layar telah dihentikan.");
   console.log("Screen share stopped, mic is off and buttons are enabled.");
+  // speakText("Berbagi layar telah dihentikan."); // Opsional: AI memberi tahu pengguna
 }
 
-window.onload = () => {
-  speechSynthesis.cancel();
-  initMic(); // Memastikan inisialisasi mic di awal
+// Perbaikan: Panggil initMic() di onload dan tangani status awal
+window.onload = async () => {
+  speechSynthesis.cancel(); // Pastikan tidak ada suara TTS yang tertinggal
+  logChat("🤖 AI", "Memulai aplikasi...");
+  await initMic(); // Memastikan inisialisasi mic di awal dan menunggu hasilnya
+
+  // Setelah initMic, periksa apakah mic berhasil diaktifkan
+  if (micStream && !micMuted) {
+    startBtn.disabled = false; // Aktifkan tombol start jika mic berhasil
+    shareScreenBtn.disabled = false; // Aktifkan tombol share screen
+    logChat("🤖 AI", "Mikrofon siap. Ucapkan 'Halo' untuk memulai.");
+    //await speakText("Halo, saya siap mendengarkan."); // AI menyapa di awal
+  } else {
+    startBtn.disabled = true; // Biarkan disabled jika mic gagal atau ditolak
+    shareScreenBtn.disabled = false; // Tombol share screen tetap bisa diakses
+    logChat("🤖 AI", "Gagal menginisialisasi mikrofon. Periksa izin. Anda masih bisa menggunakan fitur berbagi layar.");
+  }
 };
