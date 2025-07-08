@@ -32,6 +32,8 @@ const userProfilePic = document.getElementById("userProfilePic");
 const userProfileName = document.getElementById("userProfileName");
 const logoutBtn = document.getElementById("logoutBtn");
 const profileMenu = document.getElementById("profileMenu");
+const link_android = document.getElementById("link_android");
+const link_androids = document.getElementById("link_androids");
 
 // -- TAMBAHKAN INI --
 const profileOptionsBtn = document.getElementById("profileOptionsBtn"); // Tombol titik tiga
@@ -190,6 +192,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const photoURL = user.photoURL || "images/default-avatar.png";
       const displayName = user.displayName || "Pengguna";
 
+      uploadBtn.addEventListener("click", () => fileInput.click());
+
       // 1. Update UI untuk profil DESKTOP
       if (userProfileSection) {
         userProfileSection.style.display = "flex";
@@ -276,6 +280,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+link_android.addEventListener("click", () => {
+window.location.href = "https://play.google.com/store/apps/details?id=com.diggingdeeper.ucd&hl=id&pli=1"; 
+});
+
+link_androids.addEventListener("click", () => {
+window.location.href = "https://play.google.com/store/apps/details?id=com.diggingdeeper.ucd&hl=id&pli=1"; 
+});
+
+
 pricing.addEventListener("click", () => {
   window.location.href = "pricing.html";
 });
@@ -289,7 +303,7 @@ speakdigging.addEventListener("click", () => {
 });
 
 kebijakanprivasi.addEventListener("click", () => {
-  showToast("Fitur ini segera hadir");
+  window.location.href = "kebijakan.html";
 });
 
 leftMenuBtn.addEventListener("click", () => {
@@ -427,7 +441,7 @@ function updateCurrentChatTitle(newTitle) {
 function renderChatHistoryList() {
   chatHistoryList.innerHTML = ""; // Clear existing list
   if (chatSessions.length === 0) {
-    chatHistoryList.innerHTML = `<p style="color: #aaa; padding: 10px; text-align: center;">Belum ada riwayat chat.</p>`;
+    chatHistoryList.innerHTML = `<p style="color: #aaa; padding: 10px; margin-top: 20px; text-align: center;">Belum ada riwayat chat.</p>`;
     return;
   }
 
@@ -766,8 +780,6 @@ document.getElementById("menu4").addEventListener("click", function () {
   window.location.href = "voice.html";
 });
 
-uploadBtn.addEventListener("click", () => fileInput.click());
-
 fileInput.addEventListener("change", (event) => {
   if (event.target.files.length > 0) {
     showFilePreview(event.target.files);
@@ -806,7 +818,7 @@ if (window.visualViewport) {
   adjustLayout();
 }
 
-const text = "Apakah ada yang bisa saya bantu?";
+const text = "Apakah ada yang bisa Digging bantu?";
 let index = 0;
 
 function typeWriter() {
