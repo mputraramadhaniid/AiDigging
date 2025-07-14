@@ -34,6 +34,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 const profileMenu = document.getElementById("profileMenu");
 const link_android = document.getElementById("link_android");
 const link_androids = document.getElementById("link_androids");
+const logosend = document.getElementById("logosend");
 
 // -- TAMBAHKAN INI --
 const profileOptionsBtn = document.getElementById("profileOptionsBtn"); // Tombol titik tiga
@@ -282,13 +283,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 link_android.addEventListener("click", () => {
-window.location.href = "https://play.google.com/store/apps/details?id=com.diggingdeeper.ucd&hl=id&pli=1"; 
+  window.location.href = "https://play.google.com/store/apps/details?id=com.diggingdeeper.ucd&hl=id&pli=1";
 });
 
 link_androids.addEventListener("click", () => {
-window.location.href = "https://play.google.com/store/apps/details?id=com.diggingdeeper.ucd&hl=id&pli=1"; 
+  window.location.href = "https://play.google.com/store/apps/details?id=com.diggingdeeper.ucd&hl=id&pli=1";
 });
-
 
 pricing.addEventListener("click", () => {
   window.location.href = "pricing.html";
@@ -865,7 +865,7 @@ function initializeChatDisplay() {
 
 chatInput.addEventListener("input", () => {
   chatInput.style.height = "auto";
-  const maxHeight = 120;
+  const maxHeight = 125;
   chatInput.style.height = `${Math.min(chatInput.scrollHeight, maxHeight)}px`;
 });
 
@@ -946,6 +946,9 @@ function makeLinksClickable(text) {
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  // Panggil fungsi ini jika animasi SEDANG berjalan untuk menghentikannya
+
+
   // 1. Hentikan animasi selamat datang jika masih berjalan
   stopWelcomeAnimation();
 
@@ -954,6 +957,8 @@ chatForm.addEventListener("submit", async (e) => {
 
   // 2. Tandai jika ini adalah pesan pertama. Variabel ini akan kita gunakan nanti.
   const isFirstMessage = messages.length === 0;
+
+  logosend.src = "images/pause.png";
 
   // --- Logika untuk membuat sesi chat baru di riwayat ---
   let isNewSession = false;
@@ -2218,6 +2223,45 @@ async function renderMessageContent(element, rawText, isAnimated = false, onFini
   // 3. Execute callback after all rendering is complete
   if (onFinish) {
     onFinish();
+    logosend.src = "images/up.png";
+  }
+}
+
+// Fungsi untuk menghentikan animasi dan menampilkan sisa konten
+// Fungsi ini dipanggil oleh event, misalnya tombol "Stop"
+function handleStopButtonClick() {
+  // Hanya lakukan sesuatu jika animasi sedang berjalan
+  if (isAnimationRunning) {
+    stopAndRenderFinalState();
+  }
+}
+
+/**
+ * Fungsi ini menghentikan semua loop animasi dan langsung
+ * menampilkan konten final.
+ */
+function stopAndRenderFinalState() {
+  // 1. Beri sinyal bahwa animasi harus berhenti
+  isAnimationRunning = false;
+
+  // 2. Tampilkan konten final
+  element.innerHTML = ""; // Bersihkan elemen
+  if (typeof parseMarkdown === "function") {
+    element.innerHTML = parseMarkdown(rawText);
+  } else {
+    element.textContent = rawText;
+  }
+
+  // 3. Jalankan proses akhir lainnya
+  if (typeof Prism !== "undefined") {
+    element.querySelectorAll("pre code").forEach((block) => {
+      Prism.highlightElement(block);
+    });
+  }
+
+  if (onFinish) {
+    onFinish();
+    logosend.src = "images/up.png";
   }
 }
 // =================================================================================

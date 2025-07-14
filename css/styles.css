@@ -91,7 +91,8 @@ body {
   color: #fff;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px;
+  padding: 15px 15px;
+  background-color: #000000;
 }
 
 /* GANTI ATURAN LAMA DENGAN YANG INI */
@@ -158,7 +159,7 @@ body {
   /* Properti lain untuk styling */
   width: 260px;
   padding: 8px;
-  background-color: #181818;
+  background-color: #0f0f0f;
 }
 
 .sidebar-overlay {
@@ -199,7 +200,7 @@ body {
 
   /* Gaya visual Anda */
   color: #e0e0e0;
-  background-color: #212121; /* Contoh warna latar belakang */
+  background-color: #000000; /* Contoh warna latar belakang */
 }
 .chat-header {
   display: flex;
@@ -399,7 +400,8 @@ body {
   padding-top: 8px;
   padding-left: 15px;
   padding-right: 15px;
-  background-color: #424141; /* Background diubah menjadi abu-abu */
+  border: 2px solid rgba(63, 63, 63, 0.458);
+  background-color: linear-gradient(-100deg, #000000, #131313, #131313, #131313, #131313, #131313, #000000); /* Background diubah menjadi abu-abu */
   color: #ffffff; /* Warna teks diubah menjadi putih agar terbaca */
   border-radius: 20px 5px 20px 20px;
 }
@@ -673,7 +675,7 @@ code {
   position: absolute;
 
   /* Mengatur posisi di dasar 'kanvas' dengan sedikit jarak */
-  bottom: 34px;
+  bottom: 42px;
 
   /* Trik untuk centering horizontal di dalam induknya */
   left: 50%;
@@ -689,8 +691,8 @@ code {
   width: 94%;
   max-width: 700px;
   padding: 2px 4px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  background: #212121;
+  border: 2px solid rgba(63, 63, 63, 0.458);
+  background: linear-gradient(-100deg, #000000, #131313, #131313, #000000, #000000, #000000, #000000);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 16px;
@@ -751,11 +753,11 @@ code {
 
 #uploadbtn {
   /* Ini adalah tombol utamanya (BUTTON) */
-  margin-left: 7px;
+  margin-left: 2px;
   margin-bottom: 6px;
   border-radius: 50%;
   /* Gunakan border ini untuk tombol */
-  border: 1px solid #636363 !important; /* Abu-abu standar */
+  border: 0px solid #636363 !important; /* Abu-abu standar */
   padding: 5px; /* Sesuaikan padding agar ikon di tengah lingkaran */
   cursor: pointer;
   width: 30px;
@@ -1025,12 +1027,9 @@ code {
   text-align: center;
   font-size: 14px;
   color: #888;
-  padding: 8px 0;
-  background-color: #212121; /* Hitam transparan */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px); /* Untuk Safari */
+  padding: 10px 0;
+  background-color: #000000; /* Hitam transparan */
   margin-top: 0px;
-  border-top: 0px solid #535353;
 }
 
 .loading-animation .dot {
@@ -2022,6 +2021,7 @@ code.inline-code {
   .input-container {
     padding: 2px 6px;
     margin-bottom: 30px;
+    bottom: 30px;
   }
 
   .input-container textarea {
@@ -2275,4 +2275,13 @@ code.inline-code {
   .mobile-profile-btn {
     display: block !important; /* Tambahkan !important HANYA UNTUK TES */
   }
+
+  .footer {
+  text-align: center;
+  font-size: 14px;
+  color: #888;
+  padding: 18px 0;
+  background-color: #000000; /* Hitam transparan */
+  margin-top: 0px;
+}
 }

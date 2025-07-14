@@ -1,0 +1,14 @@
+<div style="display: flex; align-items: center; gap: 5px">
+              <p style="font-size: 10px; margin: 0">Dibuat oleh</p>
+              <img src="images/made_icon_hitam.png" alt="developer" style="height: 22px" />
+              <p style="font-size: 10px; margin: 0; display: none;">&</p>
+              <img src="images/google.png" alt="developer" style="height: 16px; display: none;" />
+            </div>
+
+
+             <div style="margin: 0; display: flex; align-items: center; gap: 5px">
+              <p style="font-size: 10px; margin: 0">Dibuat oleh</p>
+              <img src="images/made_icon_hitam.png" alt="developer" style="height: 25px" />
+              <p style="font-size: 10px; margin: 0; display: none">&</p>
+              <img src="images/google.png" alt="developer" style="height: 16px; display: none" />
+            </div>
