@@ -24,6 +24,13 @@ html {
   scroll-behavior: smooth;
 }
 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
 /* Reset & base */
 *,
 *::before,
@@ -239,22 +246,38 @@ body {
 }
 
 .chat-box {
-  flex-grow: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-  width: 94%;
+  flex-grow: 1; /* Biarkan elemen ini mengisi ruang vertikal */
+  width: 100%; /* Gunakan lebar penuh dari parent */
   max-width: 700px;
-  margin: 0 auto;
-  padding: 10px 0;
+  margin: 0 auto; /* Pusatkan di tengah layar */
+  padding: 16px; /* Padding yang konsisten di semua sisi */
+
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  min-height: 0; /* 🔑 penting agar scroll aktif dalam flex container */
+  gap: 16px; /* Jarak antar pesan, lebih baik dari margin */
+
+  overflow-y: auto; /* Aktifkan scroll vertikal jika perlu */
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* Scrolling mulus di iOS lama */
+  scroll-behavior: smooth;
+
+  /* Penting agar bisa scroll di dalam flex container */
+  min-height: 0;
+
+  /* Sembunyikan scrollbar di semua browser modern */
   scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 120px;
+  -ms-overflow-style: none; /* IE */
+}
+
+section.chat-container {
+  height: 100%; /* Atau 100vh jika diperlukan */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sembunyikan scrollbar untuk Chrome, Safari, dan Opera */
+.chat-box::-webkit-scrollbar {
+  display: none;
 }
 
 .chat-box::-webkit-scrollbar {
@@ -798,7 +821,6 @@ code {
   justify-content: center;
   /* ... */
 }
-
 
 /* Styling untuk Preview Gambar
 */
@@ -2277,11 +2299,11 @@ code.inline-code {
   }
 
   .footer {
-  text-align: center;
-  font-size: 14px;
-  color: #888;
-  padding: 18px 0;
-  background-color: #000000; /* Hitam transparan */
-  margin-top: 0px;
-}
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    padding: 18px 0;
+    background-color: #000000; /* Hitam transparan */
+    margin-top: 0px;
+  }
 }
