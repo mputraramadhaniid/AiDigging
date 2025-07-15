@@ -4,7 +4,7 @@
     --background-color: #000000;
     --text-color: #ffffff;
     --text-color-secondary: #a0a0a0;
-    --button-bg: #333333;
+    --button-bg: #000000;
     --font-family: 'Inter', sans-serif;
 }
 
@@ -20,7 +20,7 @@ body {
 .container {
     max-width: 1200px;
     width: 100%;
-    padding: 2rem;
+    padding: 8px;
     position: relative;
 }
 
@@ -29,7 +29,7 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    padding: 0 5rem;
+    padding: 0 16px;
 }
 
 .logo {
@@ -49,7 +49,7 @@ header {
     align-items: center;
 }
 
-.icon-button, .login-button {
+.icon-button {
     background: none;
     border: none;
     color: var(--text-color);
@@ -62,11 +62,6 @@ header {
 .icon-button {
     font-size: 1.2rem;
     margin-right: 1rem;
-}
-
-.login-button {
-    background-color: var(--button-bg);
-    padding: 0.6rem 1.2rem;
 }
 
 nav {
@@ -96,10 +91,12 @@ nav ul li a:hover {
 }
 
 main {
-    max-width: 700px;
+    max-width: 900px;
     margin: 0 auto;
     text-align: center;
-    padding-top: 4rem;
+    padding-top: 1rem;
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
 .language-selector {
