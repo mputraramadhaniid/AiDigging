@@ -21,8 +21,8 @@
 
 /* Scroll smooth di seluruh halaman */
 html {
-    scroll-behavior: smooth;
-    overscroll-behavior: none; /* Mencegah 'bounce' di mobile */
+  scroll-behavior: smooth;
+  overscroll-behavior: none; /* Mencegah 'bounce' di mobile */
 }
 
 /* Reset & base */
@@ -59,8 +59,12 @@ html {
 
 body {
   font-family: "Inter", system-ui, sans-serif;
+  position: fixed;
+  display: flex;
   margin: 0;
   padding: 0;
+  top: 0;
+  left: 0;
   background: #000000;
   background-size: 500% 500%;
   animation: animatedGradient 30s ease infinite;
@@ -68,7 +72,7 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  
+
   flex-direction: column;
   transition: background-color 0.3s ease;
 }
@@ -124,12 +128,13 @@ body {
 }
 
 .container {
-    flex: 1; /* KUNCI UTAMA: Ini akan membuatnya mengisi sisa ruang secara otomatis */
-    display: flex;
-    overflow: hidden;
-    
-    /* Tambahan: Mencegah bug aneh pada flexbox saat ada konten yang bisa di-scroll */
-    min-height: 0;
+  flex: 1; /* KUNCI UTAMA: Ini akan membuatnya mengisi sisa ruang secara otomatis */
+  display: flex;
+  overflow: hidden;
+
+  /* Tambahan: Mencegah bug aneh pada flexbox saat ada konten yang bisa di-scroll */
+  min-height: 0;
+  height: 100%;
 }
 
 .sidebar h2,

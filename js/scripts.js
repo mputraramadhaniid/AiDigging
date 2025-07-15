@@ -321,6 +321,26 @@ sidebarOverlay.addEventListener("click", () => {
   sidebarOverlay.classList.remove("active");
 });
 
+// Pastikan kode ini berjalan setelah halaman dimuat
+window.addEventListener("load", () => {
+  // Pilih elemen utama yang membungkus semua konten Anda,
+  // dalam kasus ini bisa langsung body atau .container
+  const mainContainer = document.body;
+
+  if (window.visualViewport) {
+    const adjustHeight = () => {
+      // Atur tinggi container sesuai area yang terlihat
+      mainContainer.style.height = `${window.visualViewport.height}px`;
+    };
+
+    // Panggil saat keyboard muncul/hilang
+    window.visualViewport.addEventListener("resize", adjustHeight);
+
+    // Atur tinggi awal saat halaman dimuat
+    adjustHeight();
+  }
+});
+
 window.addEventListener("resize", () => {
   const chatBoxElement = document.querySelector(".chat-box");
   if (chatBoxElement) {
