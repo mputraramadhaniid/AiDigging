@@ -321,13 +321,6 @@ sidebarOverlay.addEventListener("click", () => {
   sidebarOverlay.classList.remove("active");
 });
 
-window.addEventListener("resize", () => {
-  const chatBoxElement = document.querySelector(".chat-box");
-  if (chatBoxElement) {
-    chatBoxElement.scrollTo(0, chatBoxElement.scrollHeight);
-  }
-});
-
 // NEW FUNCTION: Generate a unique ID
 function generateUniqueId() {
   return `chat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -807,15 +800,11 @@ chatContainer.addEventListener("drop", (e) => {
 if (window.visualViewport) {
   const adjustLayout = () => {
     if (!chatContainer) return;
+    // Hanya sesuaikan tinggi container, jangan panggil scrollTo
     chatContainer.style.height = `${window.visualViewport.height}px`;
-    if (chatBox) {
-      setTimeout(() => {
-        chatBox.scrollTo(0, chatBox.scrollHeight);
-      }, 50);
-    }
   };
   window.visualViewport.addEventListener("resize", adjustLayout);
-  adjustLayout();
+  adjustLayout(); // Panggil sekali untuk inisialisasi
 }
 
 const text = "Apakah ada yang bisa Digging bantu?";
@@ -947,7 +936,6 @@ chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   // Panggil fungsi ini jika animasi SEDANG berjalan untuk menghentikannya
-
 
   // 1. Hentikan animasi selamat datang jika masih berjalan
   stopWelcomeAnimation();
