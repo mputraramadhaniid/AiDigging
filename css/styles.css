@@ -64,7 +64,7 @@ body {
   margin: 0;
   padding: 0;
   top: 0;
-  left: 0;
+  bottom: 0;
   background: #000000;
   background-size: 500% 500%;
   animation: animatedGradient 30s ease infinite;
@@ -134,7 +134,7 @@ body {
 
   /* Tambahan: Mencegah bug aneh pada flexbox saat ada konten yang bisa di-scroll */
   min-height: 0;
-  height: 100%;
+  height: 0px;
 }
 
 .sidebar h2,
