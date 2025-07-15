@@ -24,13 +24,6 @@ html {
   scroll-behavior: smooth;
 }
 
-html,
-body {
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-}
-
 /* Reset & base */
 *,
 *::before,
@@ -91,6 +84,11 @@ body {
 
 .copy-btn img {
   vertical-align: middle;
+}
+
+/* Sembunyikan scrollbar untuk Chrome, Safari, dan Opera */
+.chat-box::-webkit-scrollbar {
+  display: none;
 }
 
 .navbar {
@@ -246,38 +244,22 @@ body {
 }
 
 .chat-box {
-  flex-grow: 1; /* Biarkan elemen ini mengisi ruang vertikal */
-  width: 100%; /* Gunakan lebar penuh dari parent */
-  max-width: 700px;
-  margin: 0 auto; /* Pusatkan di tengah layar */
-  padding: 16px; /* Padding yang konsisten di semua sisi */
-
-  display: flex;
-  flex-direction: column;
-  gap: 16px; /* Jarak antar pesan, lebih baik dari margin */
-
-  overflow-y: auto; /* Aktifkan scroll vertikal jika perlu */
+  flex-grow: 1;
+  overflow-y: auto;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch; /* Scrolling mulus di iOS lama */
   scroll-behavior: smooth;
-
-  /* Penting agar bisa scroll di dalam flex container */
-  min-height: 0;
-
-  /* Sembunyikan scrollbar di semua browser modern */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE */
-}
-
-section.chat-container {
-  height: 100%; /* Atau 100vh jika diperlukan */
+  width: 94%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 10px 0;
   display: flex;
   flex-direction: column;
-}
-
-/* Sembunyikan scrollbar untuk Chrome, Safari, dan Opera */
-.chat-box::-webkit-scrollbar {
-  display: none;
+  align-items: stretch;
+  min-height: 0; /* 🔑 penting agar scroll aktif dalam flex container */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 120px;
 }
 
 .chat-box::-webkit-scrollbar {
